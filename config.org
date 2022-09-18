@@ -107,6 +107,10 @@
 #+begin_src emacs-lisp
   (add-hook 'text-mode-hook 'visual-line-mode)
 #+end_src
+** follow symlinks
+#+begin_src emacs-lisp
+ (setq find-file-visit-truename t)
+#+end_src
 * package list
 #+begin_src emacs-lisp
   (setq package-archives 
@@ -282,12 +286,6 @@
      '(italic ((t nil)))
      '(tree-sitter-hl-face:property ((t (:inherit font-lock-constant-face))))))
 #+end_src
-** highlight escape sequences
-#+begin_src emacs-lisp
-  (use-package highlight-escape-sequences
-    :ensure t
-    :hook (prog-mode . hes-mode))
-#+end_src
 ** rainbow-mode
 #+begin_src emacs-lisp
   (use-package rainbow-mode
@@ -344,7 +342,7 @@
 
   (use-package git-gutter
     :ensure t
-    :hook (prog-mode . git-gutter-mode)
+    :hook (prog-mode . git-gutter-mode) (org-mode . git-gutter-mode)
     :config
     (setq git-gutter:update-interval 0.02))
 
