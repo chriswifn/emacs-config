@@ -237,7 +237,7 @@
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   (setq dashboard-items nil)
   (setq dashboard-center-content t)
-  (setq dashboard-startup-banner 'official)
+  (setq dashboard-startup-banner 'logo)
 #+end_src
 
 * async
