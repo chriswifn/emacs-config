@@ -95,8 +95,6 @@
   (setq-default indent-tabs-mode nil)
   (setq tab-width 4)
   (electric-indent-mode 1)
-  (add-hook 'org-mode-hook
-            (lambda () (setq evil-auto-indent nil)))
 #+end_src
 ** line numbers
 #+begin_src emacs-lisp
@@ -147,6 +145,7 @@
     (setq evil-undo-system 'undo-fu)
     :config
     (evil-mode 1))
+(define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
 #+end_src
 ** vim bindings everywhere else
 #+begin_src emacs-lisp
