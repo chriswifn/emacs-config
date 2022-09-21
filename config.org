@@ -185,7 +185,7 @@ A very nice touple of color schemes
         modus-themes-subtle-line-numbers nil
         modus-themes-region '(bg-only no-extend)
         modus-themes-mode-line '(borderless)
-        modus-themes-syntax '(yellow-comments))
+        modus-themes-syntax '(yellow-comments faint alt-syntax))
   (setq modus-themes-headings
         '((1 . (1.4))
           (2 . (1.3))
