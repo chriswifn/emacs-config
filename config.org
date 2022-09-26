@@ -46,20 +46,15 @@
   (global-set-key (kbd "C-c r") 'config-reload)
 #+end_src
 ** org-mode
-**** basic
 #+begin_src emacs-lisp
+  (setq org-ellipsis " ")
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-with-smart-quotes t)
+  (setq org-src-window-setup 'current-window)
   (add-hook 'org-mode-hook 'org-indent-mode)
-  (custom-set-faces
-   '(org-block-begin-line ((t (:background nil))))
-   '(org-block ((t (:background nil))))
-   '(org-block-end-line   ((t (:background nil)))))
   (setq org-hide-emphasis-markers t)
-#+end_src
-**** source code block syntax highlighting
-#+begin_src emacs-lisp
-  (setq org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil
-        org-edit-src-content-identation 0)
 #+end_src
 ** dialog and some other stuff
 #+begin_src emacs-lisp
