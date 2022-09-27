@@ -2,7 +2,7 @@
 #+AUTHOR: christian hageloch
 
 
-This is my configuration for GNU Emacs. This configuration is not minimal but also not overloaded with plugins
+This is my configuration for GNU Emacs. This configuration is not minimal but also not overloaded with packages 
 that I don't use. I try to keep it as minimal as possible by only installing packages that I use and removing those
 that I don't.
 
