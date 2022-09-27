@@ -6,6 +6,8 @@ This is my configuration for GNU Emacs. This configuration is not minimal but al
 that I don't use. I try to keep it as minimal as possible by only installing packages that I use and removing those
 that I don't.
 
+[[emacs.png]]
+
 
 * package list
 Set melpa and elpa as package archives for installing packages. Most of them are not in elpa so melpa is
