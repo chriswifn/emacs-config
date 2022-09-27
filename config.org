@@ -126,6 +126,15 @@ The blinking cursor is distracting, so I turn it off.
   (blink-cursor-mode -1)
 #+end_src
 
+** beacon mode
+Beacon mode helps to keep track of the cursor
+#+begin_src emacs-lisp
+  (use-package beacon
+    :ensure t
+    :config
+    (beacon-mode 1))
+#+end_src
+
 ** font
 The font has to be readable and easy on the eyes. My choice is the Monoid font.
 I prefer a bigger font because it is easier on the eyes.
