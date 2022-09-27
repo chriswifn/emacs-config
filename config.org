@@ -205,9 +205,9 @@ Vim motions are the superior way of editing text.
     (setq evil-want-keybinding nil)
     (setq evil-undo-system 'undo-fu)
     (setq evil-want-fine-undo 'fine)
+    (setq evil-want-C-u-scroll t)
     :config
     (evil-mode 1))
-  (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
 #+end_src
 
 ** vim bindings everywhere else
