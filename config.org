@@ -140,9 +140,10 @@ The second part is for emacs-client.
 Org-mode is pretty ugly out of the box. Some modifications are necessary.
 #+begin_src emacs-lisp
   (setq org-ellipsis " ")
-  (setq orc-src-fontify-natively nil)
+  (setq orc-src-fontify-natively t)
   (setq orc-src-tab-acts-natively t)
-  (setq org-fontify-quote-and-verse-blocks nil)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-fontify-whole-block-delimiter-line t)
   (setq org-confirm-babel-evaluate nil)
   (setq org-export-with-smart-quotes t)
   (setq org-src-window-setup 'current-window)
@@ -167,7 +168,7 @@ They are build into emacs but installing them manually has the advantage of fast
                                   (3 . (1.2))
                                   (t . (1.1)))
           modus-themes-scale-headings t
-          modus-themes-org-blocks '(gray-background)))
+          modus-themes-org-blocks 'gray-background))
     (load-theme 'modus-vivendi t)
     (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
 #+end_src
@@ -281,6 +282,13 @@ Smex is a nice bottom menu in sync with ido-vertical-mode.
     :init (smex-initialize)
     :bind
     ("M-x" . smex))
+#+end_src
+
+** searching/swiper
+#+begin_src emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind ("C-s" . swiper))
 #+end_src
 
 ** async
