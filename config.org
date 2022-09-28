@@ -1,5 +1,6 @@
 #+TITLE: emacs config
 #+AUTHOR: christian hageloch
+#+OPTIONS: toc:2 
 
 
 This is my configuration for GNU Emacs. This configuration is not minimal but also not overloaded with packages 
