@@ -10,6 +10,62 @@ that I don't.
 [[emacs.png]]
 
 
+* Table of Contents :TOC:
+- [[#package-list][package list]]
+- [[#bootstrap-use-package][bootstrap use-package]]
+- [[#keybinding-to-reload-the-configuration-file][keybinding to reload the configuration file]]
+- [[#basic-settings][basic settings]]
+  - [[#encoding][encoding]]
+  - [[#dialog-and-some-other-stuff][dialog and some other stuff]]
+  - [[#disable-backups-and-auto-save][disable backups and auto-save]]
+  - [[#change-yes-or-no-questions][change yes-or-no questions]]
+  - [[#line-numbers][line numbers]]
+  - [[#text-wrapping][text wrapping]]
+  - [[#follow-symlinks][follow symlinks]]
+- [[#appearance][appearance]]
+  - [[#remove-startup-screen][remove startup screen]]
+  - [[#disable-menus-and-scrollbar][disable menus and scrollbar]]
+  - [[#disable-blinking-cursor][disable blinking cursor]]
+  - [[#beacon-mode][beacon mode]]
+  - [[#font][font]]
+  - [[#org-mode][org-mode]]
+  - [[#theme][theme]]
+- [[#evil-mode][evil-mode]]
+  - [[#undo][undo]]
+  - [[#vim-bindings][vim bindings]]
+  - [[#vim-bindings-everywhere-else][vim bindings everywhere else]]
+  - [[#evil-nerd-commenter][evil-nerd-commenter]]
+- [[#languages][languages]]
+- [[#eye-candy][eye candy]]
+  - [[#doom-modeline][doom-modeline]]
+  - [[#dashboard][dashboard]]
+- [[#ide-features][ide features]]
+  - [[#better-bottom-menu][better bottom menu]]
+  - [[#searchingswiper][searching/swiper]]
+  - [[#async][async]]
+  - [[#projectile][projectile]]
+  - [[#completioncompany][completion/company]]
+  - [[#snippetsyasnippet][snippets/yasnippet]]
+  - [[#better-syntax-highlightingtreesitter][better syntax highlighting/treesitter]]
+  - [[#colored-hex-codesrainbow-mode][colored hex-codes/rainbow-mode]]
+  - [[#useful-file-modulescounselrecentfsudo-edit][useful file modules/counsel+recentf+sudo-edit]]
+  - [[#a-better-terminalvterm][a better terminal/vterm]]
+  - [[#git-integrationmagitgit-gutter][git integration/magit+git-gutter]]
+  - [[#lspeglot][lsp/eglot]]
+- [[#some-other-packages-that-are-nice-to-have][Some other packages that are nice to have]]
+  - [[#music-playeremms][music player/emms]]
+  - [[#presentationsorg-tree-slide][presentations/org-tree-slide]]
+  - [[#pdfpdf-tools][pdf/pdf-tools]]
+- [[#keybindings][keybindings]]
+  - [[#general][general]]
+  - [[#whichkey][whichkey]]
+  - [[#keybings-for-buffers][keybings for buffers]]
+  - [[#keybindgs-for-files][keybindgs for files]]
+  - [[#keybindings-for-managing-splits][keybindings for managing splits]]
+  - [[#keybindings-for-dired][keybindings for dired]]
+  - [[#keybindgs-for-emms][keybindgs for emms]]
+  - [[#keybings-for-compiling][keybings for compiling]]
+
 * package list
 Set melpa and elpa as package archives for installing packages. Most of them are not in elpa so melpa is
 important.
@@ -161,6 +217,10 @@ Org-mode is pretty ugly out of the box. Some modifications are necessary.
   (setq org-src-window-setup 'current-window)
   (setq org-hide-emphasis-markes t)
   (add-hook 'org-mode-hook 'org-indent-mode)
+
+  (use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
 #+end_src
 
 ** theme
