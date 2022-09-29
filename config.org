@@ -320,7 +320,7 @@ Dashboard is a startup screen for emacs instead of the standard one.
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   (setq dashboard-items nil)
   (setq dashboard-center-content t)
-  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-startup-banner 'official)
 #+end_src
 
 
