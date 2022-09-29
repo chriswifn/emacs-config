@@ -384,7 +384,7 @@ Yasnippet is a great snippet engine. It requires yasnippet-snippets to provide s
   (use-package yasnippet
     :ensure t
     :init
-    (yas-global-mode t))
+    (add-hook 'prog-mode-hook 'yas-minor-mode))
 #+end_src
 
 ** better syntax highlighting/treesitter
