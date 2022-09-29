@@ -349,12 +349,6 @@ Smex is a nice bottom menu in sync with ido-vertical-mode.
     :init
     (ido-vertical-mode 1))
   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-
-  (use-package smex
-    :ensure t
-    :init (smex-initialize)
-    :bind
-    ("M-x" . smex))
 #+end_src
 
 ** searching/swiper
@@ -436,6 +430,7 @@ sudo-edit: edit files with sudo priviliges
     :ensure t
     :bind
     ("M-x" . counsel-M-x))
+
   (use-package recentf
     :ensure nil
     :config
@@ -443,6 +438,7 @@ sudo-edit: edit files with sudo priviliges
     (setq recentf-filename-handlers
           (append '(abbreviate-file-name) recentf-filename-handlers))
     (recentf-mode))
+
   (use-package sudo-edit)
 #+end_src
 
