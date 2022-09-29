@@ -318,6 +318,7 @@ The doom-mode is a minimal and fast modeline for emacs.
     :ensure t
     :init
     (doom-modeline-mode 1))
+  (display-battery-mode 1)
 #+end_src
 
 ** dashboard
