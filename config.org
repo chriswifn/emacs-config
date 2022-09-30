@@ -242,6 +242,7 @@ They are build into emacs but installing them manually has the advantage of fast
           modus-themes-org-blocks 'gray-background))
     (load-theme 'modus-vivendi t)
     (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+  (display-battery-mode 1)
 #+end_src
 
 
