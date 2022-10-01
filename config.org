@@ -25,7 +25,7 @@ that I don't.
 - [[#appearance][appearance]]
   - [[#remove-startup-screen][remove startup screen]]
   - [[#disable-menus-and-scrollbar][disable menus and scrollbar]]
-  - [[#function-to-display-time-and-date][function to display time and date]]
+  - [[#some-functions-to-display-some-output-in-minibuffer][some functions to display some output in minibuffer]]
   - [[#disable-blinking-cursor][disable blinking cursor]]
   - [[#beacon-mode][beacon mode]]
   - [[#font][font]]
@@ -177,12 +177,19 @@ I want emacs to be a blank window without any window decorations.
   (scroll-bar-mode -1)
 #+end_src
 
-** function to display time and date
+** some functions to display some output in minibuffer 
 #+begin_src emacs-lisp
   (defun display-current-time ()
     (interactive)
     (message (format-time-string "%Y-%m-%d %H:%M:%S")))
   (define-key global-map (kbd "<f1>") #'display-current-time)
+#+end_src
+
+#+begin_src emacs-lisp
+  (defun display-wifi-status ()
+    (interactive)
+    (message (shell-command-to-string "sb-internet-emacs")))
+  (define-key global-map (kbd "<f2>") #'display-wifi-status)
 #+end_src
 
 ** disable blinking cursor
