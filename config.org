@@ -182,6 +182,7 @@ I want emacs to be a blank window without any window decorations.
   (defun display-current-time ()
     (interactive)
     (message (format-time-string "%Y-%m-%d %H:%M:%S")))
+  (define-key global-map (kbd "<f1>") #'display-current-time)
 #+end_src
 
 ** disable blinking cursor
