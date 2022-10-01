@@ -25,6 +25,7 @@ that I don't.
 - [[#appearance][appearance]]
   - [[#remove-startup-screen][remove startup screen]]
   - [[#disable-menus-and-scrollbar][disable menus and scrollbar]]
+  - [[#function-to-display-time-and-date][function to display time and date]]
   - [[#disable-blinking-cursor][disable blinking cursor]]
   - [[#beacon-mode][beacon mode]]
   - [[#font][font]]
@@ -174,6 +175,13 @@ I want emacs to be a blank window without any window decorations.
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
+#+end_src
+
+** function to display time and date
+#+begin_src emacs-lisp
+  (defun display-current-time ()
+    (interactive)
+    (message (format-time-string "%Y-%m-%d %H:%M:%S")))
 #+end_src
 
 ** disable blinking cursor
