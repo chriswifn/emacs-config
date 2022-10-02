@@ -322,6 +322,8 @@ These are some language-modes that are not installed by default and I often use.
     (add-hook 'html-mode-hook #'emmet-mode))
   (use-package php-mode
     :ensure t)
+  (use-package haskell-mode
+    :ensure t)
 #+end_src
 
 * eye candy
