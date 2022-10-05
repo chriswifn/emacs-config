@@ -236,6 +236,11 @@ Org-mode is pretty ugly out of the box. Some modifications are necessary.
   (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+  (use-package org-auto-tangle
+    :defer t
+    :hook (org-mode . org-auto-tangle-mode)
+    (setq org-auto-tangle-default t))
 #+end_src
 
 ** theme
