@@ -236,8 +236,6 @@ Org-mode is pretty ugly out of the box. Some modifications are necessary.
   (use-package toc-org
     :commands toc-org-enable
     :init (add-hook 'org-mode-hook 'toc-org-enable))
-
-  (add-hook 'haskell-mode-hook #'(lambda () (eldoc-mode -1)))
 #+end_src
 
 ** theme
