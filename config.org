@@ -65,6 +65,7 @@ that I don't.
   - [[#keybindings-for-dired][keybindings for dired]]
   - [[#keybindgs-for-emms][keybindgs for emms]]
   - [[#keybings-for-compiling][keybings for compiling]]
+  - [[#matlab][matlab]]
 
 * package list
 Set melpa and elpa as package archives for installing packages. Most of them are not in elpa so melpa is
@@ -688,4 +689,17 @@ Keybindings within dired
     :states 'normal
     :kaymaps 'override
     "c c" '(compile :whichkey "Compile"))
+#+end_src
+
+** matlab
+#+begin_src emacs-lisp
+  (defun open-matlab-shell ()
+    (interactive)
+    (split-window-below 30)
+    (other-window 1)
+    (matlab-shell))
+  (my-leader-def
+    :states 'normal
+    :keymaps 'override
+    "c m" '(open-matlab-shell :whichkey "Open Matlab shell"))
 #+end_src
