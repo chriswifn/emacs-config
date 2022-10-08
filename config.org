@@ -324,6 +324,12 @@ These are some language-modes that are not installed by default and I often use.
     :ensure t)
   (use-package haskell-mode
     :ensure t)
+  (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+  (add-to-list
+   'auto-mode-alist
+   '("\\.m$" . matlab-mode))
+  (setq matlab-indent-function t)
+  (setq matlab-shell-command "matlab")
 #+end_src
 
 * eye candy
