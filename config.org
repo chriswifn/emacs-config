@@ -26,7 +26,7 @@ that I don't.
   - [[#remove-startup-screen][remove startup screen]]
   - [[#disable-menus-and-scrollbar][disable menus and scrollbar]]
   - [[#some-functions-to-display-some-output-in-minibuffer][some functions to display some output in minibuffer]]
-  - [[#disable-blinking-cursor][disable blinking cursor]]
+  - [[#cursor][cursor]]
   - [[#beacon-mode][beacon mode]]
   - [[#font][font]]
   - [[#org-mode][org-mode]]
@@ -193,10 +193,11 @@ I want emacs to be a blank window without any window decorations.
   (define-key global-map (kbd "<f2>") #'display-wifi-status)
 #+end_src
 
-** disable blinking cursor
+** cursor
 The blinking cursor is distracting, so I turn it off.
 #+begin_src emacs-lisp
   (blink-cursor-mode -1)
+  (hl-line-mode)
 #+end_src
 
 ** beacon mode
