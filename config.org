@@ -197,7 +197,7 @@ I want emacs to be a blank window without any window decorations.
 The blinking cursor is distracting, so I turn it off.
 #+begin_src emacs-lisp
   (blink-cursor-mode -1)
-  (hl-line-mode)
+  (global-hl-line-mode 1)
 #+end_src
 
 ** beacon mode
