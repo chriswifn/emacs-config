@@ -146,6 +146,7 @@ I use relative numbers for Vim movements. Line numbers should only be visible in
 #+begin_src emacs-lisp
   (setq display-line-numbers-type 'relative)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (add-hook 'prog-mode-hook 'hl-line-mode)
 #+end_src
 
 ** text wrapping
@@ -197,7 +198,6 @@ I want emacs to be a blank window without any window decorations.
 The blinking cursor is distracting, so I turn it off.
 #+begin_src emacs-lisp
   (blink-cursor-mode -1)
-  (global-hl-line-mode 1)
 #+end_src
 
 ** beacon mode
