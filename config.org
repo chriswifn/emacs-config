@@ -1,75 +1,71 @@
 #+TITLE: emacs config
-#+AUTHOR: christian hageloch
-#+OPTIONS: toc:2 
+#+AUTHOR: Christian Hageloch
+#+OPTIONS: toc:2
 
 
-This is my configuration for GNU Emacs. This configuration is not minimal but also not overloaded with packages 
-that I don't use. I try to keep it as minimal as possible by only installing packages that I use and removing those
-that I don't.
+* Table Of Contents :toc:
+- [[#package-list][Package list]]
+- [[#bootstrap-use-package][Bootstrap use-package]]
+- [[#keybinding-to-reload-the-configuration-file][Keybinding to reload the configuration file]]
+- [[#basic-settings][Basic settings]]
+  - [[#encoding][Encoding]]
+  - [[#dialog][Dialog]]
+  - [[#electric-pairs][Electric pairs]]
+  - [[#disable-backups-and-auto-save][Disable backups and auto-save]]
+  - [[#change-yes-or-no-to-y-or-n][Change yes-or-no to y-or-n]]
+  - [[#line-numbers][Line numbers]]
+  - [[#text-wrapping][Text wrapping]]
+  - [[#follow-symlinks][Follow symlinks]]
+- [[#appearance][Appearance]]
+  - [[#remove-startup-screen][Remove startup screen]]
+  - [[#fringes][Fringes]]
+  - [[#disable-menus-and-scrollbar][Disable menus and scrollbar]]
+  - [[#disable-blinking-cursor][Disable blinking cursor]]
+  - [[#font][Font]]
+  - [[#theme][Theme]]
+  - [[#mode-line][Mode-line]]
+  - [[#beacon][Beacon]]
+  - [[#org-mode][Org mode]]
+- [[#evil-vim][Evil (Vim)]]
+  - [[#undo][Undo]]
+  - [[#evil-mode][Evil mode]]
+  - [[#evil-collection][Evil-Collection]]
+  - [[#evil-nerd-commenter][Evil Nerd Commenter]]
+- [[#languages][Languages]]
+- [[#eye-candy][Eye candy]]
+- [[#ide-features][IDE Features]]
+  - [[#better-menu][Better menu]]
+  - [[#searching--swiper][Searching / Swiper]]
+  - [[#ripgrep][Ripgrep]]
+  - [[#async][Async]]
+  - [[#vterm][VTerm]]
+  - [[#projectile][Projectile]]
+  - [[#completion][Completion]]
+  - [[#tree-sitter][Tree-sitter]]
+  - [[#rainbow-mode][Rainbow mode]]
+  - [[#counsel][Counsel]]
+  - [[#recentf][Recentf]]
+  - [[#sudo-edit][Sudo Edit]]
+  - [[#magit][Magit]]
+  - [[#eglot][Eglot]]
+- [[#some-other-useful-packages][Some other useful packages]]
+  - [[#emms][EMMS]]
+  - [[#org-tree-slide][Org-tree-slide]]
+  - [[#pdf-tools][Pdf-Tools]]
+- [[#keybindings][Keybindings]]
+  - [[#general][General]]
+  - [[#whichkey][Whichkey]]
+  - [[#keybindings-for-buffers][Keybindings for buffers]]
+  - [[#keybindings-for-files][Keybindings for files]]
+  - [[#keybindings-for-managing-splits][Keybindings for managing splits]]
+  - [[#keybindings-for-dired][Keybindings for Dired]]
+  - [[#keybindings-within-dired][Keybindings within Dired]]
+  - [[#keybings-for-emms][Keybings for EMMS]]
+  - [[#keybindings-for-compiling][Keybindings for Compiling]]
+  - [[#keybindings-for-matlab][Keybindings for Matlab]]
+  - [[#keybindings-for-vterm][Keybindings for vterm]]
 
-[[emacs.png]]
-
-
-* Table of Contents :TOC:
-- [[#package-list][package list]]
-- [[#bootstrap-use-package][bootstrap use-package]]
-- [[#keybinding-to-reload-the-configuration-file][keybinding to reload the configuration file]]
-- [[#basic-settings][basic settings]]
-  - [[#encoding][encoding]]
-  - [[#dialog-and-some-other-stuff][dialog and some other stuff]]
-  - [[#disable-backups-and-auto-save][disable backups and auto-save]]
-  - [[#change-yes-or-no-questions][change yes-or-no questions]]
-  - [[#line-numbers][line numbers]]
-  - [[#text-wrapping][text wrapping]]
-  - [[#follow-symlinks][follow symlinks]]
-- [[#appearance][appearance]]
-  - [[#remove-startup-screen][remove startup screen]]
-  - [[#disable-menus-and-scrollbar][disable menus and scrollbar]]
-  - [[#some-functions-to-display-some-output-in-minibuffer][some functions to display some output in minibuffer]]
-  - [[#cursor][cursor]]
-  - [[#beacon-mode][beacon mode]]
-  - [[#font][font]]
-  - [[#org-mode][org-mode]]
-  - [[#theme][theme]]
-- [[#evil-mode][evil-mode]]
-  - [[#undo][undo]]
-  - [[#vim-bindings][vim bindings]]
-  - [[#vim-bindings-everywhere-else][vim bindings everywhere else]]
-  - [[#evil-nerd-commenter][evil-nerd-commenter]]
-- [[#languages][languages]]
-- [[#eye-candy][eye candy]]
-  - [[#dashboard][dashboard]]
-- [[#ide-features][ide features]]
-  - [[#better-bottom-menu][better bottom menu]]
-  - [[#searchingswiper][searching/swiper]]
-  - [[#async][async]]
-  - [[#projectile][projectile]]
-  - [[#completioncompany][completion/company]]
-  - [[#snippetsyasnippet][snippets/yasnippet]]
-  - [[#better-syntax-highlightingtreesitter][better syntax highlighting/treesitter]]
-  - [[#colored-hex-codesrainbow-mode][colored hex-codes/rainbow-mode]]
-  - [[#useful-file-modulescounselrecentfsudo-edit][useful file modules/counsel+recentf+sudo-edit]]
-  - [[#a-better-terminalvterm][a better terminal/vterm]]
-  - [[#git-integrationmagitgit-gutter][git integration/magit+git-gutter]]
-  - [[#lspeglot][lsp/eglot]]
-- [[#some-other-packages-that-are-nice-to-have][Some other packages that are nice to have]]
-  - [[#music-playeremms][music player/emms]]
-  - [[#presentationsorg-tree-slide][presentations/org-tree-slide]]
-  - [[#pdfpdf-tools][pdf/pdf-tools]]
-- [[#keybindings][keybindings]]
-  - [[#general][general]]
-  - [[#whichkey][whichkey]]
-  - [[#keybings-for-buffers][keybings for buffers]]
-  - [[#keybindgs-for-files][keybindgs for files]]
-  - [[#keybindings-for-managing-splits][keybindings for managing splits]]
-  - [[#keybindings-for-dired][keybindings for dired]]
-  - [[#keybindgs-for-emms][keybindgs for emms]]
-  - [[#keybings-for-compiling][keybings for compiling]]
-  - [[#matlab][matlab]]
-
-* package list
-Set melpa and elpa as package archives for installing packages. Most of them are not in elpa so melpa is
-important.
+* Package list
 #+begin_src emacs-lisp
   (setq package-archives
 	'(("melpa" . "https://melpa.org/packages/")
@@ -77,8 +73,7 @@ important.
 #+end_src
 
 
-* bootstrap use-package
-I use use-package for easy package-management and installation.
+* Bootstrap use-package
 #+begin_src emacs-lisp
   (package-initialize)
   (setq use-package-always-ensure t)
@@ -89,9 +84,7 @@ I use use-package for easy package-management and installation.
 #+end_src
 
 
-* keybinding to reload the configuration file
-Because I am writing this configuration in org-mode I am not in a .el file when I'm changing something.
-A keybinding to run org-babel-load-file is solving that issue.
+* Keybinding to reload the configuration file
 #+begin_src emacs-lisp
   (defun config-reload ()
     (interactive)
@@ -100,11 +93,9 @@ A keybinding to run org-babel-load-file is solving that issue.
 #+end_src
 
 
-* basic settings
-Some basic settings for a better experience.
+* Basic settings
 
-** encoding
-These are some basic settings for encoding
+** Encoding
 #+begin_src emacs-lisp
   (setq locale-encoding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
@@ -113,106 +104,77 @@ These are some basic settings for encoding
   (prefer-coding-system 'utf-8)
 #+end_src
 
-** dialog and some other stuff
-Dialog is annoying and pair completion is nice to have.
+** Dialog
 #+begin_src emacs-lisp
   (setq use-dialog-box nil)
   (setq use-file-dialog nil)
-  (setq electric-pair-pairs '(
-                              (?\{ . ?\})
-                              (?\( . ?\))
-                              (?\[ . ?\])
-                              (?\" . ?\")
-                              ))
-  (electric-pair-mode t)
-  (column-number-mode 1)
 #+end_src
 
-** disable backups and auto-save
-Disable backups and auto-save because they get in the way.
+** Electric pairs
+#+begin_src emacs-lisp
+  (setq electric-pair-pairs '(
+			    (?\{ . ?\})
+			    (?\( . ?\))
+			    (?\[ . ?\])
+			    (?\" . ?\")
+			    ))
+  (electric-pair-mode t)
+#+end_src
+
+** Disable backups and auto-save
 #+begin_src emacs-lisp
   (setq make-backup-files nil)
   (setq auto-save-default nil)
 #+end_src
 
-** change yes-or-no questions
-Changing yes-or-no questions to y-or-no questions avoids mental overhead.
+** Change yes-or-no to y-or-n
 #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-** line numbers
-I use relative numbers for Vim movements. Line numbers should only be visible in a programming environment.
+** Line numbers
 #+begin_src emacs-lisp
   (setq display-line-numbers-type 'relative)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'prog-mode-hook 'hl-line-mode)
 #+end_src
 
-** text wrapping
-Text wrapping is so much better than scrolling to the end of a line
+** Text wrapping
 #+begin_src emacs-lisp
   (add-hook 'text-mode-hook 'visual-line-mode)
 #+end_src
 
-** follow symlinks
-I use symlinks to manage my dotfiles and some other git repositories. Following symlinks is nice for that
+** Follow symlinks
 #+begin_src emacs-lisp
   (setq find-file-visit-truename t)
 #+end_src
 
 
-* appearance
-It is important for the editor window to look good (that includes the theme and window decorations)
+* Appearance
 
-** remove startup screen
-The startup screen is pointless because I am going to install dashboard later on.
+** Remove startup screen
 #+begin_src emacs-lisp
   (setq inhibit-startup-message t)
 #+end_src
 
-** disable menus and scrollbar
-I want emacs to be a blank window without any window decorations.
+** Fringes
+#+begin_src emacs-lisp
+  (set-fringe-mode 0) 
+#+end_src
+
+** Disable menus and scrollbar
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
 #+end_src
 
-** some functions to display some output in minibuffer 
-#+begin_src emacs-lisp
-  (defun display-current-time ()
-    (interactive)
-    (message (format-time-string "%Y-%m-%d %H:%M:%S")))
-  (define-key global-map (kbd "<f1>") #'display-current-time)
-#+end_src
-
-#+begin_src emacs-lisp
-  (defun display-wifi-status ()
-    (interactive)
-    (message (shell-command-to-string "sb-internet-emacs")))
-  (define-key global-map (kbd "<f2>") #'display-wifi-status)
-#+end_src
-
-** cursor
-The blinking cursor is distracting, so I turn it off.
+** Disable blinking cursor
 #+begin_src emacs-lisp
   (blink-cursor-mode -1)
 #+end_src
 
-** beacon mode
-Beacon mode helps to keep track of the cursor
-#+begin_src emacs-lisp
-  (use-package beacon
-    :ensure t
-    :config
-    (beacon-mode 1))
-#+end_src
-
-** font
-The font has to be readable and easy on the eyes. My choice is the Monoid font.
-I prefer a bigger font because it is easier on the eyes.
-The second part is for emacs-client.
+** Font
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
 		      :font "Monoid"
@@ -221,34 +183,13 @@ The second part is for emacs-client.
   (add-to-list 'default-frame-alist '(font . "Monoid-13"))
 #+end_src
 
-** org-mode
-Org-mode is pretty ugly out of the box. Some modifications are necessary.
-#+begin_src emacs-lisp
-  (setq org-ellipsis " ")
-  (setq orc-src-fontify-natively t)
-  (setq orc-src-tab-acts-natively t)
-  (setq org-fontify-quote-and-verse-blocks t)
-  (setq org-fontify-whole-block-delimiter-line t)
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-export-with-smart-quotes t)
-  (setq org-src-window-setup 'current-window)
-  (setq org-hide-emphasis-markes t)
-  (add-hook 'org-mode-hook 'org-indent-mode)
-
-  (use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
-#+end_src
-
-** theme
-The modus-themes are a great choice for a dark and bright theme while maintaining readability.
-They are build into emacs but installing them manually has the advantage of faster updates.
+** Theme
 #+begin_src emacs-lisp
   (use-package modus-themes
     :ensure t
     :init
     (setq modus-themes-bold-constructs t
-          modus-themes-italic-constructs nil
+          modus-themes-italic-construct nil
           modus-themes-subtle-line-numbers nil
           modus-themes-mode-line '(borderless (padding . 4))
           modus-themes-syntax '(yellow-comments faint green-strings)
@@ -257,25 +198,62 @@ They are build into emacs but installing them manually has the advantage of fast
                                   (3 . (1.2 overline))
                                   (t . (1.1 overline)))
           modus-themes-scale-headings t))
-          ;; modus-themes-org-blocks 'gray-background))
-    (load-theme 'modus-vivendi t)
-    (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
-  (display-battery-mode 1)
+  (load-theme 'modus-vivendi t)
+  (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
 #+end_src
 
-
-* evil-mode
-Vim motions are the superior way of editing text.
-
-** undo
-I need an undo package for "u" to work
+** Mode-line
 #+begin_src emacs-lisp
-    (use-package undo-fu
-      :ensure t)
+  (display-battery-mode 1)
+  (column-number-mode 1)
+
+  (defun display-current-time ()
+    (interactive)
+    (message (format-time-string "%Y-%m-%d %H:%M:%S")))
+  (define-key global-map (kbd "<f1>") #'display-current-time)
+
+  (defun display-wifi-status ()
+    (interactive)
+    (message (shell-command-to-string "sb-internet-emacs")))
+  (define-key global-map (kbd "<f2>") #'display-wifi-status)
 #+end_src
 
-** vim bindings
-Vim motions are the superior way of editing text.
+** Beacon
+#+begin_src emacs-lisp
+  (use-package beacon
+    :ensure t
+    :init
+    (beacon-mode 1))
+#+end_src
+
+** Org mode
+#+begin_src emacs-lisp
+  (setq org-ellipsis " ")
+  (setq orc-src-fontify-natively t)
+  (setq src-tab-acts-natively t)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-fontify-whole-block-delimiter-line t)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-with-smart-quotes t)
+  (setq org-src-window-setup 'current-window)
+  (setq org-hide-emphasis-markers t)
+  (add-hook 'org-mode-hook 'org-indent-mode)
+
+  (use-package toc-org
+    :commands toc-org-enable
+    :init (add-hook 'org-mode-hook 'toc-org-enable))
+#+end_src
+
+
+* Evil (Vim)
+
+** Undo
+#+begin_src emacs-lisp
+  (use-package undo-fu
+    :ensure t)
+#+end_src
+
+** Evil mode
 #+begin_src emacs-lisp
   (use-package evil
     :demand t
@@ -289,8 +267,7 @@ Vim motions are the superior way of editing text.
     (evil-mode 1))
 #+end_src
 
-** vim bindings everywhere else
-Vim motions should be available in every mode
+** Evil-Collection
 #+begin_src emacs-lisp
   (use-package evil-collection
     :after evil
@@ -299,8 +276,7 @@ Vim motions should be available in every mode
     (evil-collection-init))
 #+end_src
 
-** evil-nerd-commenter
-Commenting lines with one keybinding is nice to have
+** Evil Nerd Commenter
 #+begin_src emacs-lisp
   (use-package evil-nerd-commenter
     :ensure t
@@ -309,8 +285,7 @@ Commenting lines with one keybinding is nice to have
 #+end_src
 
 
-* languages
-These are some language-modes that are not installed by default and I often use.
+* Languages
 #+begin_src emacs-lisp
   (use-package markdown-mode
     :ensure t)
@@ -334,11 +309,8 @@ These are some language-modes that are not installed by default and I often use.
   (setq matlab-shell-command "matlab")
 #+end_src
 
-* eye candy
-This is a section for some nice plugins for the eyes that are pretty much pointless.
 
-** dashboard
-Dashboard is a startup screen for emacs instead of the standard one.
+* Eye candy
 #+begin_src emacs-lisp
   (use-package dashboard
     :ensure t
@@ -351,11 +323,9 @@ Dashboard is a startup screen for emacs instead of the standard one.
 #+end_src
 
 
-* ide features
-These is a list of packages that provide a better editing experience.
+* IDE Features
 
-** better bottom menu
-Smex is a nice bottom menu in sync with ido-vertical-mode.
+** Better menu
 #+begin_src emacs-lisp
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
@@ -367,15 +337,22 @@ Smex is a nice bottom menu in sync with ido-vertical-mode.
   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
 #+end_src
 
-** searching/swiper
+** Searching / Swiper
 #+begin_src emacs-lisp
   (use-package swiper
     :ensure t
     :bind ("C-s" . swiper))
 #+end_src
 
-** async
-I want asynchronous jobs everywhere I can.
+** Ripgrep
+#+begin_src emacs-lisp
+  (use-package rg
+    :ensure t
+    :init
+    (rg-enable-default-bindings))
+#+end_src
+
+** Async
 #+begin_src emacs-lisp
   (use-package async
     :ensure t
@@ -383,8 +360,27 @@ I want asynchronous jobs everywhere I can.
     (dired-async-mode 1))
 #+end_src
 
-** projectile
-Projectile is propably the most used emacs package.
+** VTerm
+#+begin_src emacs-lisp
+  (use-package vterm
+    :ensure t
+    :init
+    (global-set-key (kbd "<s-return>") 'vterm)
+    (setq vterm-timer-delay 0.01))
+
+  (use-package vterm-toggle
+    :config
+    ;; show vterm buffer in side window
+    (setq vterm-toggle-fullscreen-p nil)
+    (add-to-list 'display-buffer-alist
+                 '("\\*vterm(.*)\\*"
+                   (display-buffer-reuse-window display-buffer-in-side-window)
+                   (side . bottom)
+                   (dedicated . t)
+                   (window-height . 0.3))))
+#+end_src
+
+** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
     :ensure t
@@ -393,8 +389,8 @@ Projectile is propably the most used emacs package.
     (add-to-list 'projectile-globally-ignored-modes "org-mode"))
 #+end_src
 
-** completion/company
-I use company as a completion engine
+** Completion
+*** Company
 #+begin_src emacs-lisp
   (use-package company
     :ensure t
@@ -402,9 +398,7 @@ I use company as a completion engine
     (setq company-idle-delay 0)
     (setq company-minium-prefix-length 3))
 #+end_src
-
-** snippets/yasnippet
-Yasnippet is a great snippet engine. It requires yasnippet-snippets to provide some useful snippets for many languages.
+*** Yasnippet
 #+begin_src emacs-lisp
   (use-package yasnippet-snippets
     :ensure t)
@@ -414,38 +408,49 @@ Yasnippet is a great snippet engine. It requires yasnippet-snippets to provide s
     (add-hook 'prog-mode-hook 'yas-minor-mode))
 #+end_src
 
-** better syntax highlighting/treesitter
-Treesitter is able to provide better syntax highlighting than the builtin one.
+** Tree-sitter
 #+begin_src emacs-lisp
-  (use-package tree-sitter-langs
-    :ensure t)
+  (use-package tree-sitter-langs)
+
   (use-package tree-sitter
-    :ensure t
+    :defer t
     :init
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+    (add-hook 'prog-mode-hook #'tree-sitter-mode)
     :custom
     (custom-set-faces
      '(italic ((t nil)))
-     '(tree-sitter-hl-face:property ((t (:inherit font-lock-constant-face))))))
+     '(tree-sitter-hl-face:property ((t (:inherit font-lock-constant-face)))))
+    :config
+    (setq tree-sitter-debug-jump-buttons t
+          tree-sitter-debug-highlight-jump-region t))
+
+  (use-package evil-textobj-tree-sitter
+    :ensure t
+    :init
+    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+    (define-key evil-outer-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "comment.outer"))
+    (define-key evil-outer-text-objects-map "C" (evil-textobj-tree-sitter-get-textobj "class.outer"))
+    (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 #+end_src
 
-** colored hex-codes/rainbow-mode
-Sometimes it is useful to see the actual color of a hex code or some other color code.
+** Rainbow mode
 #+begin_src emacs-lisp
   (use-package rainbow-mode
     :ensure t)
 #+end_src
 
-** useful file modules/counsel+recentf+sudo-edit
-Counsel: nice bottom menu
-recentf: visit recently edited files
-sudo-edit: edit files with sudo priviliges
+** Counsel 
 #+begin_src emacs-lisp
   (use-package counsel
     :ensure t
     :bind
     ("M-x" . counsel-M-x))
+#+end_src
 
+** Recentf
+#+begin_src emacs-lisp
   (use-package recentf
     :ensure nil
     :config
@@ -453,23 +458,15 @@ sudo-edit: edit files with sudo priviliges
     (setq recentf-filename-handlers
           (append '(abbreviate-file-name) recentf-filename-handlers))
     (recentf-mode))
-
-  (use-package sudo-edit)
 #+end_src
 
-** a better terminal/vterm
-A terminal is essential in any text editor. It has to be fast and as close to a real terminal as possible.
+** Sudo Edit
 #+begin_src emacs-lisp
-  (use-package vterm
-    :ensure t
-    :init
-    (global-set-key (kbd "<s-return>") 'vterm)
-    (setq vterm-timer-delay 0.01))
+  (use-package sudo-edit
+    :ensure t)
 #+end_src
 
-** git integration/magit+git-gutter
-Magit is THE KILLER FEATURE of emacs.
-Git-gutter provides visual indicators of changes inside a git directory/file.
+** Magit
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t
@@ -483,30 +480,18 @@ Git-gutter provides visual indicators of changes inside a git directory/file.
     :bind
     ("C-x g" . magit-status)
     ("C-x C-g" . magit-list-repositories))
-
-  (use-package git-gutter
-    :ensure t
-    :hook (prog-mode . git-gutter-mode) (org-mode . git-gutter-mode)
-    :config
-    (setq git-gutter:update-interval 0.02))
-
-  (use-package git-gutter-fringe
-    :ensure t)
 #+end_src
 
-** lsp/eglot
-Eglot is a simple and fast implementation for lsp inside emacs. The individual lsp-servers have to be installed manually but work out of the box.
+** Eglot
 #+begin_src emacs-lisp
   (use-package eglot
     :ensure t)
 #+end_src
 
 
-* Some other packages that are nice to have
-This is a list of packages that are nice to have.
+* Some other useful packages
 
-** music player/emms
-Emms is a fantastic music player. The music player should be part of the editor for an alround great experience.
+** EMMS
 #+begin_src emacs-lisp
   (use-package emms
     :ensure t)
@@ -521,8 +506,7 @@ Emms is a fantastic music player. The music player should be part of the editor 
         emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
 #+end_src
 
-** presentations/org-tree-slide
-Sometimes I want to be able to give a presentation in org-mode.
+** Org-tree-slide
 #+begin_src emacs-lisp
   (use-package org-tree-slide
     :ensure t
@@ -530,8 +514,7 @@ Sometimes I want to be able to give a presentation in org-mode.
     (org-image-actual-width nil))
 #+end_src
 
-** pdf/pdf-tools
-It is nice to be able to view pdfs inside your text editor.
+** Pdf-Tools
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :pin manual
@@ -551,11 +534,9 @@ It is nice to be able to view pdfs inside your text editor.
 #+end_src
 
 
-* keybindings
-These are my custom keybindings.
+* Keybindings
 
-** general
-General is a plugin to easily set keybindings using a leader key.
+** General
 #+begin_src emacs-lisp
   (use-package general
     :ensure t
@@ -565,8 +546,7 @@ General is a plugin to easily set keybindings using a leader key.
                           :prefix "SPC")
 #+end_src
 
-** whichkey
-Whichkey is a package to show possible keybindings in a mini-buffer.
+** Whichkey
 #+begin_src emacs-lisp
   (use-package which-key
     :ensure t
@@ -574,7 +554,7 @@ Whichkey is a package to show possible keybindings in a mini-buffer.
     (which-key-mode))
 #+end_src
 
-** keybings for buffers
+** Keybindings for buffers
 #+begin_src emacs-lisp
   (my-leader-def
     :states 'normal
@@ -590,7 +570,7 @@ Whichkey is a package to show possible keybindings in a mini-buffer.
     "b K"   '(kill-buffer :which-key "Kill buffer"))
 #+end_src
 
-** keybindgs for files
+** Keybindings for files
 #+begin_src emacs-lisp
   (my-leader-def
     :states '(normal visual)
@@ -608,7 +588,7 @@ Whichkey is a package to show possible keybindings in a mini-buffer.
     "f U"   '(sudo-edit :which-key "Sudo edit file"))
 #+end_src
 
-** keybindings for managing splits
+** Keybindings for managing splits
 #+begin_src emacs-lisp
   (my-leader-def
     :states 'normal
@@ -628,8 +608,7 @@ Whichkey is a package to show possible keybindings in a mini-buffer.
     "w <right>" '(winner-redo :which-key "Winner redo"))
 #+end_src
 
-** keybindings for dired
-Keybindings to open dired
+** Keybindings for Dired
 #+begin_src emacs-lisp
   (my-leader-def
     :states 'normal
@@ -638,7 +617,7 @@ Keybindings to open dired
     "d j" '(dired-jump :whichkey "Jump to current directory in dired"))
 #+end_src
 
-Keybindings within dired
+** Keybindings within Dired
 #+begin_src emacs-lisp
   (evil-define-key 'normal dired-mode-map
     (kbd "M-RET") 'dired-display-file
@@ -669,7 +648,7 @@ Keybindings within dired
     (kbd "; e") 'epa-dired-do-encrypt)
 #+end_src
 
-** keybindgs for emms
+** Keybings for EMMS
 #+begin_src emacs-lisp
   (my-leader-def
     :states 'normal
@@ -684,7 +663,7 @@ Keybindings within dired
     "m h" '(emms-seek-backward :whichkey "EMMS go 10s backward"))
 #+end_src
 
-** keybings for compiling
+** Keybindings for Compiling
 #+begin_src emacs-lisp
   (my-leader-def
     :states 'normal
@@ -692,7 +671,7 @@ Keybindings within dired
     "c c" '(compile :whichkey "Compile"))
 #+end_src
 
-** matlab
+** Keybindings for Matlab
 #+begin_src emacs-lisp
   (defun open-matlab-shell ()
     (interactive)
@@ -703,4 +682,13 @@ Keybindings within dired
     :states 'normal
     :keymaps 'override
     "c m" '(open-matlab-shell :whichkey "Open Matlab shell"))
+#+end_src
+
+** Keybindings for vterm
+#+begin_src emacs-lisp
+  (my-leader-def
+    :states 'normal
+    :keymaps 'override
+    "o T" '(vterm :whichkey "Vterm")
+    "o t" '(vterm-toggle :whichkey "Vterm-toggle"))
 #+end_src
