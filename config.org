@@ -2,6 +2,7 @@
 #+AUTHOR: Christian Hageloch
 #+OPTIONS: toc:2
 
+[[emacs.png]]
 
 * Table Of Contents :toc:
 - [[#package-list][Package list]]
