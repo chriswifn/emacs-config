@@ -371,7 +371,6 @@
 
   (use-package vterm-toggle
     :config
-    ;; show vterm buffer in side window
     (setq vterm-toggle-fullscreen-p nil)
     (add-to-list 'display-buffer-alist
                  '("\\*vterm(.*)\\*"
