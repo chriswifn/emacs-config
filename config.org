@@ -4,67 +4,6 @@
 
 [[emacs.png]]
 
-* Table Of Contents :toc:
-- [[#package-list][Package list]]
-- [[#bootstrap-use-package][Bootstrap use-package]]
-- [[#keybinding-to-reload-the-configuration-file][Keybinding to reload the configuration file]]
-- [[#basic-settings][Basic settings]]
-  - [[#encoding][Encoding]]
-  - [[#dialog][Dialog]]
-  - [[#electric-pairs][Electric pairs]]
-  - [[#disable-backups-and-auto-save][Disable backups and auto-save]]
-  - [[#change-yes-or-no-to-y-or-n][Change yes-or-no to y-or-n]]
-  - [[#line-numbers][Line numbers]]
-  - [[#text-wrapping][Text wrapping]]
-  - [[#follow-symlinks][Follow symlinks]]
-- [[#appearance][Appearance]]
-  - [[#remove-startup-screen][Remove startup screen]]
-  - [[#fringes][Fringes]]
-  - [[#disable-menus-and-scrollbar][Disable menus and scrollbar]]
-  - [[#disable-blinking-cursor][Disable blinking cursor]]
-  - [[#font][Font]]
-  - [[#theme][Theme]]
-  - [[#mode-line][Mode-line]]
-  - [[#beacon][Beacon]]
-  - [[#org-mode][Org mode]]
-- [[#evil-vim][Evil (Vim)]]
-  - [[#undo][Undo]]
-  - [[#evil-mode][Evil mode]]
-  - [[#evil-collection][Evil-Collection]]
-  - [[#evil-nerd-commenter][Evil Nerd Commenter]]
-- [[#languages][Languages]]
-- [[#eye-candy][Eye candy]]
-- [[#ide-features][IDE Features]]
-  - [[#better-menu][Better menu]]
-  - [[#searching--swiper][Searching / Swiper]]
-  - [[#ripgrep][Ripgrep]]
-  - [[#async][Async]]
-  - [[#vterm][VTerm]]
-  - [[#projectile][Projectile]]
-  - [[#completion][Completion]]
-  - [[#tree-sitter][Tree-sitter]]
-  - [[#rainbow-mode][Rainbow mode]]
-  - [[#counsel][Counsel]]
-  - [[#recentf][Recentf]]
-  - [[#sudo-edit][Sudo Edit]]
-  - [[#magit][Magit]]
-  - [[#eglot][Eglot]]
-- [[#some-other-useful-packages][Some other useful packages]]
-  - [[#emms][EMMS]]
-  - [[#org-tree-slide][Org-tree-slide]]
-  - [[#pdf-tools][Pdf-Tools]]
-- [[#keybindings][Keybindings]]
-  - [[#general][General]]
-  - [[#whichkey][Whichkey]]
-  - [[#keybindings-for-buffers][Keybindings for buffers]]
-  - [[#keybindings-for-files][Keybindings for files]]
-  - [[#keybindings-for-managing-splits][Keybindings for managing splits]]
-  - [[#keybindings-for-dired][Keybindings for Dired]]
-  - [[#keybindings-within-dired][Keybindings within Dired]]
-  - [[#keybings-for-emms][Keybings for EMMS]]
-  - [[#keybindings-for-compiling][Keybindings for Compiling]]
-  - [[#keybindings-for-matlab][Keybindings for Matlab]]
-  - [[#keybindings-for-vterm][Keybindings for vterm]]
 
 * Package list
 #+begin_src emacs-lisp
@@ -239,10 +178,6 @@
   (setq org-src-window-setup 'current-window)
   (setq org-hide-emphasis-markers t)
   (add-hook 'org-mode-hook 'org-indent-mode)
-
-  (use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
 #+end_src
 
 
@@ -416,7 +351,7 @@
     :defer t
     :init
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-    (add-hook 'prog-mode-hook #'tree-sitter-mode)
+    (global-tree-sitter-mode)
     :custom
     (custom-set-faces
      '(italic ((t nil)))
@@ -517,7 +452,6 @@
 ** Pdf-Tools
 #+begin_src emacs-lisp
   (use-package pdf-tools
-    :pin manual
     :config
     (pdf-tools-install)
     (setq-default pdf-view-display-size 'fit-width)
