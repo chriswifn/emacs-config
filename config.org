@@ -132,7 +132,7 @@
     (setq modus-themes-bold-constructs t
           modus-themes-italic-construct nil
           modus-themes-subtle-line-numbers nil
-          modus-themes-mode-line '(borderless (padding . 4))
+          modus-themes-mode-line '(borderless)
           modus-themes-syntax '(yellow-comments faint green-strings)
           modus-themes-org-blocks 'gray-background))
           ;; modus-themes-headings '((1 . (1.4 overline))
@@ -175,7 +175,9 @@
 
   (use-package doom-modeline
     :ensure t
-    :init (doom-modeline-mode 1))
+    :init
+    (setq doom-modeline-height 30)
+    (doom-modeline-mode 1))
 #+end_src
 
 ** Beacon
