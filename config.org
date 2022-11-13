@@ -118,9 +118,9 @@
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
 		      :font "Monoid"
-		      :height 110 
+		      :height 90 
 		      :weight 'Regular)
-  (add-to-list 'default-frame-alist '(font . "Monoid-11"))
+  (add-to-list 'default-frame-alist '(font . "Monoid-9"))
 #+end_src
 
 ** Theme
