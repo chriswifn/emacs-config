@@ -176,8 +176,12 @@
   (use-package doom-modeline
     :ensure t
     :init
-    (setq doom-modeline-height 30)
+    (setq doom-modeline-height 30
+          doom-modeline-icon t)
     (doom-modeline-mode 1))
+
+  (use-package all-the-icons
+    :ensure t)
 #+end_src
 
 ** Beacon
