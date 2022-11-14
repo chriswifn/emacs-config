@@ -175,7 +175,7 @@
   (use-package doom-modeline
     :ensure t
     :init
-    (setq doom-modeline-height 28
+    (setq doom-modeline-height 32
           doom-modeline-icon t)
     (doom-modeline-mode 1))
 
