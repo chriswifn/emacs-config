@@ -131,6 +131,7 @@
     (setq modus-themes-bold-constructs t
           modus-themes-italic-construct nil
           modus-themes-subtle-line-numbers nil
+          ;; modus-themes-mode-line '(borderless (padding . 4))
           modus-themes-mode-line '(borderless)
           modus-themes-syntax '(yellow-comments faint green-strings)
           modus-themes-org-blocks 'gray-background))
@@ -175,9 +176,11 @@
   (use-package doom-modeline
     :ensure t
     :init
-    (setq doom-modeline-height 32
-          doom-modeline-icon t)
-    (doom-modeline-mode 1))
+    (setq doom-modeline-height 26
+          doom-modeline-icon nil
+          doom-modeline-lsp t)
+    (doom-modeline-mode 1)
+    )
 
   (use-package all-the-icons
     :ensure t)
@@ -304,12 +307,10 @@
     :ensure t
     :bind ("C-s" . swiper))
 
-  (use-package anzu
-    :ensure t
-    :init (global-anzu-mode +1))
-
   (use-package evil-anzu
-    :ensure t)
+    :ensure t
+    :init
+    (global-anzu-mode))
 #+end_src
 
 ** Ripgrep
