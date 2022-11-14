@@ -334,7 +334,6 @@
   (use-package vterm
     :ensure t
     :init
-    (global-set-key (kbd "<s-return>") 'vterm)
     (setq vterm-timer-delay 0.01))
 
   (use-package vterm-toggle
