@@ -117,10 +117,9 @@
 ** Font
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-		      :font "Monoid"
-		      :height 90
-		      :weight 'Regular)
-  (add-to-list 'default-frame-alist '(font . "Monoid-9"))
+		      :font "Terminus (TTF)"
+		      :height 120)
+  (add-to-list 'default-frame-alist '(font . "Terminus (TTF)-12"))
 #+end_src
 
 ** Theme
@@ -176,7 +175,7 @@
   (use-package doom-modeline
     :ensure t
     :init
-    (setq doom-modeline-height 24
+    (setq doom-modeline-height 28
           doom-modeline-icon t)
     (doom-modeline-mode 1))
 
