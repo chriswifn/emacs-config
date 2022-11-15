@@ -527,11 +527,20 @@
 
 ** Keybindings for buffers
 #+begin_src emacs-lisp
+  (defun toggle-maximize-buffer () "Maximize buffer"
+         (interactive)
+         (if (= 1 (length (window-list)))
+             (jump-to-register '_) 
+           (progn
+             (window-configuration-to-register '_)
+             (delete-other-windows))))
+
   (my-leader-def
     :states 'normal
     :keymaps 'override
     "b i"   '(ibuffer :whichkey "Ibuffer")
     "b b"   '(counsel-switch-buffer :which-key "Switch Buffers")
+    "b f"   '(toggle-maximize-buffer :which-key "Toggle maximize buffer")
     "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
     "b k"   '(kill-current-buffer :which-key "Kill current buffer")
     "b n"   '(next-buffer :which-key "Next buffer")
