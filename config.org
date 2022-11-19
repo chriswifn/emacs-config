@@ -8,8 +8,8 @@
 * Package list
 #+begin_src emacs-lisp
   (setq package-archives
-	'(("melpa" . "https://melpa.org/packages/")
-	  ("elpa" . "https://elpa.gnu.org/packages/")))
+        '(("melpa" . "https://melpa.org/packages/")
+          ("elpa" . "https://elpa.gnu.org/packages/")))
 #+end_src
 
 
