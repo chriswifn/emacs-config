@@ -138,7 +138,7 @@
           ;;                         (3 . (1.2 overline))
           ;;                         (t . (1.1 overline)))
           ;; modus-themes-scale-headings t))
-  (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+  (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
 #+end_src
 
 *** Doom themes
