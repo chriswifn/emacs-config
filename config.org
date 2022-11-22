@@ -653,7 +653,7 @@
 #+begin_src emacs-lisp
   (defun open-matlab-shell ()
     (interactive)
-    (split-window-below 30)
+    (split-window-below 40)
     (other-window 1)
     (matlab-shell))
   (my-leader-def
