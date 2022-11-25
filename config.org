@@ -599,8 +599,8 @@
 #+begin_src emacs-lisp
   (evil-define-key 'normal dired-mode-map
     (kbd "M-RET") 'dired-display-file
-    ;; (kbd "h") 'dired-up-directory
-    ;; (kbd "l") 'dired-find-file
+    (kbd "<") 'dired-up-directory
+    (kbd ">") 'dired-find-file
     (kbd "m") 'dired-mark
     (kbd "t") 'dired-toggle-marks
     (kbd "u") 'dired-unmark
