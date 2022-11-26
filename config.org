@@ -701,4 +701,3 @@
     "l d" '(flymake-show-buffer-diagnostics :whichkey "show lsp diagnostics")
     "l g" '(lsp-find-declaration :whichkey "goto definition"))
 #+end_src
-lsp-find-declaration
