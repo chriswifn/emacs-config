@@ -477,7 +477,7 @@
     :ensure t
     :hook (python-mode . (lambda ()
                            (require 'lsp-pyright)
-                           (lsp-defered))))
+                           (lsp)))
 #+end_src
 
 
