@@ -477,7 +477,7 @@
     :ensure t
     :hook (python-mode . (lambda ()
                            (require 'lsp-pyright)
-                           (lsp)))
+                           (lsp-deferred))))
 #+end_src
 
 
@@ -691,4 +691,12 @@
     :keymaps 'override
     "o T" '(vterm :whichkey "Vterm")
     "o t" '(vterm-toggle :whichkey "Vterm-toggle"))
+#+end_src
+
+** LSP 
+#+begin_src emacs-lisp
+  (my-leader-def
+    :states 'normal
+    :keymaps 'override
+    "l e" '(flymake-show-diagnostics-buffer :whichkey "show lsp diagnostics"))
 #+end_src
