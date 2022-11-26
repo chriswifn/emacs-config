@@ -698,5 +698,7 @@
   (my-leader-def
     :states 'normal
     :keymaps 'override
-    "l e" '(flymake-show-diagnostics-buffer :whichkey "show lsp diagnostics"))
+    "l d" '(flymake-show-buffer-diagnostics :whichkey "show lsp diagnostics")
+    "l g" '(lsp-find-declaration :whichkey "goto definition"))
 #+end_src
+lsp-find-declaration
