@@ -356,7 +356,8 @@
   (use-package projectile
     :ensure t
     :init
-    (projectile-mode 1)
+    (projectile-mode +1)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-to-list 'projectile-globally-ignored-modes "org-mode"))
 #+end_src
 
@@ -422,6 +423,7 @@
 #+begin_src emacs-lisp
   (use-package smex 
     :ensure t
+    :init (smex-initialize)
     :bind
     ("M-x" . smex))
 #+end_src
@@ -459,10 +461,23 @@
     ("C-x C-g" . magit-list-repositories))
 #+end_src
 
-** Eglot
+** LSP 
 #+begin_src emacs-lisp
-  (use-package eglot
-    :ensure t)
+  (use-package lsp-mode
+    :ensure t
+    :commands (lsp lsp-defered)
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :config
+    (lsp-enable-which-key-integration t))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :ensure t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp-defered))))
 #+end_src
 
 
@@ -560,7 +575,7 @@
   (my-leader-def
     :states '(normal visual)
     :keymaps 'override
-    "."     '(counsel-find-file :which-key "Find file")
+    "."     '(find-file :which-key "Find file")
     "f f"   '(counsel-fzf :whichkey "FZF")
     "f r"   '(counsel-recentf :which-key "Recent files")
     "f s"   '(save-buffer :which-key "Save file")
