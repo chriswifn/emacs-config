@@ -361,6 +361,16 @@
     (add-to-list 'projectile-globally-ignored-modes "org-mode"))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package ibuffer-vc
+    :ensure t
+    :init
+    (add-hook 'ibuffer-hook
+              (lambda ()
+                (ibuffer-vc-set-filter-groups-by-vc-root)
+                (ibuffer-do-sort-by-alphabetic))))
+#+end_src
+
 ** Completion
 *** Company
 #+begin_src emacs-lisp
