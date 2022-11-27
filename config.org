@@ -362,13 +362,21 @@
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package ibuffer-vc
+  ;; (use-package ibuffer-vc
+  ;;   :ensure t
+  ;;   :init
+  ;;   (add-hook 'ibuffer-hook
+  ;;             (lambda ()
+  ;;               (ibuffer-vc-set-filter-groups-by-vc-root)
+  ;;               (ibuffer-do-sort-by-alphabetic))))
+  (use-package ibuffer-projectile
     :ensure t
-    :init
+    :config
     (add-hook 'ibuffer-hook
               (lambda ()
-                (ibuffer-vc-set-filter-groups-by-vc-root)
-                (ibuffer-do-sort-by-alphabetic))))
+                (ibuffer-projectile-set-filter-groups)
+                (unless (eq ibuffer-sorting-mode 'alphabetic)
+                  (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
 ** Completion
