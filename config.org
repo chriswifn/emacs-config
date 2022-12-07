@@ -361,6 +361,7 @@
     (projectile-mode +1)
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-to-list 'projectile-globally-ignored-modes "org-mode"))
+  (setq projectile-indexing-method 'hybrid)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -373,12 +374,22 @@
   ;;               (ibuffer-do-sort-by-alphabetic))))
   (use-package ibuffer-projectile
     :ensure t
-    :config
+    :config 
     (add-hook 'ibuffer-hook
               (lambda ()
                 (ibuffer-projectile-set-filter-groups)
                 (unless (eq ibuffer-sorting-mode 'alphabetic)
                   (ibuffer-do-sort-by-alphabetic)))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package perspective
+    :bind
+    ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
+    :custom
+    (persp-mode-prefix-key (kbd "C-c C-p"))  ; pick your own prefix key here
+    :init
+    (persp-mode))
 #+end_src
 
 ** Completion
@@ -579,6 +590,7 @@
     :states 'normal
     :keymaps 'override
     "b i"   '(ibuffer :whichkey "Ibuffer")
+    "b I"   '(persp-ibuffer :whichkey "Ibuffer-projectile")
     "b b"   '(counsel-switch-buffer :which-key "Switch Buffers")
     "b f"   '(toggle-maximize-buffer :which-key "Toggle maximize buffer")
     "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
