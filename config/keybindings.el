@@ -36,8 +36,8 @@
 (my-leader-def
   :states 'normal
   :keymaps 'override
-  "b i"   '(ibuffer :whichkey "Ibuffer")
-  "b I"   '(persp-ibuffer :whichkey "Ibuffer-projectile")
+  "b i"   '(persp-ibuffer :whichkey "Ibuffer perspective")
+  "b I"   '(ibuffer :whichkey "Ibuffer")
   "b b"   '(counsel-switch-buffer :which-key "Switch Buffers")
   "b f"   '(toggle-maximize-buffer :which-key "Toggle maximize buffer")
   "b c"   '(clone-indirect-buffer-other-window :which-key "Clone indirect buffer other window")
