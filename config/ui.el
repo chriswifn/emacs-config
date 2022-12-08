@@ -29,9 +29,22 @@
   :straight t
   :init
   (setq doom-modeline-height 26
-        doom-modeline-icon nil
+        doom-modeline-icon t 
         doom-modeline-lsp t)
   (doom-modeline-mode 1))
+
+
+;; icons
+(use-package all-the-icons
+  :straight t)
+
+(use-package all-the-icons-dired
+  :straight t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package all-the-icons-ibuffer
+  :straight t
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 
 
 ;; some useful output to display in the modeline
