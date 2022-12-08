@@ -38,10 +38,19 @@
 (use-package all-the-icons
   :straight t)
 
+
+;; dired
+(use-package diredfl
+  :straight t
+  :hook (dired-mode . diredfl-mode))
+
 (use-package all-the-icons-dired
   :straight t
-  :hook (dired-mode . all-the-icons-dired-mode))
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :config (setq all-the-icons-dired-monochrome nil))
 
+
+;; ibuffer
 (use-package all-the-icons-ibuffer
   :straight t
   :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
