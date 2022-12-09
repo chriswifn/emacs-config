@@ -24,6 +24,22 @@
   "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 
+;; split size
+(defhydra hydra-split-size (:timeout 4)
+  "increase/decrease split size"
+  ("h" shrink-window-horizontally)
+  ("j" enlarge-window)
+  ("k" shrink-window)
+  ("l" enlarge-window-horizontally)
+  ("n" balance-windows)
+  ("f" nil "finished" :exit t))
+
+(my-leader-def
+  :states 'normal
+  :keymaps 'override
+  "ss" '(hydra-split-size/body :which-key "split size"))
+
+
 ;; keybindings for buffers
 (defun toggle-maximize-buffer () "Maximize buffer"
        (interactive)
