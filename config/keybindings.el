@@ -21,7 +21,7 @@
 (my-leader-def
   :states 'normal
   :keymaps 'override
-  "ts" '(hydra-text-scale/body :which-key "scale text"))
+  "t f" '(hydra-text-scale/body :which-key "scale text"))
 
 
 ;; split size
@@ -37,7 +37,7 @@
 (my-leader-def
   :states 'normal
   :keymaps 'override
-  "ss" '(hydra-split-size/body :which-key "split size"))
+  "t s" '(hydra-split-size/body :which-key "split size"))
 
 
 ;; keybindings for buffers
