@@ -7,6 +7,14 @@
     :prefix "SPC"))
 
 
+;; some prefixes for programs
+(general-define-key
+ :prefix "SPC"
+ :keymaps 'normal
+ "p p" '(:keymap projectile-command-map :wk "projectile prefix")
+ "p w" '(:keymap perspective-map :wk "perspective prefix"))
+
+
 ;; Text scaling
 (use-package hydra
   :straight t
