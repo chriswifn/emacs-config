@@ -8,12 +8,12 @@
 
 
 ;; some prefixes for programs
-(general-define-key
- :prefix "SPC"
- :states 'normal
- :keymaps 'override
- "i" '(:keymap projectile-command-map :wk "projectile prefix")
- "p" '(:keymap perspective-map :wk "perspective prefix"))
+;; (general-define-key
+;;  :prefix "SPC"
+;;  :states 'normal
+;;  :keymaps 'override
+;;  "i" '(:keymap projectile-command-map :wk "projectile prefix")
+;;  "p" '(:keymap perspective-map :wk "perspective prefix"))
 
 
 ;; Text scaling

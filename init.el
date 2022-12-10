@@ -19,6 +19,7 @@
 (setq straight-use-package-by-default t)
 
 
+
 ;; Garbage Collection
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -26,6 +27,14 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold (expt 2 23))))
+
+
+;; reload config
+(defun config-reload ()
+  "Uncle dev created a function to reload Emacs config."
+  (interactive)
+  (load-file (expand-file-name "~/.emacs.d/init.el")))
+
 
 
 ;; load my modules
