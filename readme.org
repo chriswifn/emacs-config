@@ -625,7 +625,6 @@ Eglot is faster and simpler than lsp-mode and will be build in to emacs 29.
     :commands eglot)
 #+end_src
 
-
 ** Tree-sitter
 
 Tree-sitter is great for many things but especially syntax highlighting.
