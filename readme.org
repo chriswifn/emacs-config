@@ -1,5 +1,6 @@
 #+title: Emacs configuration
 #+author: Christian Hageloch
+#+startup: overview 
 
 Currently tailored for GNU Emacs 28.2
 
