@@ -199,9 +199,8 @@ Some rules/conventions:
     ;; file
     (chris/leader-keys
       "f" '(:ignore t :wk "file")
-      "ff" '(counsel-find-file :wk "FZF")
-      "fF" '(counsel-fzf :wk "FZF")
-      "fr" '(counsel-recentf :wk "Recent files")
+      "ff" '(find-file :wk "FZF")
+      "fr" '(consult-recent-file :wk "Recent files")
       "fs" '(save-buffer :wk "Save file")
       "fu" '(sudo-edit-find-file :wk "Sudo find file")
       "fy" '(dt/show-and-copy-buffer-path :wk "Yank file path")
@@ -216,7 +215,7 @@ Some rules/conventions:
       "b" '(:ignore t :wk "buffer")
       "bi" '(persp-ibuffer :wk "Ibuffer perspective")
       "bI" '(ibuffer :wk "Ibuffer perspective")
-      "bb" '(counsel-switch-buffer :wk "switch buffer")
+      "bb" '(consult-buffer :wk "switch buffer")
       "bf" '(toggle-maximize-buffer :wk "Toggle maximize buffer")
       "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
       "bk" '(kill-current-buffer :wk "Kill current buffer")
@@ -263,7 +262,6 @@ Some rules/conventions:
       "o" '(:ignore t :wk "open")
       "ot" '(vterm :wk "Vterm")))
 #+end_src
-
 
 ** Evil
 
@@ -459,44 +457,68 @@ Minimal mode line.
 
 #+begin_src emacs-lisp
   ;; ivy and counsel
-  (use-package ivy
-    :bind (("C-s" . swiper)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done)
-           ("C-l" . ivy-alt-done)
-           ("C-j" . ivy-next-line)
-           ("C-k" . ivy-previous-line)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-previous-line)
-           ("C-l" . ivy-done)
-           ("C-d" . ivy-switch-buffer-kill)
-           :map ivy-reverse-i-search-map
-           ("C-k" . ivy-previous-line)
-           ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
+  ;; (use-package ivy
+  ;;   :bind (("C-s" . swiper)
+  ;;          :map ivy-minibuffer-map
+  ;;          ("TAB" . ivy-alt-done)
+  ;;          ("C-l" . ivy-alt-done)
+  ;;          ("C-j" . ivy-next-line)
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          :map ivy-switch-buffer-map
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          ("C-l" . ivy-done)
+  ;;          ("C-d" . ivy-switch-buffer-kill)
+  ;;          :map ivy-reverse-i-search-map
+  ;;          ("C-k" . ivy-previous-line)
+  ;;          ("C-d" . ivy-reverse-i-search-kill))
+  ;;   :config
+  ;;   (ivy-mode 1))
 
-  ;; completion
-  (use-package ivy-rich
-    :after ivy
+  ;; ;; completion
+  ;; (use-package ivy-rich
+  ;;   :after ivy
+  ;;   :init
+  ;;   (ivy-rich-mode 1))
+
+  ;; ;; completion engine
+  ;; (use-package counsel
+  ;;   :config
+  ;;   (counsel-mode 1))
+
+  ;; ;; improved candidate sorting
+  ;; (use-package ivy-prescient
+  ;;   :after counsel
+  ;;   :custom
+  ;;   (ivy-prescient-enable-filtering nil)
+  ;;   :config
+  ;;   ;; Uncomment the following line to have sorting remembered across sessions!
+  ;;                                         ;(prescient-persist-mode 1)
+  ;;   (ivy-prescient-mode 1))
+
+  (use-package vertico
     :init
-    (ivy-rich-mode 1))
+    (vertico-mode +1))
 
-  ;; completion engine
-  (use-package counsel
-    :config
-    (counsel-mode 1))
+  (use-package orderless
+    :init
+    (setq completion-styles '(orderless)
+          completion-category-defaults nil
+          completion-category-overrides '((fie (styles partial-completion)))))
 
-  ;; improved candidate sorting
-  (use-package ivy-prescient
-    :after counsel
+  (use-package consult)
+  (recentf-mode +1)
+
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  (use-package marginalia
+    :after vertico
+    :ensure t
     :custom
-    (ivy-prescient-enable-filtering nil)
-    :config
-    ;; Uncomment the following line to have sorting remembered across sessions!
-                                          ;(prescient-persist-mode 1)
-    (ivy-prescient-mode 1))
-
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :init
+    (marginalia-mode))
 
   ;; anzu
   (use-package evil-anzu
