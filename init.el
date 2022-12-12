@@ -286,7 +286,7 @@
         modus-themes-italic-construct nil
         modus-themes-subtle-line-numbers nil
         modus-themes-mode-line '(borderless)
-        modus-themes-syntax '(yellow-comments faint green-strings)
+        modus-themes-syntax '(yellow-comments faint green-strings alt-syntax)
         modus-themes-headings
         '((1 . (1.5))
           (2 . (1.3))
