@@ -303,45 +303,6 @@
 	doom-modeline-lsp t)
   (doom-modeline-mode 1))
 
-;; ivy and counsel
-;; (use-package ivy
-;;   :bind (("C-s" . swiper)
-;;          :map ivy-minibuffer-map
-;;          ("TAB" . ivy-alt-done)
-;;          ("C-l" . ivy-alt-done)
-;;          ("C-j" . ivy-next-line)
-;;          ("C-k" . ivy-previous-line)
-;;          :map ivy-switch-buffer-map
-;;          ("C-k" . ivy-previous-line)
-;;          ("C-l" . ivy-done)
-;;          ("C-d" . ivy-switch-buffer-kill)
-;;          :map ivy-reverse-i-search-map
-;;          ("C-k" . ivy-previous-line)
-;;          ("C-d" . ivy-reverse-i-search-kill))
-;;   :config
-;;   (ivy-mode 1))
-
-;; ;; completion
-;; (use-package ivy-rich
-;;   :after ivy
-;;   :init
-;;   (ivy-rich-mode 1))
-
-;; ;; completion engine
-;; (use-package counsel
-;;   :config
-;;   (counsel-mode 1))
-
-;; ;; improved candidate sorting
-;; (use-package ivy-prescient
-;;   :after counsel
-;;   :custom
-;;   (ivy-prescient-enable-filtering nil)
-;;   :config
-;;   ;; Uncomment the following line to have sorting remembered across sessions!
-;;                                         ;(prescient-persist-mode 1)
-;;   (ivy-prescient-mode 1))
-
 (use-package vertico
   :init
   (vertico-mode +1))
@@ -352,7 +313,11 @@
         completion-category-defaults nil
         completion-category-overrides '((fie (styles partial-completion)))))
 
-(use-package consult)
+(use-package consult
+  :init
+  (setq consult-preview-key "$"))
+
+
 (recentf-mode +1)
 
 (use-package savehist
