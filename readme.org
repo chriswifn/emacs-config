@@ -537,6 +537,18 @@ Minimal mode line.
                 (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
+** Perspective
+#+begin_src emacs-lisp
+  (use-package perspective
+    :general
+    (chris/leader-keys
+      "i" '(:keymap perspective-map :wk "perspective"))
+    :custom
+    (persp-mode-prefix-key (kbd "C-c M-p")) 
+    :init
+    (persp-mode))
+#+end_src
+
 ** Buffers
 
 #+begin_src emacs-lisp

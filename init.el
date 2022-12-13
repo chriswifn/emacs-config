@@ -368,6 +368,15 @@
             (unless (eq ibuffer-sorting-mode 'alphabetic)
               (ibuffer-do-sort-by-alphabetic)))))
 
+(use-package perspective
+  :general
+  (chris/leader-keys
+    "i" '(:keymap perspective-map :wk "perspective"))
+  :custom
+  (persp-mode-prefix-key (kbd "C-c M-p")) 
+  :init
+  (persp-mode))
+
 (defun toggle-maximize-buffer () "Maximize buffer"
        (interactive)
        (if (= 1 (length (window-list)))
