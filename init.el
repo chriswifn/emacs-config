@@ -132,6 +132,7 @@
   (chris/leader-keys
     "b" '(:ignore t :wk "buffer")
     "bi" '(bufler-list :wk "list buffers")
+    "bI" '(bufler-sidebar :wk "bufler in sidebar")
     "bb" '(consult-buffer :wk "switch buffer")
     "bf" '(toggle-maximize-buffer :wk "Toggle maximize buffer")
     "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
