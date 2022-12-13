@@ -213,8 +213,7 @@ Some rules/conventions:
     ;; buffer 
     (chris/leader-keys
       "b" '(:ignore t :wk "buffer")
-      "bi" '(persp-ibuffer :wk "Ibuffer perspective")
-      "bI" '(ibuffer :wk "Ibuffer perspective")
+      "bi" '(bufler-list :wk "list buffers")
       "bb" '(consult-buffer :wk "switch buffer")
       "bf" '(toggle-maximize-buffer :wk "Toggle maximize buffer")
       "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
@@ -537,18 +536,6 @@ Minimal mode line.
                 (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
-** Perspective
-
-#+begin_src emacs-lisp
-  (use-package perspective
-    :general
-    (chris/leader-keys "i" '(:keymap perspective-map :wk "perspective"))
-    :custom
-    (persp-mode-prefix-key (kbd "C-c C-p"))  ; pick your own prefix key here
-    :init
-    (persp-mode))
-#+end_src
-
 ** Buffers
 
 #+begin_src emacs-lisp
@@ -559,6 +546,15 @@ Minimal mode line.
            (progn
              (window-configuration-to-register '_)
              (delete-other-windows))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package bufler
+    :config
+    (evil-collection-define-key 'normal 'bufler-list-mode-map
+      (kbd "RET") 'bufler-list-buffer-switch
+      (kbd "M-RET") 'bufler-list-buffer-peek
+      (kbd "D") 'bufler-list-buffer-kill))
 #+end_src
 
 ** Hydra

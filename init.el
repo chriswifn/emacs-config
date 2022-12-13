@@ -131,8 +131,7 @@
   ;; buffer 
   (chris/leader-keys
     "b" '(:ignore t :wk "buffer")
-    "bi" '(persp-ibuffer :wk "Ibuffer perspective")
-    "bI" '(ibuffer :wk "Ibuffer perspective")
+    "bi" '(bufler-list :wk "list buffers")
     "bb" '(consult-buffer :wk "switch buffer")
     "bf" '(toggle-maximize-buffer :wk "Toggle maximize buffer")
     "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
@@ -368,14 +367,6 @@
             (unless (eq ibuffer-sorting-mode 'alphabetic)
               (ibuffer-do-sort-by-alphabetic)))))
 
-(use-package perspective
-  :general
-  (chris/leader-keys "i" '(:keymap perspective-map :wk "perspective"))
-  :custom
-  (persp-mode-prefix-key (kbd "C-c C-p"))  ; pick your own prefix key here
-  :init
-  (persp-mode))
-
 (defun toggle-maximize-buffer () "Maximize buffer"
        (interactive)
        (if (= 1 (length (window-list)))
@@ -383,6 +374,13 @@
          (progn
            (window-configuration-to-register '_)
            (delete-other-windows))))
+
+(use-package bufler
+  :config
+  (evil-collection-define-key 'normal 'bufler-list-mode-map
+    (kbd "RET") 'bufler-list-buffer-switch
+    (kbd "M-RET") 'bufler-list-buffer-peek
+    (kbd "D") 'bufler-list-buffer-kill))
 
 (use-package hydra
   :defer t)
