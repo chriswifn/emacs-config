@@ -262,7 +262,8 @@ Some rules/conventions:
     ;; open
     (chris/leader-keys
       "o" '(:ignore t :wk "open")
-      "ot" '(vterm :wk "Vterm")))
+      "ot" '(vterm :wk "Vterm")
+      "oo" '(occur "^*+" :wk "org sidebar")))
 #+end_src
 
 ** Evil

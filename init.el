@@ -180,7 +180,8 @@
   ;; open
   (chris/leader-keys
     "o" '(:ignore t :wk "open")
-    "ot" '(vterm :wk "Vterm")))
+    "ot" '(vterm :wk "Vterm")
+    "oo" '(occur "^*+" :wk "org sidebar")))
 
 (use-package evil
   :general
