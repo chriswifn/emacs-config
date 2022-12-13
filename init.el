@@ -133,8 +133,8 @@
   ;; buffer 
   (chris/leader-keys
     "b" '(:ignore t :wk "buffer")
-    "bi" '(bufler-list :wk "list buffers")
-    "bI" '(bufler-sidebar :wk "bufler in sidebar")
+    "bi" '(persp-ibuffer :wk "ibuffer perspective")
+    "bI" '(ibuffer :wk "ibuffer")
     "bb" '(consult-buffer :wk "switch buffer")
     "bf" '(toggle-maximize-buffer :wk "Toggle maximize buffer")
     "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
@@ -370,12 +370,12 @@
 (setq projectile-indexing-method 'hybrid)
 
 (use-package ibuffer-projectile
-:config 
-(add-hook 'ibuffer-hook
-          (lambda ()
-            (ibuffer-projectile-set-filter-groups)
-            (unless (eq ibuffer-sorting-mode 'alphabetic)
-              (ibuffer-do-sort-by-alphabetic)))))
+  :config 
+  (add-hook 'ibuffer-hook
+            (lambda ()
+              (ibuffer-projectile-set-filter-groups)
+              (unless (eq ibuffer-sorting-mode 'alphabetic)
+                (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package perspective
   :general
@@ -393,13 +393,6 @@
          (progn
            (window-configuration-to-register '_)
            (delete-other-windows))))
-
-(use-package bufler
-  :config
-  (evil-collection-define-key 'normal 'bufler-list-mode-map
-    (kbd "RET") 'bufler-list-buffer-switch
-    (kbd "M-RET") 'bufler-list-buffer-peek
-    (kbd "D") 'bufler-list-buffer-kill))
 
 (use-package hydra
   :defer t)
