@@ -117,7 +117,9 @@
   ;; file
   (chris/leader-keys
     "f" '(:ignore t :wk "file")
-    "ff" '(find-file :wk "FZF")
+    "ff" '(find-file :wk "find file")
+    "fz" '(affe-find :wk "fuzzy finder")
+    "fg" '(affe-grep :wk "fuzzy finder (grep)")
     "fr" '(consult-recent-file :wk "Recent files")
     "fs" '(save-buffer :wk "Save file")
     "fu" '(sudo-edit-find-file :wk "Sudo find file")
@@ -320,6 +322,13 @@
 
 (recentf-mode +1)
 
+(use-package affe
+  :after orderless
+  :init
+  (setq affe-regexp-function #'orderless-pattern-compiler
+    affe-highlight-function #'orderless-highlight-matches)
+  (consult-customize affe-grep :preview-key (kbd "M-.")))
+
 (use-package savehist
   :init
   (savehist-mode))
@@ -411,6 +420,34 @@
   ("l" enlarge-window-horizontally)
   ("n" balance-windows)
   ("f" nil "finished" :exit t))
+
+(use-package openwith
+  :config
+  (setq openwith-associations
+        (list
+         (list (openwith-make-extension-regexp
+                '("mpg" "mpeg" "mp3" "mp4"
+                  "avi" "wmv" "wav" "mov" "flv"
+                  "ogm" "ogg" "mkv"))
+               "mpv"
+               '(file))
+         (list (openwith-make-extension-regexp
+                '("xbm" "pbm" "pgm" "ppm" "pnm"
+                  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
+               "sxiv"
+               '(file))
+         (list (openwith-make-extension-regexp
+                '("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
+               "libreoffice"
+               '(file))
+         '("\\.lyx" "lyx" (file))
+         '("\\.chm" "kchmviewer" (file))
+         (list (openwith-make-extension-regexp
+                '("pdf" "ps" "ps.gz" "dvi"))
+               "zathura"
+               '(file))
+         ))
+  (openwith-mode 1))
 
 (use-package company
   :init
