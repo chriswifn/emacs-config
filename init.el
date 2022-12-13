@@ -288,8 +288,8 @@
         modus-themes-mode-line '(borderless)
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
-        '((1 . (1.5))
-          (2 . (1.3))
+        '((1 . (1.3))
+          (2 . (1.2))
           (3 . (1.1))
           (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
