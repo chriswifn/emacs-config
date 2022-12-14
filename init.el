@@ -181,6 +181,7 @@
   (chris/leader-keys
     "o" '(:ignore t :wk "open")
     "ot" '(vterm :wk "Vterm")
+    "ol" '(org-toggle-link-display :wk "Display org links")
     "oo" '(occur "^*+" :wk "org sidebar")))
 
 (use-package evil
