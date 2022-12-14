@@ -450,6 +450,11 @@
   (setq company-idle-delay 0)
   (setq company-minium-prefix-length 3))
 
+(use-package aggressive-indent
+  :init
+  (global-aggressive-indent-mode 1))
+(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
+
 (use-package eglot
   :commands eglot)
 
