@@ -445,18 +445,6 @@
          ))
   (openwith-mode 1))
 
-(use-package atomic-chrome
-  :init
-  (setq atomic-chrome-server-ghost-text-port 4002)
-  (setq atomic-chrome-default-major-mode 'org-mode)
-  ;; (setq atomic-chrome-buffer-open-style)
-  (atomic-chrome-start-server)
-  :config
-  (define-key atomic-chrome-edit-mode-map (kbd "C-c C-c") nil)
-  (setq atomic-chrome-enable-auto-update nil)
-  :bind
-  (("s-c C-c" . atomic-chrome-close-current-buffer)))
-
 (use-package company
   :init
   (setq company-idle-delay 0)
