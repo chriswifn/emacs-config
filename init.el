@@ -288,7 +288,7 @@
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
         modus-themes-subtle-line-numbers t
-        modus-themes-hl-line '()
+        modus-themes-hl-line '(intense)
         modus-themes-mode-line '(borderless)
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
