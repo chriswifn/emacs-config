@@ -495,6 +495,11 @@
 
   (push '("conf-unix" . conf-unix) org-src-lang-modes))
 
+(use-package org-appear
+  :straight (:type git :host github :repo "awth13/org-appear")
+  :after org
+  :hook (org-mode . org-appear-mode))
+
 (use-package haskell-mode)
 
 (use-package lua-mode)
