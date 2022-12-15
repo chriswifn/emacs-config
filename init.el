@@ -182,6 +182,7 @@
     "o" '(:ignore t :wk "open")
     "ot" '(vterm :wk "Vterm")
     "ol" '(org-toggle-link-display :wk "Display org links")
+    "ot" '(org-capture :wk "org campture")
     "oo" '(occur "^*+" :wk "org sidebar")))
 
 (use-package evil
@@ -506,6 +507,9 @@
   :straight (:type git :host github :repo "awth13/org-appear")
   :after org
   :hook (org-mode . org-appear-mode))
+
+(setq orc-directory "~/org")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
 
 (use-package haskell-mode)
 
