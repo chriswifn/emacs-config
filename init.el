@@ -182,7 +182,7 @@
     "o" '(:ignore t :wk "open")
     "ot" '(vterm :wk "Vterm")
     "ol" '(org-toggle-link-display :wk "Display org links")
-    "ot" '(org-capture :wk "org campture")
+    "oc" '(org-capture :wk "org campture")
     "oo" '(occur "^*+" :wk "org sidebar")))
 
 (use-package evil
