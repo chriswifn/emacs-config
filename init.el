@@ -181,6 +181,7 @@
   (chris/leader-keys
     "o" '(:ignore t :wk "open")
     "ot" '(vterm :wk "Vterm")
+    "oe" '(eshell :wk "eshell")
     "ol" '(org-toggle-link-display :wk "Display org links")
     "oc" '(org-capture :wk "org campture")
     "oo" '(occur "^*+" :wk "org sidebar")))
@@ -556,6 +557,55 @@
 (use-package vterm
   :init
   (setq vterm-timer-delay 0.01))
+
+(use-package exec-path-from-shell)
+
+(use-package eshell
+  :init
+  (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
+   eshell-scroll-to-bottom-on-input 'all
+   eshell-error-if-no-glob t
+   eshell-hist-ignoredups t
+   eshell-save-history-on-exit t
+   eshell-prefer-lisp-functions nil
+   eshell-destroy-buffer-when-process-dies t)
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-commands "ssh")
+              (add-to-list 'eshell-visual-commands "tail")
+              (add-to-list 'eshell-visual-commands "top"))))
+
+(add-hook 'eshell-mode-hook (lambda ()
+                              (eshell/alias "e" "find-file $1")
+                              (eshell/alias "ff" "find-file $1")
+                              (eshell/alias "emacs" "find-file $1")
+                              (eshell/alias "ee" "find-file-other-window $1")
+
+                              (eshell/alias "gd" "magit-diff-unstaged")
+                              (eshell/alias "gds" "magit-diff-staged")
+                              (eshell/alias "d" "dired $1")
+
+                              ;; The 'ls' executable requires the Gnu version on the Mac
+                              ;; use exa because it looks nicer
+                              (let ((ls-temp (if (file-exists-p "/usr/bin/exa")
+                                                 "/usr/bin/exa"
+                                               "/bin/ls")))
+                                (eshell/alias "ls" (concat ls-temp " -al --color=always --group-directories-first")))))
+
+(defun eshell/gst (&rest args)
+  (magit-status (pop args) nil)
+  (eshell/echo))   ;; The echo command suppresses output
+
+(defun eshell/find (&rest args)
+  "Wrapper around the ‘find’ executable."
+  (let ((cmd (concat "find " (string-join args))))
+    (shell-command-to-string cmd)))
+
+(defun eshell/clear ()
+  "Clear the eshell buffer."
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
 
 (use-package rainbow-mode)
 

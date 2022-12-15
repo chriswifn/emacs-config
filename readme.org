@@ -263,6 +263,7 @@ Some rules/conventions:
     (chris/leader-keys
       "o" '(:ignore t :wk "open")
       "ot" '(vterm :wk "Vterm")
+      "oe" '(eshell :wk "eshell")
       "ol" '(org-toggle-link-display :wk "Display org links")
       "oc" '(org-capture :wk "org campture")
       "oo" '(occur "^*+" :wk "org sidebar")))
@@ -800,7 +801,9 @@ Tree-sitter is great for many things but especially syntax highlighting.
     ("C-x C-g" . magit-list-repositories))
 #+end_src
 
-** vterm
+** terminal 
+
+*** vterm
 
 The best terminal emulation for emacs
 
@@ -808,6 +811,80 @@ The best terminal emulation for emacs
   (use-package vterm
     :init
     (setq vterm-timer-delay 0.01))
+#+end_src
+
+*** eshell
+
+Also very good. The good thing about eshell is that you can run emacs commands through it, which you can't do in vterm.
+
+**** make stuff work
+
+Make shure that stuff like $PATH work fine.
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell)
+#+end_src
+
+**** the actual eshell
+
+#+begin_src emacs-lisp
+  (use-package eshell
+    :init
+    (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
+     eshell-scroll-to-bottom-on-input 'all
+     eshell-error-if-no-glob t
+     eshell-hist-ignoredups t
+     eshell-save-history-on-exit t
+     eshell-prefer-lisp-functions nil
+     eshell-destroy-buffer-when-process-dies t)
+    (add-hook 'eshell-mode-hook
+              (lambda ()
+                (add-to-list 'eshell-visual-commands "ssh")
+                (add-to-list 'eshell-visual-commands "tail")
+                (add-to-list 'eshell-visual-commands "top"))))
+
+  (add-hook 'eshell-mode-hook (lambda ()
+                                (eshell/alias "e" "find-file $1")
+                                (eshell/alias "ff" "find-file $1")
+                                (eshell/alias "emacs" "find-file $1")
+                                (eshell/alias "ee" "find-file-other-window $1")
+
+                                (eshell/alias "gd" "magit-diff-unstaged")
+                                (eshell/alias "gds" "magit-diff-staged")
+                                (eshell/alias "d" "dired $1")
+
+                                ;; The 'ls' executable requires the Gnu version on the Mac
+                                ;; use exa because it looks nicer
+                                (let ((ls-temp (if (file-exists-p "/usr/bin/exa")
+                                                   "/usr/bin/exa"
+                                                 "/bin/ls")))
+                                  (eshell/alias "ls" (concat ls-temp " -al --color=always --group-directories-first")))))
+#+end_src
+
+
+**** git status
+
+#+begin_src emacs-lisp
+  (defun eshell/gst (&rest args)
+    (magit-status (pop args) nil)
+    (eshell/echo))   ;; The echo command suppresses output
+#+end_src
+
+**** find
+
+#+begin_src emacs-lisp
+  (defun eshell/find (&rest args)
+    "Wrapper around the ‘find’ executable."
+    (let ((cmd (concat "find " (string-join args))))
+      (shell-command-to-string cmd)))
+#+end_src
+
+**** clear
+#+begin_src emacs-lisp
+  (defun eshell/clear ()
+    "Clear the eshell buffer."
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (eshell-send-input)))
 #+end_src
 
 
