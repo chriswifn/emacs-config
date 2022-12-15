@@ -508,7 +508,7 @@
   :after org
   :hook (org-mode . org-appear-mode))
 
-(setq orc-directory "~/org")
+(setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 
 (use-package haskell-mode)
