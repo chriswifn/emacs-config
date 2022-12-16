@@ -870,12 +870,24 @@ Make shure that stuff like $PATH work fine.
 #+end_src
 
 **** clear
+
 #+begin_src emacs-lisp
-  (defun eshell/clear ()
-    "Clear the eshell buffer."
-    (let ((inhibit-read-only t))
-      (erase-buffer)
-      (eshell-send-input)))
+  (defun run-this-in-eshell (cmd)
+    "Runs the command 'cmd' in eshell."
+    (with-current-buffer "*eshell*"
+      (end-of-buffer)
+      (eshell-kill-input)
+      (message (concat "Running in Eshell: " cmd))
+      (insert cmd)
+      (eshell-send-input)
+      (end-of-buffer)
+      (eshell-bol)
+      (yank)))
+
+  (bind-keys*
+   ("C-<backspace>" . (lambda () ; clear shell
+                        (interactive)
+                        (run-this-in-eshell "clear 1"))))
 #+end_src
 
 
