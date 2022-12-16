@@ -424,12 +424,6 @@
   (setq openwith-associations
         (list
          (list (openwith-make-extension-regexp
-                '("mpg" "mpeg" "mp3" "mp4"
-                  "avi" "wmv" "wav" "mov" "flv"
-                  "ogm" "ogg" "mkv"))
-               "mpv"
-               '(file))
-         (list (openwith-make-extension-regexp
                 '("xbm" "pbm" "pgm" "ppm" "pnm"
                   "png" "gif" "bmp" "tif" "jpeg" "jpg"))
                "sxiv"
@@ -504,11 +498,6 @@
 
   (push '("conf-unix" . conf-unix) org-src-lang-modes))
 
-(use-package org-appear
-  :straight (:type git :host github :repo "awth13/org-appear")
-  :after org
-  :hook (org-mode . org-appear-mode))
-
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 
@@ -561,6 +550,7 @@
 (use-package exec-path-from-shell)
 
 (use-package eshell
+  :straight (:type built-in)
   :init
   (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
    eshell-scroll-to-bottom-on-input 'all
