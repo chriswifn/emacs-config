@@ -573,6 +573,8 @@
             (lambda ()
               (add-to-list 'eshell-visual-commands "ssh")
               (add-to-list 'eshell-visual-commands "tail")
+              (add-to-list 'eshell-visual-commands "htop")
+              (add-to-list 'eshell-visual-commands "pulsemixer")
               (add-to-list 'eshell-visual-commands "top"))))
 
 (add-hook 'eshell-mode-hook (lambda ()
@@ -580,7 +582,6 @@
                               (eshell/alias "ff" "find-file $1")
                               (eshell/alias "emacs" "find-file $1")
                               (eshell/alias "ee" "find-file-other-window $1")
-
                               (eshell/alias "gd" "magit-diff-unstaged")
                               (eshell/alias "gds" "magit-diff-staged")
                               (eshell/alias "d" "dired $1")
@@ -591,6 +592,7 @@
                                                  "/usr/bin/exa"
                                                "/bin/ls")))
                                 (eshell/alias "ls" (concat ls-temp " -al --color=always --group-directories-first")))))
+(setq tramp-default-method "ssh")
 
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil)
