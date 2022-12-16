@@ -607,6 +607,11 @@
   (let ((cmd (concat "find " (string-join args))))
     (shell-command-to-string cmd)))
 
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (define-key eshell-mode-map
+              (kbd "C-l") 'eshell/clear)))
+
 (use-package rainbow-mode)
 
 (use-package rg

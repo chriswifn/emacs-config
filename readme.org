@@ -889,8 +889,17 @@ Make shure that stuff like $PATH work fine.
       (shell-command-to-string cmd)))
 #+end_src
 
+**** keybindings
 
+  - clear
+    #+begin_src emacs-lisp
+      (add-hook 'eshell-mode-hook
+                (lambda ()
+                  (define-key eshell-mode-map
+                    (kbd "C-l") 'eshell/clear)))
+    #+end_src
 
+    
 * Some other packages
 :PROPERTIES:
 :header-args: :tangle init.el
