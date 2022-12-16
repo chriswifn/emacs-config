@@ -343,6 +343,25 @@ Port of Tim Pope's commentary package
     (setq link-hint-avy-style 'pre))
 #+end_src
 
+*** Evil-remap
+
+When jumping with ~C-d~ and ~C-u~ the current line should be centered when jumped to.
+
+#+begin_src emacs-lisp
+  (defun scroll-down-and-center ()
+    (interactive)
+    (evil-scroll-down 0)
+    (evil-scroll-line-to-center (line-number-at-pos)))
+
+  (define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+
+  (defun scroll-up-and-center ()
+    (interactive)
+    (evil-scroll-up 0)
+    (evil-scroll-line-to-center (line-number-at-pos)))
+
+  (define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+#+end_src
 
 ** Whichkey
 

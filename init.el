@@ -238,6 +238,20 @@
   (setq browse-url-browser-function 'browse-url-firefox)
   (setq link-hint-avy-style 'pre))
 
+(defun scroll-down-and-center ()
+  (interactive)
+  (evil-scroll-down 0)
+  (evil-scroll-line-to-center (line-number-at-pos)))
+
+(define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+
+(defun scroll-up-and-center ()
+  (interactive)
+  (evil-scroll-up 0)
+  (evil-scroll-line-to-center (line-number-at-pos)))
+
+(define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+
 (use-package which-key
   :after evil
   :init (which-key-mode)
