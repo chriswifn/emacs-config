@@ -274,7 +274,7 @@
 (set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size)
 (set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size)
 (set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size :weight 'regular)
-(add-to-list 'default-frame-alist '(font . "Monoid-9"))
+(add-to-list 'default-frame-alist '(font . "Monoid"))
 
 (use-package all-the-icons)
 
