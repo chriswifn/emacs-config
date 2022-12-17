@@ -186,11 +186,7 @@
   ;; open
   (chris/leader-keys
     "o" '(:ignore t :wk "open")
-    "otv" '(multi-vterm :wk "vterm")
-    "ott" '(multi-vterm-dedicated-toggle :wk "toggle vterm") 
-    "otn" '(multi-vterm-next :wk "toggle vterm") 
-    "otp" '(multi-vterm-previous :wk "toggle vterm") 
-    "otd" '(multi-vterm-project :wk "toggle vterm") 
+    "ot" '(vterm :wk "vterm")
     "oe" '(eshell :wk "eshell")
     "ou" '(undo-tree-visualize :wk "undo-tree")
     "ol" '(org-toggle-link-display :wk "Display org links")
@@ -269,13 +265,22 @@
   :config
   (which-key-setup-minibuffer))
 
-(defvar chris/default-font-size 90)
+;; (defvar chris/default-font-size 90)
+;; (defvar chris/default-variable-font-size 120)
+
+(defvar chris/default-font-size-terminus 120)
+(defvar chris/default-font-size-monoid 90)
 (defvar chris/default-variable-font-size 120)
 
-(set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size)
-(set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size)
+;; (set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size)
+;; (set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size)
+;; (set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size :weight 'regular)
+;; (add-to-list 'default-frame-alist '(font . "Monoid"))
+
+(set-face-attribute 'default nil :font "Terminus" :height chris/default-font-size-terminus)
+(set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size-monoid)
 (set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size :weight 'regular)
-(add-to-list 'default-frame-alist '(font . "Monoid"))
+(add-to-list 'default-frame-alist '(font . "Terminus"))
 
 (use-package all-the-icons)
 
@@ -331,7 +336,7 @@
 (use-package doom-modeline
   :init
   (setq doom-modeline-height 26
-	doom-modeline-icon t 
+	doom-modeline-icon nil
 	doom-modeline-lsp t)
   (doom-modeline-mode 1))
 
@@ -506,6 +511,8 @@
 (setq calendar-holidays holiday-christian-holidays)
 
 (use-package undo-tree
+  :config
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   :init
   (global-undo-tree-mode))
 
@@ -614,41 +621,6 @@
 (use-package vterm
   :init
   (setq vterm-timer-delay 0.01))
-
-(use-package multi-vterm
-  :config
-  (add-hook 'vterm-mode-hook
-            (lambda ()
-              (setq-local evil-insert-state-cursor 'box)
-              (evil-insert-state)))
-  (define-key vterm-mode-map [return]                      #'vterm-send-return)
-
-  (setq vterm-keymap-exceptions nil)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
-  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
-  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
-  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
 
 (use-package exec-path-from-shell)
 
