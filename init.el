@@ -177,6 +177,12 @@
     "mt" '(emms-toggle-repeat-track :wk "EMMS toggle repeat")
     "mh" '(emms-seek-backward :wk "EMMS go 10s backward"))
 
+  ;; toggle dis
+  (chris/leader-keys
+    "t" '(:ignore t :wk "toggle")
+    "tr" '(config-reload :wk "config")
+    "tt" '(modus-themes-toggle :wk "theme"))
+
   ;; open
   (chris/leader-keys
     "o" '(:ignore t :wk "open")
@@ -311,7 +317,7 @@
         modus-themes-subtle-line-numbers t
         modus-themes-hl-line '(intense)
         modus-themes-mode-line '(borderless)
-        modus-themes-syntax '(faint green-strings alt-syntax)
+        modus-themes-syntax '(faint green-strings yellow-comments alt-syntax)
         modus-themes-headings
         '((1 . (1.3 rainbow))
           (2 . (1.2 rainbow))
@@ -676,6 +682,10 @@
                                 (eshell/alias "ls" (concat ls-temp " -al --color=always --group-directories-first")))))
 (setq tramp-default-method "ssh")
 
+
+(use-package eshell-syntax-highlighting
+  :hook (eshell-mode . eshell-syntax-highlighting-mode))
+
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil)
   (eshell/echo))   ;; The echo command suppresses output
@@ -698,6 +708,11 @@
 (add-hook 'eshell-mode-hook
           (lambda ()
             (define-key eshell-mode-map "\C-c\ \M-o" 'my/eshell/clear)))
+
+(defun eshell/mkdir-and-cd (dir)
+  "Create a directory then cd into it."
+  (make-directory dir t)
+  (eshell/cd dir))
 
 (use-package rainbow-mode)
 

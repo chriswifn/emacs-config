@@ -259,6 +259,12 @@ Some rules/conventions:
       "mt" '(emms-toggle-repeat-track :wk "EMMS toggle repeat")
       "mh" '(emms-seek-backward :wk "EMMS go 10s backward"))
 
+    ;; toggle dis
+    (chris/leader-keys
+      "t" '(:ignore t :wk "toggle")
+      "tr" '(config-reload :wk "config")
+      "tt" '(modus-themes-toggle :wk "theme"))
+
     ;; open
     (chris/leader-keys
       "o" '(:ignore t :wk "open")
@@ -454,7 +460,7 @@ The Modus-Themes are the best themes to use. Change my mind.
           modus-themes-subtle-line-numbers t
           modus-themes-hl-line '(intense)
           modus-themes-mode-line '(borderless)
-          modus-themes-syntax '(faint green-strings alt-syntax)
+          modus-themes-syntax '(faint green-strings yellow-comments alt-syntax)
           modus-themes-headings
           '((1 . (1.3 rainbow))
             (2 . (1.2 rainbow))
@@ -952,6 +958,10 @@ Make shure that stuff like $PATH work fine.
                                                  "/bin/ls")))
                                   (eshell/alias "ls" (concat ls-temp " -al --color=always --group-directories-first")))))
   (setq tramp-default-method "ssh")
+
+
+  (use-package eshell-syntax-highlighting
+    :hook (eshell-mode . eshell-syntax-highlighting-mode)) 
 #+end_src
 
 **** git status
@@ -971,7 +981,7 @@ Make shure that stuff like $PATH work fine.
       (shell-command-to-string cmd)))
 #+end_src
 
-**** keybindings
+**** custom functions 
 
 #+begin_src emacs-lisp
   (defun my/eshell/clear ()
@@ -987,6 +997,13 @@ Make shure that stuff like $PATH work fine.
   (add-hook 'eshell-mode-hook
             (lambda ()
               (define-key eshell-mode-map "\C-c\ \M-o" 'my/eshell/clear)))
+#+end_src
+
+#+begin_src emacs-lisp
+  (defun eshell/mkdir-and-cd (dir)
+    "Create a directory then cd into it."
+    (make-directory dir t)
+    (eshell/cd dir))
 #+end_src
 
 
