@@ -192,6 +192,7 @@
     "otp" '(multi-vterm-previous :wk "toggle vterm") 
     "otd" '(multi-vterm-project :wk "toggle vterm") 
     "oe" '(eshell :wk "eshell")
+    "ou" '(undo-tree-visualize :wk "undo-tree")
     "ol" '(org-toggle-link-display :wk "Display org links")
     "oc" '(org-capture :wk "org campture")
     "oo" '(occur "^*+" :wk "org sidebar")))
@@ -503,6 +504,10 @@
         (holiday-float 11 0 1 "Totensonntag" 20)))
 
 (setq calendar-holidays holiday-christian-holidays)
+
+(use-package undo-tree
+  :init
+  (global-undo-tree-mode))
 
 (use-package company
   :init

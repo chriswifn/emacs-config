@@ -274,6 +274,7 @@ Some rules/conventions:
       "otp" '(multi-vterm-previous :wk "toggle vterm") 
       "otd" '(multi-vterm-project :wk "toggle vterm") 
       "oe" '(eshell :wk "eshell")
+      "ou" '(undo-tree-visualize :wk "undo-tree")
       "ol" '(org-toggle-link-display :wk "Display org links")
       "oc" '(org-capture :wk "org campture")
       "oo" '(occur "^*+" :wk "org sidebar")))
@@ -704,6 +705,14 @@ Minimal mode line.
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
+
+** Undo-tree
+
+#+begin_src emacs-lisp
+  (use-package undo-tree
+    :init
+    (global-undo-tree-mode))
+#+end_src
 
 ** Completion 
 
