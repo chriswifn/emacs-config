@@ -394,7 +394,7 @@ When jumping with ~C-d~ and ~C-u~ the current line should be centered when jumpe
 
   (set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size-monoid)
   (set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size-monoid)
-  (set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size)
+  (set-face-attribute 'variable-pitch nil :font "Liberation Mono" :height chris/default-variable-font-size)
   (add-to-list 'default-frame-alist '(font . "Monoid-9"))
 #+end_src
 
@@ -814,12 +814,14 @@ Tree-sitter is great for many things but especially syntax highlighting.
 
 **** org roam
 
+    (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
 #+begin_src emacs-lisp
   (use-package org-roam
     :init
     (setq org-roam-v2-ack t)
     :custom
     (org-roam-directory "~/orgroam")
+    (org-roam-compeltion-everywhere t)
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert))
@@ -829,7 +831,10 @@ Tree-sitter is great for many things but especially syntax highlighting.
       "rt" '(org-roam-buffer-toggle :wk "toggle org-roam buffer")
       "rf" '(org-roam-node-find :wk "find node")
       "ri" '(org-roam-node-insert :wk "insert node"))
+    (chris/leader-keys "rd" '(:keymap org-roam-dailies-map :wk "dailies"))
     :config
+    (require 'org-roam-dailies)
+    (org-roam-db-autosync-mode)
     (org-roam-setup))
 #+end_src
 
