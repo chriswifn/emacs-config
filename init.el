@@ -577,6 +577,14 @@
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED"))
+      )
+
+(setq org-todo-keyword-faces
+      '(("IN-PROGRESS" . "orange") ("WAITING" . "magenta") ("CANCELED" . "red") ("DONE" . "green"))
+      )
+
 (use-package org-roam
   :init
   (setq org-roam-v2-ack t)
