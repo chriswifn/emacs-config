@@ -265,22 +265,13 @@
   :config
   (which-key-setup-minibuffer))
 
-;; (defvar chris/default-font-size 90)
-;; (defvar chris/default-variable-font-size 120)
-
-(defvar chris/default-font-size-terminus 120)
 (defvar chris/default-font-size-monoid 90)
 (defvar chris/default-variable-font-size 120)
 
-;; (set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size)
-;; (set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size)
-;; (set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size :weight 'regular)
-;; (add-to-list 'default-frame-alist '(font . "Monoid"))
-
-(set-face-attribute 'default nil :font "Terminus" :height chris/default-font-size-terminus)
+(set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size-monoid)
 (set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size-monoid)
-(set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size :weight 'regular)
-(add-to-list 'default-frame-alist '(font . "Terminus"))
+(set-face-attribute 'variable-pitch nil :font "Source Code Pro" :height chris/default-variable-font-size)
+(add-to-list 'default-frame-alist '(font . "Monoid-9"))
 
 (use-package all-the-icons)
 
@@ -320,10 +311,10 @@
   :init
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
-        modus-themes-subtle-line-numbers t
+        modus-themes-subtle-line-numbers nil
         modus-themes-hl-line '(intense)
         modus-themes-mode-line '(borderless)
-        modus-themes-syntax '(faint green-strings yellow-comments alt-syntax)
+        modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
         '((1 . (1.3 rainbow))
           (2 . (1.2 rainbow))
@@ -525,6 +516,15 @@
   :init
   (global-aggressive-indent-mode 1))
 (add-to-list 'aggressive-indent-excluded-modes 'python-mode)
+
+(use-package highlight-indent-guides
+  :config
+  (setq highlight-indent-guides-auto-odd-face-perc 15)
+  (setq highlight-indent-guides-auto-even-face-perc 20)
+  (setq highlight-indent-guides-auto-character-face-perc 25)
+  (setq highlight-indent-guides-method 'character)
+  :hook
+  (prog-mode . highlight-indent-guides-mode))
 
 (use-package eglot
   :commands eglot)
