@@ -520,9 +520,9 @@
 
 (use-package highlight-indent-guides
   :config
-  (setq highlight-indent-guides-auto-odd-face-perc 15)
-  (setq highlight-indent-guides-auto-even-face-perc 20)
-  (setq highlight-indent-guides-auto-character-face-perc 25)
+  (setq highlight-indent-guides-auto-odd-face-perc 30)
+  (setq highlight-indent-guides-auto-even-face-perc 35)
+  (setq highlight-indent-guides-auto-character-face-perc 40)
   (setq highlight-indent-guides-method 'character)
   :hook
   (prog-mode . highlight-indent-guides-mode))
@@ -595,6 +595,9 @@
   (org-roam-setup))
 
 (use-package haskell-mode)
+
+(when (executable-find "ipython")
+  (setq python-shell-interpreter "ipython"))
 
 (use-package lua-mode)
 
