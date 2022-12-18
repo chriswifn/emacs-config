@@ -15,6 +15,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
+(straight-use-package 'org)
 
 (use-package emacs
   :init
@@ -575,6 +576,23 @@
 
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
+
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/orgroam")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :general
+  (chris/leader-keys
+    "r" '(:ignore t :wk "org-roam")
+    "rt" '(org-roam-buffer-toggle :wk "toggle org-roam buffer")
+    "rf" '(org-roam-node-find :wk "find node")
+    "ri" '(org-roam-node-insert :wk "insert node"))
+  :config
+  (org-roam-setup))
 
 (use-package haskell-mode)
 

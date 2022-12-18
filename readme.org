@@ -59,20 +59,21 @@ Some rules/conventions:
 *** Boostrap ~straight.el~
 
 #+begin_src emacs-lisp
-(setq straight-use-package-by-default t)
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 6))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  (straight-use-package 'use-package)
+  (straight-use-package 'org)
 #+end_src
 
 
@@ -784,6 +785,8 @@ Tree-sitter is great for many things but especially syntax highlighting.
 
 *** org-mode
 
+**** general org
+
 #+begin_src emacs-lisp
   (setq org-ellipsis " ")
   (setq orc-src-fontify-natively t)
@@ -807,6 +810,27 @@ Tree-sitter is great for many things but especially syntax highlighting.
 
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org"))
+#+end_src
+
+**** org roam
+
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/orgroam")
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert))
+    :general
+    (chris/leader-keys
+      "r" '(:ignore t :wk "org-roam")
+      "rt" '(org-roam-buffer-toggle :wk "toggle org-roam buffer")
+      "rf" '(org-roam-node-find :wk "find node")
+      "ri" '(org-roam-node-insert :wk "insert node"))
+    :config
+    (org-roam-setup))
 #+end_src
 
 *** haskell-mode
