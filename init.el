@@ -539,6 +539,7 @@
   (setq olivetti-body-width 0.65)
   (setq olivetti-minimum-body-width 72)
   (setq olivetti-recall-visual-line-mode-entry-state t)
+
   ;; hide/show the mode-line
   (define-minor-mode chris/hidden-mode-line-mode
     "Toggle modeline visibility in the current buffer."
