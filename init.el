@@ -361,9 +361,9 @@
         modus-themes-mode-line '(borderless)
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
-        '((1 . (1.3 rainbow))
-          (2 . (1.2 rainbow))
-          (3 . (1.1 rainbow))
+        '((1 . (1.6 rainbow))
+          (2 . (1.4 rainbow))
+          (3 . (1.2 rainbow))
           (t . (1.0 rainbow)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
@@ -371,8 +371,8 @@
 
 (use-package doom-modeline
   :init
-  (setq doom-modeline-height 26
-        doom-modeline-icon nil
+  (setq doom-modeline-height 30
+        doom-modeline-icon 1
         doom-modeline-lsp t)
   (doom-modeline-mode 1))
 
