@@ -266,15 +266,57 @@
   :config
   (which-key-setup-minibuffer))
 
-(defvar chris/default-font-size-iosevka-wide 110)
-(defvar chris/default-font-size-iosevka 110)
-(defvar chris/default-font-size-monoid 90)
-(defvar chris/default-variable-font-size 120)
+;; (defvar chris/default-font-size-iosevka-wide 110)
+;; (defvar chris/default-font-size-iosevka 110)
+;; (defvar chris/default-font-size-monoid 90)
+;; (defvar chris/default-variable-font-size 120)
 
-(set-face-attribute 'default nil :font "Iosevka Comfy Wide Fixed" :height chris/default-font-size-iosevka-wide)
-(set-face-attribute 'fixed-pitch nil :font "Iosevka Comfy Fixed" :height chris/default-font-size-iosevka)
-(set-face-attribute 'variable-pitch nil :font "Iosevka Comfy" :height chris/default-variable-font-size)
-(add-to-list 'default-frame-alist '(font . "Iosevka Comfy Wide Fixed-11"))
+;; (set-face-attribute 'default nil :font "Iosevka Comfy Wide Fixed" :height chris/default-font-size-iosevka-wide)
+;; (set-face-attribute 'fixed-pitch nil :font "Iosevka Comfy Fixed" :height chris/default-font-size-iosevka)
+;; (set-face-attribute 'variable-pitch nil :font "Iosevka Comfy" :height chris/default-variable-font-size)
+;; (add-to-list 'default-frame-alist '(font . "Iosevka Comfy Wide Fixed-11"))
+
+(use-package fontaine
+  :init
+  (setq fontaine-presets
+	'((tiny
+	   :default-family "Iosevka Comfy Wide Fixed"
+	   :default-height 70)
+	  (small
+	   :default-family "Iosevka Comfy Fixed"
+	   :default-height 90)
+	  (regular
+	   :default-height 110)
+	  (medium
+	   :default-height 120)
+	  (large
+	   :default-weight semilight
+	   :default-height 140
+	   :bold-weight extrabold)
+	  (presentation
+	   :default-weight semilight
+	   :default-height 170
+	   :bold-weight extrabold)
+	  (t
+	   ;; I keep all properties for didactic purposes, but most can be
+	   ;; omitted.  See the fontaine manual for the technicalities:
+	   ;; <https://protesilaos.com/emacs/fontaine>.
+	   :default-family "Iosevka Comfy Wide Fixed"
+	   :default-weight regular
+	   :default-height 110 
+	   :fixed-pitch-family nil ; falls back to :default-family
+	   :fixed-pitch-weight nil ; falls back to :default-weight
+	   :fixed-pitch-height 1.0
+	   :variable-pitch-family "Iosevka Comfy Duo"
+	   :variable-pitch-weight nil
+	   :variable-pitch-height 1.0
+	   :bold-family nil ; use whatever the underlying face has
+	   :bold-weight bold
+	   :italic-family nil
+	   :italic-slant italic
+	   :line-spacing nil))))
+
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
 (use-package all-the-icons)
 
