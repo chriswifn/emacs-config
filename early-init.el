@@ -1,5 +1,5 @@
-;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
-(setq package-enable-at-startup nil)
+  ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
+  (setq package-enable-at-startup nil)
 
 ;; minimal UI
 (menu-bar-mode -1) ;; disables menubar

@@ -238,27 +238,27 @@
   :config
   (evil-commentary-mode)) ;; globally enable evil-commentary
 
-(use-package link-hint
-  :general
-  (chris/leader-keys
-   "l" '(link-hint-open-link :wk "open link"))
-  :config
-  (setq browse-url-browser-function 'browse-url-firefox)
-  (setq link-hint-avy-style 'pre))
+  (use-package link-hint
+    :general
+    (chris/leader-keys
+     "l" '(link-hint-open-link :wk "open link"))
+    :config
+    (setq browse-url-browser-function 'browse-url-firefox)
+    (setq link-hint-avy-style 'pre))
 
-(defun scroll-down-and-center ()
-  (interactive)
-  (evil-scroll-down 0)
-  (evil-scroll-line-to-center (line-number-at-pos)))
+  (defun scroll-down-and-center ()
+    (interactive)
+    (evil-scroll-down 0)
+    (evil-scroll-line-to-center (line-number-at-pos)))
 
-(define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+  (define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
 
-(defun scroll-up-and-center ()
-  (interactive)
-  (evil-scroll-up 0)
-  (evil-scroll-line-to-center (line-number-at-pos)))
+  (defun scroll-up-and-center ()
+    (interactive)
+    (evil-scroll-up 0)
+    (evil-scroll-line-to-center (line-number-at-pos)))
 
-(define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+  (define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
 
 (use-package which-key
   :after evil
@@ -330,8 +330,8 @@
 (use-package doom-modeline
   :init
   (setq doom-modeline-height 26
-	doom-modeline-icon nil
-	doom-modeline-lsp t)
+        doom-modeline-icon nil
+        doom-modeline-lsp t)
   (doom-modeline-mode 1))
 
 (use-package vertico
@@ -355,7 +355,7 @@
   :after orderless
   :init
   (setq affe-regexp-function #'orderless-pattern-compiler
-    affe-highlight-function #'orderless-highlight-matches)
+	affe-highlight-function #'orderless-highlight-matches)
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package savehist
@@ -381,13 +381,13 @@
 (use-package 0x0
   :general
   (chris/leader-keys
-   "x" '(:ignore t :wk "web")
-   "x;" '(0x0-dwim t :wk "0x0 dwim")
-   "xt" '(0x0-upload-text :wk "0x0 upload text")
-   "xf" '(0x0-upload-file :wk "0x0 upload file")
-   "xk" '(0x0-upload-kill-ring :wk "0x0 upload kill ring")
-   "xp" '(0x0-popup :wk "0x0 popup")
-   "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
+    "x" '(:ignore t :wk "web")
+    "x;" '(0x0-dwim t :wk "0x0 dwim")
+    "xt" '(0x0-upload-text :wk "0x0 upload text")
+    "xf" '(0x0-upload-file :wk "0x0 upload file")
+    "xk" '(0x0-upload-kill-ring :wk "0x0 upload kill ring")
+    "xp" '(0x0-popup :wk "0x0 popup")
+    "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
 
 (use-package projectile
   :general
@@ -418,10 +418,10 @@
 (defun toggle-maximize-buffer () "Maximize buffer"
        (interactive)
        (if (= 1 (length (window-list)))
-           (jump-to-register '_) 
-         (progn
-           (window-configuration-to-register '_)
-           (delete-other-windows))))
+	   (jump-to-register '_) 
+	 (progn
+	   (window-configuration-to-register '_)
+	   (delete-other-windows))))
 
 (use-package hydra
   :defer t)
@@ -446,31 +446,31 @@
 (use-package openwith
   :config
   (setq openwith-associations
-        (list
-         (list (openwith-make-extension-regexp
-                '("xbm" "pbm" "pgm" "ppm" "pnm"
-                  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
-               "sxiv"
-               '(file))
-         (list (openwith-make-extension-regexp
-                '("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
-               "libreoffice"
-               '(file))
-         '("\\.lyx" "lyx" (file))
-         '("\\.chm" "kchmviewer" (file))
-         (list (openwith-make-extension-regexp
-                '("pdf" "ps" "ps.gz" "dvi"))
-               "zathura"
-               '(file))
-         ))
+	(list
+	 (list (openwith-make-extension-regexp
+		'("xbm" "pbm" "pgm" "ppm" "pnm"
+		  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
+	       "sxiv"
+	       '(file))
+	 (list (openwith-make-extension-regexp
+		'("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
+	       "libreoffice"
+	       '(file))
+	 '("\\.lyx" "lyx" (file))
+	 '("\\.chm" "kchmviewer" (file))
+	 (list (openwith-make-extension-regexp
+		'("pdf" "ps" "ps.gz" "dvi"))
+	       "zathura"
+	       '(file))
+	 ))
   (openwith-mode 1))
 
 (setq calendar-week-start-day 1
       calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
-                               "Donnerstag" "Freitag" "Samstag"]
+			       "Donnerstag" "Freitag" "Samstag"]
       calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
-                                 "Juni" "Juli" "August" "September"
-                                 "Oktober" "November" "Dezember"])
+				 "Juni" "Juli" "August" "September"
+				 "Oktober" "November" "Dezember"])
 (setq solar-n-hemi-seasons
       '("Frühlingsanfang" "Sommeranfang" "Herbstanfang" "Winteranfang"))
 
@@ -591,8 +591,8 @@
   (org-roam-directory "~/orgroam")
   (org-roam-compeltion-everywhere t)
   :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert))
   :general
   (chris/leader-keys
     "r" '(:ignore t :wk "org-roam")
@@ -707,7 +707,7 @@
 (defun my/eshell/clear ()
   "Clear `eshell' buffer.
 
- Similar to the behavior of `comint-clear-buffer' in `shell'."
+   Similar to the behavior of `comint-clear-buffer' in `shell'."
   (interactive)
   (let ((input (eshell-get-old-input)))
     (eshell/clear-scrollback)
