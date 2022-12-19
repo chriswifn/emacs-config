@@ -238,27 +238,27 @@
   :config
   (evil-commentary-mode)) ;; globally enable evil-commentary
 
-  (use-package link-hint
-    :general
-    (chris/leader-keys
-     "l" '(link-hint-open-link :wk "open link"))
-    :config
-    (setq browse-url-browser-function 'browse-url-firefox)
-    (setq link-hint-avy-style 'pre))
+(use-package link-hint
+  :general
+  (chris/leader-keys
+    "l" '(link-hint-open-link :wk "open link"))
+  :config
+  (setq browse-url-browser-function 'browse-url-firefox)
+  (setq link-hint-avy-style 'pre))
 
-  (defun scroll-down-and-center ()
-    (interactive)
-    (evil-scroll-down 0)
-    (evil-scroll-line-to-center (line-number-at-pos)))
+(defun scroll-down-and-center ()
+  (interactive)
+  (evil-scroll-down 0)
+  (evil-scroll-line-to-center (line-number-at-pos)))
 
-  (define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+(define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
 
-  (defun scroll-up-and-center ()
-    (interactive)
-    (evil-scroll-up 0)
-    (evil-scroll-line-to-center (line-number-at-pos)))
+(defun scroll-up-and-center ()
+  (interactive)
+  (evil-scroll-up 0)
+  (evil-scroll-line-to-center (line-number-at-pos)))
 
-  (define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+(define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
 
 (use-package which-key
   :after evil

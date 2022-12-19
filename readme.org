@@ -342,13 +342,13 @@ Port of Tim Pope's commentary package
 *** Link hint
 
 #+begin_src emacs-lisp
-  (use-package link-hint
-    :general
-    (chris/leader-keys
-     "l" '(link-hint-open-link :wk "open link"))
-    :config
-    (setq browse-url-browser-function 'browse-url-firefox)
-    (setq link-hint-avy-style 'pre))
+(use-package link-hint
+  :general
+  (chris/leader-keys
+    "l" '(link-hint-open-link :wk "open link"))
+  :config
+  (setq browse-url-browser-function 'browse-url-firefox)
+  (setq link-hint-avy-style 'pre))
 #+end_src
 
 *** Evil-remap
@@ -356,19 +356,19 @@ Port of Tim Pope's commentary package
 When jumping with ~C-d~ and ~C-u~ the current line should be centered when jumped to.
 
 #+begin_src emacs-lisp
-  (defun scroll-down-and-center ()
-    (interactive)
-    (evil-scroll-down 0)
-    (evil-scroll-line-to-center (line-number-at-pos)))
+(defun scroll-down-and-center ()
+  (interactive)
+  (evil-scroll-down 0)
+  (evil-scroll-line-to-center (line-number-at-pos)))
 
-  (define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+(define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
 
-  (defun scroll-up-and-center ()
-    (interactive)
-    (evil-scroll-up 0)
-    (evil-scroll-line-to-center (line-number-at-pos)))
+(defun scroll-up-and-center ()
+  (interactive)
+  (evil-scroll-up 0)
+  (evil-scroll-line-to-center (line-number-at-pos)))
 
-  (define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+(define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
 #+end_src
 
 ** Whichkey
