@@ -189,6 +189,7 @@
     "o" '(:ignore t :wk "open")
     "ot" '(vterm :wk "vterm")
     "oe" '(eshell :wk "eshell")
+    "of" '(fontaine-set-preset :wk "fontaine")
     "ou" '(undo-tree-visualize :wk "undo-tree")
     "ol" '(org-toggle-link-display :wk "Display org links")
     "oc" '(org-capture :wk "org campture")
