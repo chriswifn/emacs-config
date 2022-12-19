@@ -388,6 +388,10 @@ When jumping with ~C-d~ and ~C-u~ the current line should be centered when jumpe
 :END:
 
 ** Fonts
+
+I use the font of Protesilaos.
+It is available on [[https://github.com/protesilaos/iosevka-comfy][github]].
+
  #+begin_src emacs-lisp  
 (defvar chris/default-font-size-iosevka-wide 110)
 (defvar chris/default-font-size-iosevka 110)
