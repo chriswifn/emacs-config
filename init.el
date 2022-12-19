@@ -536,10 +536,9 @@
 
 (use-package olivetti
   :config
-  (setq olivetti-body-width 0.75)
+  (setq olivetti-body-width 0.65)
   (setq olivetti-minimum-body-width 72)
   (setq olivetti-recall-visual-line-mode-entry-state t)
-
   ;; hide/show the mode-line
   (define-minor-mode chris/hidden-mode-line-mode
     "Toggle modeline visibility in the current buffer."
@@ -559,6 +558,7 @@ Fringes are disabled.  The modeline is hidden, except for
     (if chris/olivetti-mode
         (progn
           (olivetti-mode 1)
+	  (olivetti-set-width 120)
           (set-window-fringes (selected-window) 0 0)
           (unless (derived-mode-p 'prog-mode)
             (chris/hidden-mode-line-mode 1))
