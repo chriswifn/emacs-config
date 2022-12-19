@@ -565,7 +565,7 @@
 (setq org-export-with-smart-quotes t)
 (setq org-src-window-setup 'current-window)
 (setq org-hide-emphasis-markers t)
-(setq org-src-preserve-indentation nil)
+(setq org-src-preserve-indentation 1)
 (setq org-edit-src-content-indentation 0)
 
 ;; configure babel languages
