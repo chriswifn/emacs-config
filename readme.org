@@ -84,6 +84,8 @@ Some rules/conventions:
 
 ** Defaults
 
+Here is where I set some defaults in standard Emacs.
+
 #+begin_src emacs-lisp
 (use-package emacs
   :init
@@ -146,6 +148,8 @@ Some rules/conventions:
 
 ** Electric
 
+Electric pair mode is useful if you don't want to type closing brackets and quotes.
+
 #+begin_src emacs-lisp
 (use-package electric
   :straight (:type built-in)
@@ -160,7 +164,12 @@ Some rules/conventions:
 :header-args: :tangle init.el
 :END:
 
+If there weren't enough keybindings in Emacs by itself I add some additional ones.
+~Evil~ is necessary to make Emacs usable.
+
 ** General
+
+~SPC~ as leader key is better than ~C-c C-x C-i C-l~ or whatever.
 
 #+begin_src emacs-lisp
 (use-package general
@@ -373,6 +382,8 @@ When jumping with ~C-d~ and ~C-u~ the current line should be centered when jumpe
 
 ** Whichkey
 
+Nobody can remember every keybinding.
+
 #+begin_src emacs-lisp
 (use-package which-key
   :after evil
@@ -393,16 +404,6 @@ I use the font of Protesilaos.
 It is available on [[https://github.com/protesilaos/iosevka-comfy][github]].
 
  #+begin_src emacs-lisp  
-;; (defvar chris/default-font-size-iosevka-wide 110)
-;; (defvar chris/default-font-size-iosevka 110)
-;; (defvar chris/default-font-size-monoid 90)
-;; (defvar chris/default-variable-font-size 120)
-
-;; (set-face-attribute 'default nil :font "Iosevka Comfy Wide Fixed" :height chris/default-font-size-iosevka-wide)
-;; (set-face-attribute 'fixed-pitch nil :font "Iosevka Comfy Fixed" :height chris/default-font-size-iosevka)
-;; (set-face-attribute 'variable-pitch nil :font "Iosevka Comfy" :height chris/default-variable-font-size)
-;; (add-to-list 'default-frame-alist '(font . "Iosevka Comfy Wide Fixed-11"))
-
 (use-package fontaine
   :init
   (setq fontaine-presets
@@ -448,6 +449,9 @@ It is available on [[https://github.com/protesilaos/iosevka-comfy][github]].
 
 ** Icons
 
+Icons help distinguish filetypes and modes in ~ibuffer~ and ~dired~.
+In the modeline they are only useful to look pretty.
+
 #+begin_src emacs-lisp
 (use-package all-the-icons)
 
@@ -463,6 +467,8 @@ It is available on [[https://github.com/protesilaos/iosevka-comfy][github]].
 #+end_src
 
 ** Useful output
+
+Some scripts that output standard out to minibuffer.
 
 #+begin_src emacs-lisp
 ;; some useful output to display in the modeline
@@ -519,7 +525,7 @@ The Modus-Themes are the best themes to use. Change my mind.
 
 ** Mode line
 
-Minimal mode line.
+Huge bloated modeline that does everything so I don't have to worry about it.
 
 #+begin_src emacs-lisp
 (use-package doom-modeline
@@ -537,6 +543,11 @@ Minimal mode line.
 :END:
 
 ** Better bottom menu
+
+- ~Vertico~ and ~orderless~ are better than ~Ivy~ and ~consult~ in my opinion.
+- ~Affe~ is a fuzzy-finder.
+- ~Marginalia~ does margins I guess.
+- ~Anzu~ shows the amount of search results in the modeline.
 
 #+begin_src emacs-lisp
 (use-package vertico
@@ -587,11 +598,15 @@ Minimal mode line.
 
 *** Sudo edit
 
+Open files with elevated priviliges.
+
 #+begin_src emacs-lisp
 (use-package sudo-edit)
 #+end_src
 
 *** 0x0
+
+File sharing.
 
 #+begin_src emacs-lisp
 (use-package 0x0
@@ -607,6 +622,8 @@ Minimal mode line.
 #+end_src
 
 ** Projectile
+
+Manage projects.
 
 #+begin_src emacs-lisp
 (use-package projectile
@@ -628,6 +645,9 @@ Minimal mode line.
 #+end_src
 
 ** Perspective
+
+Create workspaces inside Emacs.
+
 #+begin_src emacs-lisp
 (use-package perspective
   :general
@@ -641,6 +661,8 @@ Minimal mode line.
 
 ** Buffers
 
+A function to toggle maximize buffer.
+
 #+begin_src emacs-lisp
 (defun toggle-maximize-buffer () "Maximize buffer"
        (interactive)
@@ -652,6 +674,8 @@ Minimal mode line.
 #+end_src
 
 ** Hydra
+
+Create interactive keybindings.
 
 #+begin_src emacs-lisp
 (use-package hydra
@@ -678,6 +702,8 @@ Minimal mode line.
 
 ** Openwith
 
+Openwith some other program that is not Emacs. 
+
 #+begin_src emacs-lisp
 (use-package openwith
   :config
@@ -703,6 +729,8 @@ Minimal mode line.
 #+end_src
 
 ** Calendar
+
+German holidays for Calendar.
 
 #+begin_src emacs-lisp
 (setq calendar-week-start-day 1
@@ -753,6 +781,8 @@ Minimal mode line.
 
 ** Undo-tree
 
+Keeps track of the state of a file and provides ability to revert to any state the file has ever been in.
+
 #+begin_src emacs-lisp
 (use-package undo-tree
   :config
@@ -773,6 +803,8 @@ Company is great.
 #+end_src
 
 ** Indentation
+
+Please indent my code aggressively.
 
 #+begin_src emacs-lisp
 (use-package aggressive-indent
@@ -837,6 +869,8 @@ Tree-sitter is great for many things but especially syntax highlighting.
 
 **** general org
 
+General org settings.
+
 #+begin_src emacs-lisp
 (setq org-ellipsis " ")
 (setq orc-src-fontify-natively t)
@@ -869,7 +903,8 @@ Tree-sitter is great for many things but especially syntax highlighting.
 
 **** org roam
 
-    (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
+Build a second brain in org-roam.
+
 #+begin_src emacs-lisp
 (use-package org-roam
   :init
@@ -932,6 +967,8 @@ Tree-sitter is great for many things but especially syntax highlighting.
 
 *** matlab-mode
 
+The biggest piece of shit in existence.
+
 #+begin_src emacs-lisp
 (straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
@@ -950,6 +987,8 @@ Tree-sitter is great for many things but especially syntax highlighting.
 #+end_src
 
 ** magit
+
+The killer feature of emacs.
 
 #+begin_src emacs-lisp
 (use-package magit
@@ -1094,6 +1133,8 @@ Color in hex-codes
 
 ** rg
 
+Rip my grep apart.
+
 #+begin_src emacs-lisp
 (use-package rg
   :init
@@ -1101,6 +1142,8 @@ Color in hex-codes
 #+end_src
 
 ** async
+
+Please don't freeze up my editor.
 
 #+begin_src emacs-lisp
 (use-package async
