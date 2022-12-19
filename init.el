@@ -266,13 +266,15 @@
   :config
   (which-key-setup-minibuffer))
 
-(defvar chris/default-font-size-monoid 90)
-(defvar chris/default-variable-font-size 120)
+(defvar chris/default-font-size-iosevka-wide 110)
+   (defvar chris/default-font-size-iosevka 110)
+   (defvar chris/default-font-size-monoid 90)
+   (defvar chris/default-variable-font-size 120)
 
-(set-face-attribute 'default nil :font "Monoid" :height chris/default-font-size-monoid)
-(set-face-attribute 'fixed-pitch nil :font "Monoid" :height chris/default-font-size-monoid)
-(set-face-attribute 'variable-pitch nil :font "Liberation Mono" :height chris/default-variable-font-size)
-(add-to-list 'default-frame-alist '(font . "Monoid-9"))
+   (set-face-attribute 'default nil :font "Iosevka Comfy Wide Fixed" :height chris/default-font-size-iosevka-wide)
+   (set-face-attribute 'fixed-pitch nil :font "Iosevka Comfy Fixed" :height chris/default-font-size-iosevka)
+   (set-face-attribute 'variable-pitch nil :font "Iosevka Comfy" :height chris/default-variable-font-size)
+   (add-to-list 'default-frame-alist '(font . "Iosevka Comfy Wide Fixed-11"))
 
 (use-package all-the-icons)
 
@@ -323,7 +325,7 @@
           (t . (1.0 rainbow)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
-(load-theme 'modus-vivendi t)
+(modus-themes-load-vivendi)
 
 (use-package doom-modeline
   :init
@@ -577,13 +579,9 @@
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 
-(setq org-todo-keywords
-      '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED"))
-      )
-
-(setq org-todo-keyword-faces
-      '(("IN-PROGRESS" . "orange") ("WAITING" . "magenta") ("CANCELED" . "red") ("DONE" . "green"))
-      )
+(use-package org-modern
+  :hook
+  (org-mode . org-modern-mode))
 
 (use-package org-roam
   :init
