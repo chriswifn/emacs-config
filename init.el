@@ -18,7 +18,7 @@
 (straight-use-package 'org)
 
 (use-package emacs
-  :init
+  :config
   (setq user-full-name "Christian Hageloch")
 
   (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
@@ -42,22 +42,16 @@
 
   (column-number-mode)
 
-  (global-display-line-numbers-mode t)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
   (global-hl-line-mode t)
 
   (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-  (dolist (mode '(treemacs-mode-hook
-                  org-mode-hook
-                  vterm-mode-hook
-                  term-mode-hook
-                  shell-mode-hook
-                  eshell-mode-hook))
-    (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
   ;; follow symlinks
   (setq find-file-visit-truename t)
 
+  ;; encoding
   (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
   (setq locale-coding-system 'utf-8
         coding-system-for-read 'utf-8
@@ -68,6 +62,7 @@
   (prefer-coding-system 'utf-8)
   (setq default-process-coding-system '(utf-8-unix . utf-8-unix)))
 
+;; function to reload config
 (defun config-reload ()
   "Uncle dev created a function to reload Emacs config."
   (interactive)
@@ -191,6 +186,7 @@
     "oe" '(eshell :wk "eshell")
     "of" '(fontaine-set-preset :wk "fontaine")
     "ow" '(woman :wk "woman")
+    "of" '(chris/olivetti-mode :wk "olivetti")
     "ou" '(undo-tree-visualize :wk "undo-tree")
     "ol" '(org-toggle-link-display :wk "Display org links")
     "oc" '(org-capture :wk "org campture")
@@ -537,6 +533,42 @@
         (holiday-float 11 0 1 "Totensonntag" 20)))
 
 (setq calendar-holidays holiday-christian-holidays)
+
+(use-package olivetti
+  :config
+  (setq olivetti-body-width 0.75)
+  (setq olivetti-minimum-body-width 72)
+  (setq olivetti-recall-visual-line-mode-entry-state t)
+
+  ;; hide/show the mode-line
+  (define-minor-mode chris/hidden-mode-line-mode
+    "Toggle modeline visibility in the current buffer."
+    :init-value nil
+    :global nil
+    (if chris/hidden-mode-line-mode
+        (setq-local mode-line-format nil)
+      (kill-local-variable 'mode-line-format)
+      (force-mode-line-update)))
+
+  (define-minor-mode chris/olivetti-mode
+    "Toggle buffer-local `olivetti-mode' with additional parameters.
+Fringes are disabled.  The modeline is hidden, except for
+`prog-mode' buffers (see `chris/hidden-mode-line-mode')."
+    :init-value nil
+    :global nil
+    (if chris/olivetti-mode
+        (progn
+          (olivetti-mode 1)
+          (set-window-fringes (selected-window) 0 0)
+          (unless (derived-mode-p 'prog-mode)
+            (chris/hidden-mode-line-mode 1))
+          (window-divider-mode 1))
+      (olivetti-mode -1)
+      (set-window-fringes (selected-window) nil) ; Use default width
+      (unless (derived-mode-p 'prog-mode)
+        (chris/hidden-mode-line-mode -1))
+      (window-divider-mode -1)
+      )))
 
 (use-package undo-tree
   :config
