@@ -268,6 +268,7 @@ If there weren't enough keybindings in Emacs by itself I add some additional one
   (chris/leader-keys
     "t" '(:ignore t :wk "toggle")
     "tr" '(config-reload :wk "config")
+    "tl" '(chris/toggle-line-numbers :wk "linenumbers")
     "tt" '(modus-themes-toggle :wk "theme"))
 
   ;; open
@@ -541,6 +542,19 @@ Huge bloated modeline that does everything so I don't have to worry about it.
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
+
+** Some functions
+
+*** toggle line numbers
+
+#+begin_src emacs-lisp
+(defun chris/toggle-line-numbers ()
+  "Toggles the display of line numbers. Applies locally to the current buffer"
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)
+    (display-line-numbers-mode)))
+#+end_src
 
 ** Better bottom menu
 
@@ -960,6 +974,7 @@ General org settings.
 (setq org-hide-emphasis-markers t)
 (setq org-src-preserve-indentation 1)
 (setq org-edit-src-content-indentation 0)
+(setq org-log-done t)
 
 ;; configure babel languages
 (with-eval-after-load 'org
@@ -1014,8 +1029,8 @@ Build a second brain in org-roam.
 *** python-mode
 
 #+begin_src emacs-lisp
-(when (executable-find "ipython")
-  (setq python-shell-interpreter "ipython"))
+;; (when (executable-find "ipython")
+;;   (setq python-shell-interpreter "ipython"))
 #+end_src
 
 *** lua-mode

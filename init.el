@@ -177,6 +177,7 @@
   (chris/leader-keys
     "t" '(:ignore t :wk "toggle")
     "tr" '(config-reload :wk "config")
+    "tl" '(chris/toggle-line-numbers :wk "linenumbers")
     "tt" '(modus-themes-toggle :wk "theme"))
 
   ;; open
@@ -365,6 +366,13 @@
         doom-modeline-icon 1
         doom-modeline-lsp t)
   (doom-modeline-mode 1))
+
+(defun chris/toggle-line-numbers ()
+  "Toggles the display of line numbers. Applies locally to the current buffer"
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)
+    (display-line-numbers-mode)))
 
 (use-package vertico
   :init
@@ -664,6 +672,7 @@ Fringes are disabled.  The modeline is hidden, except for
 (setq org-hide-emphasis-markers t)
 (setq org-src-preserve-indentation 1)
 (setq org-edit-src-content-indentation 0)
+(setq org-log-done t)
 
 ;; configure babel languages
 (with-eval-after-load 'org
@@ -704,8 +713,8 @@ Fringes are disabled.  The modeline is hidden, except for
 
 (use-package haskell-mode)
 
-(when (executable-find "ipython")
-  (setq python-shell-interpreter "ipython"))
+;; (when (executable-find "ipython")
+;;   (setq python-shell-interpreter "ipython"))
 
 (use-package lua-mode)
 
