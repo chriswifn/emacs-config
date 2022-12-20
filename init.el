@@ -550,16 +550,6 @@
   (setq olivetti-minimum-body-width 72)
   (setq olivetti-recall-visual-line-mode-entry-state t)
 
-  ;; hide/show the mode-line
-  (define-minor-mode chris/hidden-mode-line-mode
-    "Toggle modeline visibility in the current buffer."
-    :init-value nil
-    :global nil
-    (if chris/hidden-mode-line-mode
-        (setq-local mode-line-format nil)
-      (kill-local-variable 'mode-line-format)
-      (force-mode-line-update)))
-
   (define-minor-mode chris/olivetti-mode
     "Toggle buffer-local `olivetti-mode' with additional parameters.
 Fringes are disabled.  The modeline is hidden, except for
@@ -572,14 +562,60 @@ Fringes are disabled.  The modeline is hidden, except for
 	  (olivetti-set-width 120)
           (set-window-fringes (selected-window) 0 0)
           (unless (derived-mode-p 'prog-mode)
-            (chris/hidden-mode-line-mode 1))
+            (chris/turn-on-hide-mode-line-mode))
           (window-divider-mode 1))
       (olivetti-mode -1)
       (set-window-fringes (selected-window) nil) ; Use default width
       (unless (derived-mode-p 'prog-mode)
-        (chris/hidden-mode-line-mode -1))
+        (chris/turn-off-hide-mode-line-mode))
       (window-divider-mode -1)
       )))
+
+;; this piece of code is directly copied from Hlissner
+;; I attach a prefix to dinstinguish custom functions
+(defvar chris/hide-mode-line-format nil
+  "The modeline format to use when `chris/hide-mode-line-mode' is active.")
+
+(defvar chris/hide-mode-line-excluded-modes '(fundamental-mode)
+  "List of major modes where `chris/global-hide-mode-line-mode' won't affect.")
+
+(defvar-local chris/hide-mode-line--old-format nil
+  "Storage for the old `mode-line-format', so it can be restored when
+`chris/hide-mode-line-mode' is disabled.")
+
+(define-minor-mode chris/hide-mode-line-mode
+  "Minor mode to hide the mode-line in the current buffer."
+  :init-value nil
+  :global nil
+  (if chris/hide-mode-line-mode
+      (progn
+	(add-hook 'after-change-major-mode-hook #'chris/hide-mode-line-mode nil t)
+	(unless chris/hide-mode-line--old-format
+	  (setq chris/hide-mode-line--old-format mode-line-format))
+	(setq mode-line-format chris/hide-mode-line-format))
+    (remove-hook 'after-change-major-mode-hook #'chris/hide-mode-line-mode t)
+    (setq mode-line-format chris/hide-mode-line--old-format
+	  chris/hide-mode-line--old-format nil))
+  (when (called-interactively-p 'any)
+    (redraw-display)))
+
+;; Ensure major-mode or theme changes don't overwrite these variables
+(put 'chris/hide-mode-line--old-format 'permanent-local t)
+(put 'chris/hide-mode-line-mode 'permanent-local-hook t)
+
+(define-globalized-minor-mode chris/global-hide-mode-line-mode
+  chris/hide-mode-line-mode chris/turn-on-hide-mode-line-mode
+  (redraw-display))
+
+(defun chris/turn-on-hide-mode-line-mode ()
+  "Turn on `chris/hide-mode-line-mode'.
+Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
+  (unless (memq major-mode chris/hide-mode-line-excluded-modes)
+    (chris/hide-mode-line-mode +1)))
+
+(defun chris/turn-off-hide-mode-line-mode ()
+  "Turn off `chris/hide-mode-line-mode'."
+  (chris/hide-mode-line-mode -1))
 
 (use-package engine-mode
   :general
@@ -758,12 +794,14 @@ Fringes are disabled.  The modeline is hidden, except for
 
 (use-package vterm
   :init
-  (setq vterm-timer-delay 0.01))
+  (setq vterm-timer-delay 0.01)
+  :hook (vterm-mode . chris/hide-mode-line-mode))
 
 (use-package exec-path-from-shell)
 
 (use-package eshell
   :straight (:type built-in)
+  :hook (eshell-mode . chris/hide-mode-line-mode)
   :init
   (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
    eshell-scroll-to-bottom-on-input 'all
