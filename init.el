@@ -203,7 +203,6 @@
   (setq evil-want-C-d-scroll t) ;; allow scroll down with 'C-d'
 
   (setq evil-want-integration t) ;; necessary for evil collection
-  (setq evil-want-minibuffer t)
   (setq evil-want-keybinding nil)
 
   (setq evil-split-window-below t)
