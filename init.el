@@ -211,7 +211,7 @@
 
   (setq evil-want-C-i-jump nil) ;; hopefully this will fix weird tab behaviour
 
-  (setq evil-undo-system 'undo-redo) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
+  (setq evil-undo-system 'undo-tree) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
   :config
   (evil-mode t) ;; globally enable evil mode
   ;; set the initial state for some kinds of buffers.

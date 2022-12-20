@@ -12,8 +12,8 @@ Currently tailored for GNU Emacs 28.2
 I am using ~straight.el~ as my package manager, so I add this paragraph to ~early-init.el~ to prevent ~package.el~ from loading packages, prior to loading the init file
 
 #+begin_src emacs-lisp
-  ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
-  (setq package-enable-at-startup nil)
+;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
+(setq package-enable-at-startup nil)
 #+end_src
 
 Disable GUI elements before loading init.el
@@ -308,7 +308,7 @@ Vim motions are the superior way of text editing.
 
   (setq evil-want-C-i-jump nil) ;; hopefully this will fix weird tab behaviour
 
-  (setq evil-undo-system 'undo-redo) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
+  (setq evil-undo-system 'undo-tree) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
   :config
   (evil-mode t) ;; globally enable evil mode
   ;; set the initial state for some kinds of buffers.
