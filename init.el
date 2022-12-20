@@ -178,6 +178,7 @@
     "t" '(:ignore t :wk "toggle")
     "tr" '(config-reload :wk "config")
     "tl" '(chris/toggle-line-numbers :wk "linenumbers")
+    "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
     "tt" '(modus-themes-toggle :wk "theme"))
 
   ;; open
