@@ -816,6 +816,40 @@ Fringes are disabled.  The modeline is hidden, except for
       )))
 #+end_src
 
+** Search the web
+
+Engine-mode let's you search the web from within emacs by opening a browser with the search query.
+
+#+begin_src emacs-lisp
+(use-package engine-mode
+  :general
+  (chris/leader-keys
+    "e" '(:keymap engine-mode-prefixed-map :wk "engine-mode"))
+  :config
+
+  ;; duckduckgo search engine
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+
+  ;; google search engine
+  (defengine google
+    "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "g")
+
+  ;; wikipedia search engine
+  (defengine wikipedia
+    "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+    :keybinding "w"
+    :docstring "Searchin' the wikis.")
+
+  ;; stack-overflow search engine
+  (defengine stack-overflow
+    "https://stackoverflow.com/search?q=%s"
+    :keybinding "s")
+  )
+    #+end_src
+
 
 * Development
 :PROPERTIES:

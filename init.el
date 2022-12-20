@@ -573,6 +573,34 @@ Fringes are disabled.  The modeline is hidden, except for
       (window-divider-mode -1)
       )))
 
+(use-package engine-mode
+  :general
+  (chris/leader-keys
+    "e" '(:keymap engine-mode-prefixed-map :wk "engine-mode"))
+  :config
+
+  ;; duckduckgo search engine
+  (defengine duckduckgo
+    "https://duckduckgo.com/?q=%s"
+    :keybinding "d")
+
+  ;; google search engine
+  (defengine google
+    "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+    :keybinding "g")
+
+  ;; wikipedia search engine
+  (defengine wikipedia
+    "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+    :keybinding "w"
+    :docstring "Searchin' the wikis.")
+
+  ;; stack-overflow search engine
+  (defengine stack-overflow
+    "https://stackoverflow.com/search?q=%s"
+    :keybinding "s")
+  )
+
 (use-package undo-tree
   :config
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
