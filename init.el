@@ -804,22 +804,21 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 (defun chris/configure-eshell ()
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-  (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-l") 'my/eshell/clear)
   (setq eshell-history-size         10000
         eshell-buffer-maximum-lines 10000
         eshell-hist-ignoredups t
         eshell-scroll-to-bottom-on-input t)
   (setq tramp-default-method "ssh"))
 
-  (use-package eshell
-    :straight (:type built-in)
-    :hook
-    (eshell-mode . chris/hide-mode-line-mode)
-    (eshell-first-time-mode . chris/configure-eshell)
-    :config
-    (with-eval-after-load 'esh-opt
-      (setq eshell-destroy-buffer-when-process-dies t)
-      (setq eshell-visual-commands '("ssh" "tail" "htop" "pulsemixer" "top" "nvim" "vim"))))
+(use-package eshell
+  :straight (:type built-in)
+  :hook
+  (eshell-mode . chris/hide-mode-line-mode)
+  (eshell-first-time-mode . chris/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("ssh" "tail" "htop" "pulsemixer" "top" "nvim" "vim"))))
 
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil)
@@ -842,7 +841,7 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 
 (add-hook 'eshell-mode-hook
           (lambda ()
-            (define-key eshell-mode-map "\C-c\ \M-o" 'my/eshell/clear)))
+            (define-key eshell-mode-map "\C-l" 'my/eshell/clear)))
 
 (defun eshell/mkdir-and-cd (dir)
   "Create a directory then cd into it."
