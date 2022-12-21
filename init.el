@@ -801,45 +801,24 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 
 (use-package exec-path-from-shell)
 
-(use-package eshell
-  :straight (:type built-in)
-  :hook (eshell-mode . chris/hide-mode-line-mode)
-  :init
-  (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
-   eshell-scroll-to-bottom-on-input 'all
-   eshell-error-if-no-glob t
-   eshell-hist-ignoredups t
-   eshell-save-history-on-exit t
-   eshell-prefer-lisp-functions nil
-   eshell-destroy-buffer-when-process-dies t)
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (add-to-list 'eshell-visual-commands "ssh")
-              (add-to-list 'eshell-visual-commands "tail")
-              (add-to-list 'eshell-visual-commands "htop")
-              (add-to-list 'eshell-visual-commands "pulsemixer")
-              (add-to-list 'eshell-visual-commands "top"))))
+(defun chris/configure-eshell ()
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+  (setq eshell-history-size         10000
+        eshell-buffer-maximum-lines 10000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t)
+  (setq tramp-default-method "ssh"))
 
-(add-hook 'eshell-mode-hook (lambda ()
-                              (eshell/alias "e" "find-file $1")
-                              (eshell/alias "ff" "find-file $1")
-                              (eshell/alias "emacs" "find-file $1")
-                              (eshell/alias "ee" "find-file-other-window $1")
-                              (eshell/alias "gd" "magit-diff-unstaged")
-                              (eshell/alias "gds" "magit-diff-staged")
-                              (eshell/alias "d" "dired $1")
-
-                              ;; The 'ls' executable requires the Gnu version on the Mac
-                              ;; use exa because it looks nicer
-                              (let ((ls-temp (if (file-exists-p "/usr/bin/exa")
-                                                 "/usr/bin/exa"
-                                               "/bin/ls")))
-                                (eshell/alias "ls" (concat ls-temp " -al --color=always --group-directories-first")))))
-(setq tramp-default-method "ssh")
-
-
-(use-package eshell-syntax-highlighting
-  :hook (eshell-mode . eshell-syntax-highlighting-mode))
+  (use-package eshell
+    :straight (:type built-in)
+    :hook
+    (eshell-mode . chris/hide-mode-line-mode)
+    (eshell-first-time-mode . chris/configure-eshell)
+    :config
+    (with-eval-after-load 'esh-opt
+      (setq eshell-destroy-buffer-when-process-dies t)
+      (setq eshell-visual-commands '("ssh" "tail" "htop" "pulsemixer" "top" "nvim" "vim"))))
 
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil)
