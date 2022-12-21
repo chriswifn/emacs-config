@@ -804,6 +804,7 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 (defun chris/configure-eshell ()
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+  (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-l") 'my/eshell/clear)
   (setq eshell-history-size         10000
         eshell-buffer-maximum-lines 10000
         eshell-hist-ignoredups t
