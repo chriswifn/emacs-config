@@ -22,7 +22,7 @@ Disable GUI elements before loading init.el
 (menu-bar-mode -1) ;; disables menubar
 (tool-bar-mode -1) ;; disables toolbar
 (scroll-bar-mode -1) ;; disables scrollbar
-(set-fringe-mode 0)
+;; (set-fringe-mode 10)
 
 (setq inhibit-splash-screen t ;; no thanks
       use-file-dialog nil ;; don't use system file dialog
@@ -512,6 +512,7 @@ The Modus-Themes are the best themes to use. Change my mind.
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
         modus-themes-subtle-line-numbers nil
+	modus-themes-fringes '(subtle)
         modus-themes-hl-line '(intense)
         modus-themes-mode-line '(borderless)
         modus-themes-syntax '(faint green-strings alt-syntax)

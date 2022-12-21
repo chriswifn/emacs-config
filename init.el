@@ -349,6 +349,7 @@
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
         modus-themes-subtle-line-numbers nil
+	modus-themes-fringes '(subtle)
         modus-themes-hl-line '(intense)
         modus-themes-mode-line '(borderless)
         modus-themes-syntax '(faint green-strings alt-syntax)
