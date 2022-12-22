@@ -303,7 +303,7 @@ and much more.
 
 #+begin_src emacs-lisp
 (chris/leader-keys
-  "t" '(:ignore t :wk "toggle")
+  "t"  '(:ignore t :wk "toggle")
   "tr" '(config-reload :wk "config")
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
@@ -1104,6 +1104,19 @@ the currently focused buffer.
          (progn
            (window-configuration-to-register '_)
            (delete-other-windows))))
+#+end_src
+
+** Toggle line numbers
+
+=chris/toggle-line-numbers= is a function that toggles the display of line-numbers.
+
+#+begin_src emacs-lisp
+(defun chris/toggle-line-numbers ()
+  "Toggles the display of line numbers. Applies locally to the current buffer"
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)
+    (display-line-numbers-mode)))
 #+end_src
 
 

@@ -136,7 +136,7 @@
   "bK" '(kill-buffer :wk "Kill buffer"))
 
 (chris/leader-keys
-  "t" '(:ignore t :wk "toggle")
+  "t"  '(:ignore t :wk "toggle")
   "tr" '(config-reload :wk "config")
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
@@ -633,6 +633,13 @@ When no VC root is available, use standard `switch-to-buffer'."
          (progn
            (window-configuration-to-register '_)
            (delete-other-windows))))
+
+(defun chris/toggle-line-numbers ()
+  "Toggles the display of line numbers. Applies locally to the current buffer"
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)
+    (display-line-numbers-mode)))
 
 (use-package projectile
   :general
