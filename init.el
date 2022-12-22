@@ -860,3 +860,26 @@ questions.  Else use completion to select the tab to switch to."
       emms-playlist-buffer-name "*Music*"
       emms-info-asynchronously t
       emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
+
+(use-package org-tree-slide
+  :custom
+  (org-tree-slide-breadcrumbs nil)
+  (org-tree-slide-header nil)
+  (org-tree-slide-in-effect nil)
+  (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-heading-emphasis nil)
+  (org-tree-slide-cursor-init t)
+  (org-tree-slide-never-touch-face t)
+  :config
+  (defun chris/org-presentation ()
+    "Specifies conditions that should apply locally upon activation
+of `org-tree-slide-mode'."
+    (if (eq org-tree-slide-mode nil)
+	(progn
+          (chris/olivetti-mode -1)
+          (fontaine-set-preset 'regular))
+      (chris/olivetti-mode)
+      (fontaine-set-preset 'presentation)))
+  :hook
+  (org-tree-slide-mode . chris/org-presentation)
+  )
