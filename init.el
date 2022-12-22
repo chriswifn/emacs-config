@@ -786,6 +786,8 @@ questions.  Else use completion to select the tab to switch to."
   (matlab-shell))
 
 (use-package vterm
+  :hook
+  (vterm-mode . (lambda () (setq-local global-hl-line-mode nil)))
   :init
   (setq vterm-timer-delay 0.01))
 

@@ -1449,6 +1449,8 @@ find_file() {
 
 #+begin_src emacs-lisp
 (use-package vterm
+  :hook
+  (vterm-mode . (lambda () (setq-local global-hl-line-mode nil)))
   :init
   (setq vterm-timer-delay 0.01))
 #+end_src
