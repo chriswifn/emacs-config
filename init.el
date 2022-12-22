@@ -1,5 +1,4 @@
 ;;; init.el --- Personal configuration file -*- lexical-binding: t; no-byte-compile: t; -*-
-;; NOTE: init.el is generated from readme.org.
 
 (setq straight-use-package-by-default t)
 (defvar bootstrap-version)
@@ -18,6 +17,7 @@
 (straight-use-package 'org)
 
 (use-package emacs
+  :straight (:type built-in)
   :config
   (setq user-full-name "Christian Hageloch")
 
@@ -30,9 +30,9 @@
 
   ;; keep backup and save files in a dedicated directory
   (setq backup-directory-alist
-        `((".*" . ,(concat user-emacs-directory "backups")))
-        auto-save-file-name-transforms
-        `((".*" ,(concat user-emacs-directory "backups") t)))
+	`((".*" . ,(concat user-emacs-directory "backups")))
+	auto-save-file-name-transforms
+	`((".*" ,(concat user-emacs-directory "backups") t)))
 
   (setq create-lockfiles nil) ;; no need to create lockfiles
 
@@ -46,29 +46,27 @@
 
   (global-hl-line-mode t)
 
-  (add-hook 'vterm-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-
   ;; follow symlinks
   (setq find-file-visit-truename t)
+
+  (setq completion-cycle-threshold 3)
+  (setq tab-always-indent 'complete)
 
   ;; encoding
   (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
   (setq locale-coding-system 'utf-8
-        coding-system-for-read 'utf-8
-        coding-system-for-write 'utf-8)
+	coding-system-for-read 'utf-8
+	coding-system-for-write 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (set-selection-coding-system 'utf-8)
   (prefer-coding-system 'utf-8)
   (setq default-process-coding-system '(utf-8-unix . utf-8-unix)))
 
-;; function to reload config
 (defun config-reload ()
-  "Uncle dev created a function to reload Emacs config."
+  "Reload the configuration file"
   (interactive)
   (load-file (expand-file-name "~/.emacs.d/init.el")))
-
-(global-set-key (kbd "C-c r") 'config-reload)
 
 (use-package electric
   :straight (:type built-in)
@@ -78,9 +76,8 @@
 
 (use-package general
   :config
-  (general-evil-setup)
   ;; integrate general with evil
-
+  (general-evil-setup)
   ;; set up 'SPC' as the global leader key
   (general-create-definer chris/leader-keys
     :states '(normal insert visual emacs)
@@ -107,92 +104,87 @@
     "<mouse-2>") ;; pasting with mouse wheel click
 
   (chris/leader-keys
-    "SPC" '(execute-extended-command :wk "execute command") ;; an alternative to 'M-x'
-    "TAB" '(:keymap tab-prefix-map :wk "tab")) ;; remap tab bindings
+    "SPC" '(execute-extended-command :wk "execute command"))) ;; an alternative to 'M-x'
 
-  ;; file
-  (chris/leader-keys
-    "f" '(:ignore t :wk "file")
-    "ff" '(find-file :wk "find file")
-    "fz" '(affe-find :wk "fuzzy finder")
-    "fg" '(affe-grep :wk "fuzzy finder (grep)")
-    "fr" '(consult-recent-file :wk "Recent files")
-    "fs" '(save-buffer :wk "Save file")
-    "fu" '(sudo-edit-find-file :wk "Sudo find file")
-    "fy" '(dt/show-and-copy-buffer-path :wk "Yank file path")
-    "fC" '(copy-file :wk "Copy file")
-    "fD" '(delete-file :wk "Delete file")
-    "fR" '(rename-file :wk "Rename file")
-    "fS" '(write-file :wk "Save file as...")
-    "fU" '(sudo-edit :wk "Sudo edit file"))
+(chris/leader-keys
+  "f" '(:ignore t :wk "file")
+  "ff" '(find-file :wk "find file")
+  "fz" '(affe-find :wk "fuzzy finder")
+  "fg" '(affe-grep :wk "fuzzy finder (grep)")
+  "fr" '(consult-recent-file :wk "Recent files")
+  "fs" '(save-buffer :wk "Save file")
+  "fu" '(sudo-edit-find-file :wk "Sudo find file")
+  "fy" '(dt/show-and-copy-buffer-path :wk "Yank file path")
+  "fC" '(copy-file :wk "Copy file")
+  "fD" '(delete-file :wk "Delete file")
+  "fR" '(rename-file :wk "Rename file")
+  "fS" '(write-file :wk "Save file as...")
+  "fU" '(sudo-edit :wk "Sudo edit file"))
 
-  ;; buffer 
-  (chris/leader-keys
-    "b" '(:ignore t :wk "buffer")
-    "bi" '(persp-ibuffer :wk "ibuffer perspective")
-    "bI" '(ibuffer :wk "ibuffer")
-    "bb" '(consult-buffer :wk "switch buffer")
-    "bf" '(toggle-maximize-buffer :wk "Toggle maximize buffer")
-    "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
-    "bk" '(kill-current-buffer :wk "Kill current buffer")
-    "bn" '(next-buffer :wk "Next buffer")
-    "bp" '(previous-buffer :wk "Previous buffer")
-    "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
-    "br" '(revert-buffer :wk "Revert Buffer")
-    "bK" '(kill-buffer :wk "Kill buffer"))
+(chris/leader-keys
+  "b" '(:ignore t :wk "buffer")
+  "bi" '(ibuffer :wk "ibuffer")
+  "bb" '(consult-buffer :wk "switch buffer")
+  "bf" '(chris/toggle-maximize-buffer :wk "Toggle maximize buffer")
+  "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
+  "bk" '(kill-current-buffer :wk "Kill current buffer")
+  "bv" '(chris/buffers-vc-root :wk "Buffers in project root") 
+  "bm" '(chris/buffers-major-mode :wk "Buffers with same major mode")
+  "bn" '(next-buffer :wk "Next buffer")
+  "bp" '(previous-buffer :wk "Previous buffer")
+  "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
+  "br" '(revert-buffer :wk "Revert Buffer")
+  "bK" '(kill-buffer :wk "Kill buffer"))
 
-  ;; dired
-  (chris/leader-keys
-    "d" '(:ignore t :wk "dired")
-    "dd" '(dired :wk "Open Dired")
-    "dj" '(dired-jump :wk "Jump to current directory in dired"))
+(chris/leader-keys
+  "t" '(:ignore t :wk "toggle")
+  "tr" '(config-reload :wk "config")
+  "tl" '(chris/toggle-line-numbers :wk "linenumbers")
+  "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
+  "tt" '(modus-themes-toggle :wk "theme"))
 
-  ;; code
-  ;; see 'flymake'
-  (chris/leader-keys
-    "c" '(:ignore t :wk "code")
-    "cc" '(compile :wk "Compile")
-    "cd" '(flymake-show-buffer-diagnostics :wk "show lsp diagnostics")
-    "cm" '(open-matlab-shell :wk "Open Matlab shell"))
+(chris/leader-keys
+  "o" '(:ignore t :wk "open")
+  "ot" '(vterm :wk "vterm")
+  "oe" '(eshell :wk "eshell")
+  "os" '(fontaine-set-preset :wk "fontaine")
+  "ow" '(woman :wk "woman")
+  "of" '(chris/olivetti-mode :wk "olivetti")
+  "ou" '(undo-tree-visualize :wk "undo-tree")
+  "ol" '(org-toggle-link-display :wk "Display org links")
+  "oc" '(org-capture :wk "org campture")
+  "oo" '(occur "^*+" :wk "org sidebar"))
 
-  ;; hydra
+(chris/leader-keys
+"c" '(:ignore t :wk "code")
+"cc" '(compile :wk "Compile")
+"cd" '(flymake-show-buffer-diagnostics :wk "show lsp diagnostics")
+"cm" '(open-matlab-shell :wk "Open Matlab shell"))
+
+(use-package hydra
+  :defer t
+  :config
+  ;; scale text
+  (defhydra hydra-text-scale (:timeout 4)
+    "scale text"
+    ("j" text-scale-increase "in")
+    ("k" text-scale-decrease "out")
+    ("f" nil "finished" :exit t))
+
+  ;; split size
+  (defhydra hydra-split-size (:timeout 4)
+    "increase/decrease split size"
+    ("h" shrink-window-horizontally)
+    ("j" enlarge-window)
+    ("k" shrink-window)
+    ("l" enlarge-window-horizontally)
+    ("n" balance-windows)
+    ("f" nil "finished" :exit t))
+  :general
   (chris/leader-keys
     "h" '(:ignore t :wk "hydra")
     "hf" '(hydra-text-scale/body :wk "scale text")
-    "hs" '(hydra-split-size/body :wk "split size"))
-
-  ;; emms
-  (chris/leader-keys
-    "m" '(:ignore t :wk "emms")
-    "mm" '(emms :wk "emms")
-    "mb" '(emms-smart-browse :wk "EMMS Smart Browse")
-    "mi" '(emms-show :wk "EMMS show current song")
-    "mn" '(emms-next :wk "EMMS next song")
-    "mp" '(emms-previous :wk "EMMS previous song")
-    "ml" '(emms-seek-forward :wk "EMMS go 10s forward")
-    "mt" '(emms-toggle-repeat-track :wk "EMMS toggle repeat")
-    "mh" '(emms-seek-backward :wk "EMMS go 10s backward"))
-
-  ;; toggle dis
-  (chris/leader-keys
-    "t" '(:ignore t :wk "toggle")
-    "tr" '(config-reload :wk "config")
-    "tl" '(chris/toggle-line-numbers :wk "linenumbers")
-    "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
-    "tt" '(modus-themes-toggle :wk "theme"))
-
-  ;; open
-  (chris/leader-keys
-    "o" '(:ignore t :wk "open")
-    "ot" '(vterm :wk "vterm")
-    "oe" '(eshell :wk "eshell")
-    "of" '(fontaine-set-preset :wk "fontaine")
-    "ow" '(woman :wk "woman")
-    "of" '(chris/olivetti-mode :wk "olivetti")
-    "ou" '(undo-tree-visualize :wk "undo-tree")
-    "ol" '(org-toggle-link-display :wk "Display org links")
-    "oc" '(org-capture :wk "org campture")
-    "oo" '(occur "^*+" :wk "org sidebar")))
+    "hs" '(hydra-split-size/body :wk "split size")))
 
 (use-package evil
   :general
@@ -222,29 +214,28 @@
   (evil-set-initial-state 'eshell-mode 'insert)
   (evil-set-initial-state 'magit-diff-mode 'insert))
 
+(use-package undo-tree
+  :after evil
+  :config
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+  :init
+  (global-undo-tree-mode))
+
 (use-package evil-collection ;; evilifies a bunch of things
-    :after evil
-    :init
-    (setq evil-collection-outline-bind-tab-p t) ;; '<TAB>' cycles visibility in 'outline-minor-mode'
-    ;; If I want to incrementally enable evil-collection mode-by-mode, I can do something like the following:
-    ;; (setq evil-collection-mode-list nil) ;; I don't like surprises
-    ;; (add-to-list 'evil-collection-mode-list 'magit) ;; evilify magit
-    ;; (add-to-list 'evil-collection-mode-list '(pdf pdf-view)) ;; evilify pdf-view
-    :config
-    (evil-collection-init))
+  :after evil
+  :init
+  (setq evil-collection-outline-bind-tab-p t) ;; '<TAB>' cycles visibility in 'outline-minor-mode'
+  ;; If I want to incrementally enable evil-collection mode-by-mode, I can do something like the following:
+  ;; (setq evil-collection-mode-list nil) ;; I don't like surprises
+  ;; (add-to-list 'evil-collection-mode-list 'magit) ;; evilify magit
+  ;; (add-to-list 'evil-collection-mode-list '(pdf pdf-view)) ;; evilify pdf-view
+  :config
+  (evil-collection-init))
 
 (use-package evil-commentary
   :after evil
   :config
   (evil-commentary-mode)) ;; globally enable evil-commentary
-
-(use-package link-hint
-  :general
-  (chris/leader-keys
-    "l" '(link-hint-open-link :wk "open link"))
-  :config
-  (setq browse-url-browser-function 'browse-url-firefox)
-  (setq link-hint-avy-style 'pre))
 
 (defun scroll-down-and-center ()
   (interactive)
@@ -266,6 +257,54 @@
   :config
   (which-key-setup-minibuffer))
 
+(use-package org
+  :config
+  (setq org-ellipsis " ")
+  (setq orc-src-fontify-natively t)
+  (setq src-tab-acts-natively t)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-fontify-whole-block-delimiter-line t)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-with-smart-quotes t)
+  (setq org-src-window-setup 'current-window)
+  (setq org-hide-emphasis-markers t)
+  (setq org-src-preserve-indentation 1)
+  (setq org-edit-src-content-indentation 0)
+  (setq org-log-done t)
+
+  ;; configure babel languages
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)))
+
+    (push '("conf-unix" . conf-unix) org-src-lang-modes))
+
+  (setq org-directory "~/org")
+  (setq org-default-notes-file (concat org-directory "/notes.org")))
+
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/orgroam")
+  (org-roam-compeltion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :general
+  (chris/leader-keys
+    "r" '(:ignore t :wk "org-roam")
+    "rt" '(org-roam-buffer-toggle :wk "toggle org-roam buffer")
+    "rf" '(org-roam-node-find :wk "find node")
+    "ri" '(org-roam-node-insert :wk "insert node"))
+  (chris/leader-keys "rd" '(:keymap org-roam-dailies-map :wk "dailies"))
+  :config
+  (require 'org-roam-dailies)
+  (org-roam-db-autosync-mode)
+  (org-roam-setup))
+
 (use-package fontaine
   :config
   (setq x-underline-at-descent-line t)
@@ -273,59 +312,46 @@
   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
   :init
   (setq fontaine-presets
-        '((tiny
-           :default-family "Iosevka Comfy Wide Fixed"
-           :default-height 70)
-          (small
-           :default-family "Iosevka Comfy Fixed"
-           :default-height 90)
-          (regular
-           :default-height 110)
-          (medium
-           :default-height 120)
-          (large
-           :default-weight semilight
-           :default-height 140
-           :bold-weight extrabold)
-          (presentation
-           :default-weight semilight
-           :default-height 170
-           :bold-weight extrabold)
-          (t
-           ;; I keep all properties for didactic purposes, but most can be
-           ;; omitted.  See the fontaine manual for the technicalities:
-           ;; <https://protesilaos.com/emacs/fontaine>.
-           :default-family "Iosevka Comfy Wide"
-           :default-weight regular
-           :default-height 110 
-           :fixed-pitch-family nil ; falls back to :default-family
-           :fixed-pitch-weight nil ; falls back to :default-weight
-           :fixed-pitch-height 1.0
-           :variable-pitch-family "Iosevka Comfy Duo"
-           :variable-pitch-weight nil
-           :variable-pitch-height 1.0
-           :bold-family nil ; use whatever the underlying face has
-           :bold-weight bold
-           :italic-family nil
-           :italic-slant italic
-           :line-spacing nil))))
-
-(use-package all-the-icons)
-
-(use-package all-the-icons-dired
-  :hook
-  (dired-mode . all-the-icons-dired-mode))
-
-(use-package all-the-icons-ibuffer
-  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-(use-package diredfl
-  :hook (dired-mode . diredfl-mode))
+	'((tiny
+	   :default-family "Iosevka Comfy Wide Fixed"
+	   :default-height 70)
+	  (small
+	   :default-family "Iosevka Comfy Fixed"
+	   :default-height 90)
+	  (regular
+	   :default-height 110)
+	  (medium
+	   :default-height 120)
+	  (large
+	   :default-weight semilight
+	   :default-height 140
+	   :bold-weight extrabold)
+	  (presentation
+	   :default-weight semilight
+	   :default-height 170
+	   :bold-weight extrabold)
+	  (t
+	   ;; I keep all properties for didactic purposes, but most can be
+	   ;; omitted.  See the fontaine manual for the technicalities:
+	   ;; <https://protesilaos.com/emacs/fontaine>.
+	   :default-family "Iosevka Comfy Wide"
+	   :default-weight regular
+	   :default-height 110 
+	   :fixed-pitch-family nil ; falls back to :default-family
+	   :fixed-pitch-weight nil ; falls back to :default-weight
+	   :fixed-pitch-height 1.0
+	   :variable-pitch-family "Iosevka Comfy Duo"
+	   :variable-pitch-weight nil
+	   :variable-pitch-height 1.0
+	   :bold-family nil ; use whatever the underlying face has
+	   :bold-weight bold
+	   :italic-family nil
+	   :italic-slant italic
+	   :line-spacing nil))))
 
 ;; some useful output to display in the modeline
 (display-battery-mode 1)
 (column-number-mode 1)
-
 
 ;; display the current time and date in the minibuffer
 (defun display-current-time ()
@@ -333,48 +359,42 @@
   (message (format-time-string "%Y-%m-%d %H:%M:%S")))
 (define-key global-map (kbd "<f1>") #'display-current-time)
 
-
 ;; display wifi/eth/vpn status in the minibuffer
 (defun display-wifi-status ()
   (interactive)
   (message (shell-command-to-string "sb-internet-emacs")))
 (define-key global-map (kbd "<f2>") #'display-wifi-status)
 
-(use-package beacon
-  :init
-  (beacon-mode 1))
-
 (use-package modus-themes
-  :init
+  :config
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
         modus-themes-subtle-line-numbers nil
-	modus-themes-fringes '(subtle)
+        modus-themes-fringes '(subtle)
         modus-themes-hl-line '(intense)
         modus-themes-mode-line '(borderless)
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
-        '((1 . (1.6 rainbow))
-          (2 . (1.4 rainbow))
-          (3 . (1.2 rainbow))
+        '((1 . (1.3 rainbow))
+          (2 . (1.2 rainbow))
+          (3 . (1.1 rainbow))
           (t . (1.0 rainbow)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
 (modus-themes-load-vivendi)
 
 (use-package doom-modeline
-  :init
+  :config
   (setq doom-modeline-height 30
-        doom-modeline-icon 1
+        doom-modeline-icon nil 
         doom-modeline-lsp t)
+  :init
   (doom-modeline-mode 1))
 
-(defun chris/toggle-line-numbers ()
-  "Toggles the display of line numbers. Applies locally to the current buffer"
-  (interactive)
-  (if (bound-and-true-p display-line-numbers-mode)
-      (display-line-numbers-mode -1)
-    (display-line-numbers-mode)))
+(use-package evil-anzu
+  :after evil
+  :init
+  (global-anzu-mode))
 
 (use-package vertico
   :init
@@ -397,7 +417,7 @@
   :after orderless
   :init
   (setq affe-regexp-function #'orderless-pattern-compiler
-	affe-highlight-function #'orderless-highlight-matches)
+        affe-highlight-function #'orderless-highlight-matches)
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package savehist
@@ -412,11 +432,13 @@
   :init
   (marginalia-mode))
 
-;; anzu
-(use-package evil-anzu
-  :after evil
-  :init
-  (global-anzu-mode))
+(use-package dired
+  :straight (:type built-in)
+  :general
+  (chris/leader-keys
+    "d" '(:ignore t :wk "dired")
+    "dd" '(dired :wk "Open Dired")
+    "dj" '(dired-jump :wk "Jump to current directory in dired")))
 
 (use-package sudo-edit)
 
@@ -431,80 +453,26 @@
     "xp" '(0x0-popup :wk "0x0 popup")
     "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
 
-(use-package projectile
-  :general
-  (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
-  :init
-  (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (add-to-list 'projectile-globally-ignored-modes "org-mode"))
-(setq projectile-indexing-method 'hybrid)
-
-(use-package ibuffer-projectile
-  :config 
-  (add-hook 'ibuffer-hook
-            (lambda ()
-              (ibuffer-projectile-set-filter-groups)
-              (unless (eq ibuffer-sorting-mode 'alphabetic)
-                (ibuffer-do-sort-by-alphabetic)))))
-
-(use-package perspective
-  :general
-  (chris/leader-keys
-    "i" '(:keymap perspective-map :wk "perspective"))
-  :custom
-  (persp-mode-prefix-key (kbd "C-c M-p")) 
-  :init
-  (persp-mode))
-
-(defun toggle-maximize-buffer () "Maximize buffer"
-       (interactive)
-       (if (= 1 (length (window-list)))
-	   (jump-to-register '_) 
-	 (progn
-	   (window-configuration-to-register '_)
-	   (delete-other-windows))))
-
-(use-package hydra
-  :defer t)
-
-;; scale text
-(defhydra hydra-text-scale (:timeout 4)
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out")
-  ("f" nil "finished" :exit t))
-
-;; split size
-(defhydra hydra-split-size (:timeout 4)
-  "increase/decrease split size"
-  ("h" shrink-window-horizontally)
-  ("j" enlarge-window)
-  ("k" shrink-window)
-  ("l" enlarge-window-horizontally)
-  ("n" balance-windows)
-  ("f" nil "finished" :exit t))
-
 (use-package openwith
   :config
   (setq openwith-associations
-	(list
-	 (list (openwith-make-extension-regexp
-		'("xbm" "pbm" "pgm" "ppm" "pnm"
-		  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
-	       "sxiv"
-	       '(file))
-	 (list (openwith-make-extension-regexp
-		'("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
-	       "libreoffice"
-	       '(file))
-	 '("\\.lyx" "lyx" (file))
-	 '("\\.chm" "kchmviewer" (file))
-	 (list (openwith-make-extension-regexp
-		'("pdf" "ps" "ps.gz" "dvi"))
-	       "zathura"
-	       '(file))
-	 ))
+        (list
+         (list (openwith-make-extension-regexp
+                '("xbm" "pbm" "pgm" "ppm" "pnm"
+                  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
+               "sxiv"
+               '(file))
+         (list (openwith-make-extension-regexp
+                '("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
+               "libreoffice"
+               '(file))
+         '("\\.lyx" "lyx" (file))
+         '("\\.chm" "kchmviewer" (file))
+         (list (openwith-make-extension-regexp
+                '("pdf" "ps" "ps.gz" "dvi"))
+               "zathura"
+               '(file))
+         ))
   (openwith-mode 1))
 
 (setq calendar-week-start-day 1
@@ -619,42 +587,110 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
   "Turn off `chris/hide-mode-line-mode'."
   (chris/hide-mode-line-mode -1))
 
-(use-package engine-mode
+(defun chris/buffers-major-mode (&optional arg)
+  "Select buffers that match the current buffer's major mode.
+With \\[universal-argument] produce an `ibuffer' filtered
+accordingly.  Else use standard completion."
+  (interactive "P")
+  (let* ((major major-mode)
+	 (prompt "Buffers for ")
+	 (mode-string (format "%s" major))
+	 (mode-string-pretty (propertize mode-string 'face 'success)))
+    (if arg
+	(ibuffer t (concat "*" prompt mode-string "*")
+		 (list (cons 'used-mode major)))
+      (switch-to-buffer
+       (read-buffer
+	(concat prompt mode-string-pretty ": ") nil t
+	(lambda (pair) ; pair is (name-string . buffer-object)
+	  (with-current-buffer (cdr pair) (derived-mode-p major))))))))
+
+(defun chris/buffers-vc-root (&optional arg)
+  "Select buffers that match the present `vc-root-dir'.
+With \\[universal-argument] produce an `ibuffer' filtered
+accordingly.  Else use standard completion.
+
+When no VC root is available, use standard `switch-to-buffer'."
+  (interactive "P")
+  (let* ((root (vc-root-dir))
+         (prompt "Buffers for VC ")
+         (vc-string (format "%s" root))
+         (vc-string-pretty (propertize vc-string 'face 'success)))
+    (if root
+        (if arg
+            (ibuffer t (concat "*" prompt vc-string "*")
+                     (list (cons 'filename (expand-file-name root))))
+          (switch-to-buffer
+           (read-buffer
+            (concat prompt vc-string-pretty ": ") nil t
+            (lambda (pair) ; pair is (name-string . buffer-object)
+              (with-current-buffer (cdr pair) (string= (vc-root-dir) root))))))
+      (call-interactively 'switch-to-buffer))))
+
+(defun chris/toggle-maximize-buffer () "Maximize buffer"
+       (interactive)
+       (if (= 1 (length (window-list)))
+           (jump-to-register '_) 
+         (progn
+           (window-configuration-to-register '_)
+           (delete-other-windows))))
+
+(use-package projectile
+  :general
+  (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
+  :init
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (add-to-list 'projectile-globally-ignored-modes "org-mode"))
+(setq projectile-indexing-method 'hybrid)
+
+(use-package ibuffer-projectile
+  :config 
+  (add-hook 'ibuffer-hook
+            (lambda ()
+              (ibuffer-projectile-set-filter-groups)
+              (unless (eq ibuffer-sorting-mode 'alphabetic)
+                (ibuffer-do-sort-by-alphabetic)))))
+
+(use-package tab-bar
+  :straight (:type built-in)
   :general
   (chris/leader-keys
-    "e" '(:keymap engine-mode-prefixed-map :wk "engine-mode"))
+    "TAB" '(:keymap tab-prefix-map :wk "tab")
+    "TAB s" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
   :config
+  (setq tab-bar-close-button-show nil)
+  (setq tab-bar-close-last-tab-choice nil)
+  (setq tab-bar-close-tab-select 'recent)
+  (setq tab-bar-new-tab-choice t)
+  (setq tab-bar-new-tab-to 'right)
+  (setq tab-bar-position nil)
+  (setq tab-bar-show nil)
+  (setq tab-bar-tab-hints nil)
+  (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
+  (tab-bar-mode -1)
+  (tab-bar-history-mode 1))
 
-  ;; duckduckgo search engine
-  (defengine duckduckgo
-    "https://duckduckgo.com/?q=%s"
-    :keybinding "d")
-
-  ;; google search engine
-  (defengine google
-    "https://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-    :keybinding "g")
-
-  ;; wikipedia search engine
-  (defengine wikipedia
-    "https://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
-    :keybinding "w"
-    :docstring "Searchin' the wikis.")
-
-  ;; stack-overflow search engine
-  (defengine stack-overflow
-    "https://stackoverflow.com/search?q=%s"
-    :keybinding "s")
-  )
-
-(use-package undo-tree
-  :config
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  :init
-  (global-undo-tree-mode))
+(defun chris/tab-bar-select-tab-dwim ()
+  "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
+If no other tab exists, create one and switch to it.  If there is
+one other tab (so two in total) switch to it without further
+questions.  Else use completion to select the tab to switch to."
+  (interactive)
+  (let ((tabs (mapcar (lambda (tab)
+                        (alist-get 'name tab))
+                      (tab-bar--tabs-recent))))
+    (cond ((eq tabs nil)
+           (tab-new))
+          ((eq (length tabs) 1)
+           (tab-next))
+          (t
+           (consult-imenu ()
+                          (tab-bar-switch-to-tab
+                           (completing-read "Select tab: " tabs nil t)))))))
 
 (use-package company
-  :init
+  :config
   (setq company-idle-delay 0)
   (setq company-minium-prefix-length 3))
 
@@ -673,7 +709,8 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
   (prog-mode . highlight-indent-guides-mode))
 
 (use-package eglot
-  :commands eglot)
+  :commands
+  eglot)
 
 (use-package tree-sitter-langs)
 
@@ -699,60 +736,32 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
   (define-key evil-outer-text-objects-map "C" (evil-textobj-tree-sitter-get-textobj "class.outer"))
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 
-(setq org-ellipsis " ")
-(setq orc-src-fontify-natively t)
-(setq src-tab-acts-natively t)
-(setq org-fontify-quote-and-verse-blocks t)
-(setq org-fontify-whole-block-delimiter-line t)
-(setq org-confirm-babel-evaluate nil)
-(setq org-export-with-smart-quotes t)
-(setq org-src-window-setup 'current-window)
-(setq org-hide-emphasis-markers t)
-(setq org-src-preserve-indentation 1)
-(setq org-edit-src-content-indentation 0)
-(setq org-log-done t)
-
-;; configure babel languages
-(with-eval-after-load 'org
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (python . t)))
-
-  (push '("conf-unix" . conf-unix) org-src-lang-modes))
-
-(setq org-directory "~/org")
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-
-(use-package org-modern
-  :hook
-  (org-mode . org-modern-mode))
-
-(use-package org-roam
+(use-package async
   :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/orgroam")
-  (org-roam-compeltion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-	 ("C-c n f" . org-roam-node-find)
-	 ("C-c n i" . org-roam-node-insert))
+  (dired-async-mode 1))
+
+(use-package rg
+  :init
+  (rg-enable-default-bindings))
+
+(use-package magit
   :general
   (chris/leader-keys
-    "r" '(:ignore t :wk "org-roam")
-    "rt" '(org-roam-buffer-toggle :wk "toggle org-roam buffer")
-    "rf" '(org-roam-node-find :wk "find node")
-    "ri" '(org-roam-node-insert :wk "insert node"))
-  (chris/leader-keys "rd" '(:keymap org-roam-dailies-map :wk "dailies"))
+    "g" '(:ignore t :wk "git")
+    "gg" '(magit-status :wk "status")
+    "gG" '(magit-list-repositories :wk "list repos"))
   :config
-  (require 'org-roam-dailies)
-  (org-roam-db-autosync-mode)
-  (org-roam-setup))
+  (setq magit-push-always-verify nil)
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  (setq magit-repository-directories
+        '(("~/.local/src"  . 2)
+          ("~/.config/" . 2)))
+  (setq git-commit-summary-max-length 50)
+  :bind
+  ("C-x g" . magit-status)
+  ("C-x C-g" . magit-list-repositories))
 
 (use-package haskell-mode)
-
-;; (when (executable-find "ipython")
-;;   (setq python-shell-interpreter "ipython"))
 
 (use-package lua-mode)
 
@@ -777,29 +786,9 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
   (other-window 1)
   (matlab-shell))
 
-(use-package magit
-  :general
-  (chris/leader-keys
-    "g" '(:ignore t :wk "git")
-    "gg" '(magit-status :wk "status")
-    "gG" '(magit-list-repositories :wk "list repos"))
-  :config
-  (setq magit-push-always-verify nil)
-  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
-  (setq magit-repository-directories
-        '(("~/.local/src"  . 2)
-          ("~/.config/" . 2)))
-  (setq git-commit-summary-max-length 50)
-  :bind
-  ("C-x g" . magit-status)
-  ("C-x C-g" . magit-list-repositories))
-
 (use-package vterm
   :init
-  (setq vterm-timer-delay 0.01)
-  :hook (vterm-mode . chris/hide-mode-line-mode))
-
-(use-package exec-path-from-shell)
+  (setq vterm-timer-delay 0.01))
 
 (defun chris/configure-eshell ()
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
@@ -813,7 +802,6 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 (use-package eshell
   :straight (:type built-in)
   :hook
-  (eshell-mode . chris/hide-mode-line-mode)
   (eshell-first-time-mode . chris/configure-eshell)
   :config
   (with-eval-after-load 'esh-opt
@@ -850,15 +838,18 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 
 (use-package rainbow-mode)
 
-(use-package rg
-  :init
-  (rg-enable-default-bindings))
-
-(use-package async
-  :init
-  (dired-async-mode 1))
-
-(use-package emms)
+(use-package emms
+  :general
+  (chris/leader-keys
+    "m" '(:ignore t :wk "emms")
+    "mm" '(emms :wk "emms")
+    "mb" '(emms-smart-browse :wk "EMMS Smart Browse")
+    "mi" '(emms-show :wk "EMMS show current song")
+    "mn" '(emms-next :wk "EMMS next song")
+    "mp" '(emms-previous :wk "EMMS previous song")
+    "ml" '(emms-seek-forward :wk "EMMS go 10s forward")
+    "mt" '(emms-toggle-repeat-track :wk "EMMS toggle repeat")
+    "mh" '(emms-seek-backward :wk "EMMS go 10s backward")))
 (require 'emms-setup)
 (emms-all)
 (emms-default-players)
