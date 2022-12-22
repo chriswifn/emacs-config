@@ -114,7 +114,6 @@
   "fr" '(consult-recent-file :wk "Recent files")
   "fs" '(save-buffer :wk "Save file")
   "fu" '(sudo-edit-find-file :wk "Sudo find file")
-  "fy" '(dt/show-and-copy-buffer-path :wk "Yank file path")
   "fC" '(copy-file :wk "Copy file")
   "fD" '(delete-file :wk "Delete file")
   "fR" '(rename-file :wk "Rename file")
@@ -656,8 +655,8 @@ When no VC root is available, use standard `switch-to-buffer'."
   :straight (:type built-in)
   :general
   (chris/leader-keys
-    "TAB" '(:keymap tab-prefix-map :wk "tab")
-    "TAB s" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
+    "i" '(:keymap tab-prefix-map :wk "tab")
+    "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-last-tab-choice nil)
