@@ -140,6 +140,7 @@
   "tr" '(config-reload :wk "config")
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
+  "ts" '(chris/tab-status-line :wk "tab-bar-line")
   "tt" '(modus-themes-toggle :wk "theme"))
 
 (chris/leader-keys
@@ -371,7 +372,7 @@
         modus-themes-subtle-line-numbers nil
         modus-themes-fringes '(subtle)
         modus-themes-hl-line '(intense)
-        modus-themes-mode-line '(borderless)
+        modus-themes-mode-line '(borderless (padding . 4))
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
         '((1 . (1.3 rainbow))
@@ -382,18 +383,13 @@
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
 (modus-themes-load-vivendi)
 
-(use-package doom-modeline
-  :config
-  (setq doom-modeline-height 30
-        doom-modeline-icon nil 
-        doom-modeline-lsp t)
-  :init
-  (doom-modeline-mode 1))
-
-(use-package evil-anzu
-  :after evil
-  :init
-  (global-anzu-mode))
+(use-package diminish)
+(diminish 'auto-revert-mode)
+(diminish 'evil-collection-unimpaired-mode)
+(diminish 'which-key-mode)
+(diminish 'evil-commentary-mode)
+(diminish 'undo-tree-mode)
+(diminish 'eldoc-mode)
 
 (use-package vertico
   :init
@@ -695,17 +691,30 @@ questions.  Else use completion to select the tab to switch to."
                           (tab-bar-switch-to-tab
                            (completing-read "Select tab: " tabs nil t)))))))
 
+(define-minor-mode chris/tab-status-line
+  "Make Tab bar a status line and configure the extras.
+Hide the mode lines and change their colors."
+  :global t
+  (if chris/tab-status-line
+      (progn
+        (setq tab-bar-show t)
+        (tab-bar-mode 1))
+    (setq tab-bar-show nil)
+    (tab-bar-mode -1)))
+
 (use-package company
   :config
   (setq company-idle-delay 0)
   (setq company-minium-prefix-length 3))
 
 (use-package aggressive-indent
+  :diminish
   :init
   (global-aggressive-indent-mode 1))
 (add-to-list 'aggressive-indent-excluded-modes 'python-mode)
 
 (use-package highlight-indent-guides
+  :diminish
   :config
   (setq highlight-indent-guides-auto-odd-face-perc 30)
   (setq highlight-indent-guides-auto-even-face-perc 35)
