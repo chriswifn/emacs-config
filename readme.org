@@ -1097,8 +1097,7 @@ the currently focused buffer.
 #+begin_src emacs-lisp
 (define-minor-mode chris/toggle-maximize-buffer ()
   "Maximize buffer"
-  :lighter " [M]"
-  ;; (interactive)
+  (interactive)
   (if (= 1 (length (window-list)))
       (jump-to-register '_) 
     (progn

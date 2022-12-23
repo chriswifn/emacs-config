@@ -630,14 +630,14 @@ When no VC root is available, use standard `switch-to-buffer'."
               (with-current-buffer (cdr pair) (string= (vc-root-dir) root))))))
       (call-interactively 'switch-to-buffer))))
 
-(define-minor-mode chris/toggle-maximize-buffer () "Maximize buffer"
-  :lighter " [M]"
-       ;; (interactive)
-       (if (= 1 (length (window-list)))
-           (jump-to-register '_) 
-         (progn
-           (window-configuration-to-register '_)
-           (delete-other-windows))))
+(define-minor-mode chris/toggle-maximize-buffer ()
+  "Maximize buffer"
+  (interactive)
+  (if (= 1 (length (window-list)))
+      (jump-to-register '_) 
+    (progn
+      (window-configuration-to-register '_)
+      (delete-other-windows))))
 
 (defun chris/toggle-line-numbers ()
   "Toggles the display of line numbers. Applies locally to the current buffer"
