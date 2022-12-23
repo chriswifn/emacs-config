@@ -46,6 +46,11 @@
 
   (global-hl-line-mode t)
 
+  ;; Revert buffers when the underlying file has changed
+  (global-auto-revert-mode 1)
+  ;; Revert Dired and other buffers
+  (setq global-auto-revert-non-file-buffers t)
+
   ;; follow symlinks
   (setq find-file-visit-truename t)
 
@@ -416,6 +421,9 @@
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package savehist
+  :straight (:type built-in)
+  :config
+  (setq history-length 25)
   :init
   (savehist-mode))
 
