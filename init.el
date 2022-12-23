@@ -639,6 +639,66 @@ When no VC root is available, use standard `switch-to-buffer'."
       (window-configuration-to-register '_)
       (delete-other-windows))))
 
+(defcustom chris-simple-scratch-buffer-default-mode 'org-mode
+  "Default major mode for `chris/simple-scratch-buffer'."
+  :type 'symbol)
+
+;;; Generic setup
+(defun chris/simple--scratch-list-modes ()
+  "List known major modes."
+  (cl-loop for sym the symbols of obarray
+	   when (and (functionp sym)
+		     (provided-mode-derived-p sym 'prog-mode))
+	   collect sym))
+
+(defun chris/simple--scratch-buffer-setup (region &optional mode)
+  "Add contents to `scratch' buffer and name it accordingly.
+
+REGION is added to the contents to the new buffer.
+
+Use the current buffer's major mode by default.  With optional
+MODE use that major mode instead."
+  (let* ((major (or mode major-mode))
+         (string (format "Scratch buffer for: %s\n\n" major))
+         (text (concat string region))
+         (buf (format "*Scratch for %s*" major)))
+    (with-current-buffer (get-buffer-create buf)
+      (funcall major)
+      (save-excursion
+        (insert text)
+        (goto-char (point-min))
+        (comment-region (point-at-bol) (point-at-eol)))
+      (vertical-motion 2))
+    (pop-to-buffer buf)))
+
+(defun chris/simple-scratch-buffer (&optional arg)
+  "Produce a bespoke scratch buffer matching current major mode.
+
+With optional ARG as a prefix argument (\\[universal-argument]),
+use `chris-simple-scratch-buffer-default-mode'.
+
+With ARG as a double prefix argument, prompt for a major mode
+with completion.
+
+If region is active, copy its contents to the new scratch
+buffer."
+  (interactive "P")
+  (let* ((default-mode chris-simple-scratch-buffer-default-mode)
+         (modes (chris/simple--scratch-list-modes))
+         (region (with-current-buffer (current-buffer)
+                   (if (region-active-p)
+                       (buffer-substring-no-properties
+                        (region-beginning)
+                        (region-end))
+                     "")))
+         (m))
+    (pcase (prefix-numeric-value arg)
+      (16 (progn
+            (setq m (intern (completing-read "Select major mode: " modes nil t)))
+            (chris/simple--scratch-buffer-setup region m)))
+      (4 (chris/simple--scratch-buffer-setup region default-mode))
+      (_ (chris/simple--scratch-buffer-setup region)))))
+
 (defun chris/toggle-line-numbers ()
   "Toggles the display of line numbers. Applies locally to the current buffer"
   (interactive)
