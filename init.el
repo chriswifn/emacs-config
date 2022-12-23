@@ -138,6 +138,7 @@
   "bp" '(previous-buffer :wk "Previous buffer")
   "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
   "br" '(revert-buffer :wk "Revert Buffer")
+  "bs" '(chris/simple-scratch-buffer :wk "Revert Buffer")
   "bK" '(kill-buffer :wk "Kill buffer"))
 
 (chris/leader-keys
@@ -380,10 +381,10 @@
         modus-themes-mode-line '(borderless (padding . 4))
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
-        '((1 . (1.3 rainbow))
-          (2 . (1.2 rainbow))
-          (3 . (1.1 rainbow))
-          (t . (1.0 rainbow)))
+        '((1 . (1.3))
+          (2 . (1.2))
+          (3 . (1.1))
+          (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
 (modus-themes-load-vivendi)

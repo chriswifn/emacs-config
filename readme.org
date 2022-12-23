@@ -198,6 +198,8 @@ its primary purpose is to build on existing functionality to make key definition
 implicitly wrapping key strings with ~(kbd ...)~, using named prefix key sequences (like the leader key in vim),
 and much more.
 
+*** General setup
+
 #+begin_src emacs-lisp
 (use-package general
   :config
@@ -294,6 +296,7 @@ and much more.
   "bp" '(previous-buffer :wk "Previous buffer")
   "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
   "br" '(revert-buffer :wk "Revert Buffer")
+  "bs" '(chris/simple-scratch-buffer :wk "Revert Buffer")
   "bK" '(kill-buffer :wk "Kill buffer"))
 #+end_src
 
@@ -698,10 +701,10 @@ Each theme’s color palette is designed to meet the needs of the numerous inter
         modus-themes-mode-line '(borderless (padding . 4))
         modus-themes-syntax '(faint green-strings alt-syntax)
         modus-themes-headings
-        '((1 . (1.3 rainbow))
-          (2 . (1.2 rainbow))
-          (3 . (1.1 rainbow))
-          (t . (1.0 rainbow)))
+        '((1 . (1.3))
+          (2 . (1.2))
+          (3 . (1.1))
+          (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
 (modus-themes-load-vivendi)
