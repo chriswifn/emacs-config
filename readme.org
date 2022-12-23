@@ -1095,7 +1095,7 @@ When no VC root is available, use standard `switch-to-buffer'."
 the currently focused buffer.
 
 #+begin_src emacs-lisp
-(define-minor-mode chris/toggle-maximize-buffer ()
+(defun chris/toggle-maximize-buffer ()
   "Maximize buffer"
   (interactive)
   (if (= 1 (length (window-list)))
