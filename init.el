@@ -630,8 +630,9 @@ When no VC root is available, use standard `switch-to-buffer'."
               (with-current-buffer (cdr pair) (string= (vc-root-dir) root))))))
       (call-interactively 'switch-to-buffer))))
 
-(defun chris/toggle-maximize-buffer () "Maximize buffer"
-       (interactive)
+(define-minor-mode chris/toggle-maximize-buffer () "Maximize buffer"
+  :lighter " [M]"
+       ;; (interactive)
        (if (= 1 (length (window-list)))
            (jump-to-register '_) 
          (progn

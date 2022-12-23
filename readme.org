@@ -1095,13 +1095,15 @@ When no VC root is available, use standard `switch-to-buffer'."
 the currently focused buffer.
 
 #+begin_src emacs-lisp
-(defun chris/toggle-maximize-buffer () "Maximize buffer"
-       (interactive)
-       (if (= 1 (length (window-list)))
-           (jump-to-register '_) 
-         (progn
-           (window-configuration-to-register '_)
-           (delete-other-windows))))
+(define-minor-mode chris/toggle-maximize-buffer ()
+  "Maximize buffer"
+  :lighter " [M]"
+  ;; (interactive)
+  (if (= 1 (length (window-list)))
+      (jump-to-register '_) 
+    (progn
+      (window-configuration-to-register '_)
+      (delete-other-windows))))
 #+end_src
 
 ** Toggle line numbers
