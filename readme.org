@@ -1138,6 +1138,21 @@ the currently focused buffer.
       (delete-other-windows))))
 #+end_src
 
+** dired buffer
+
+Conveniently configure dired and a function to kill all open dired buffers.
+#+begin_src emacs-lisp
+(put 'dired-find-alternate-file 'disabled nil)
+
+(defun chris/kill-dired-buffers ()
+  "Kill all open dired buffers."
+  (interactive)
+  (mapc (lambda (buffer)
+          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+            (kill-buffer buffer)))
+        (buffer-list)))
+#+end_src
+
 ** Create custom scratch buffers
 
 =chris/simple-scratch-buffer= is a function to dynamically create scratch buffers based on

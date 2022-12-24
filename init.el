@@ -653,6 +653,16 @@ When no VC root is available, use standard `switch-to-buffer'."
       (window-configuration-to-register '_)
       (delete-other-windows))))
 
+(put 'dired-find-alternate-file 'disabled nil)
+
+(defun chris/kill-dired-buffers ()
+  "Kill all open dired buffers."
+  (interactive)
+  (mapc (lambda (buffer)
+          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+            (kill-buffer buffer)))
+        (buffer-list)))
+
 (defcustom chris-simple-scratch-buffer-default-mode 'org-mode
   "Default major mode for `chris/simple-scratch-buffer'."
   :type 'symbol)
