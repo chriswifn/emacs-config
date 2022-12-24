@@ -721,7 +721,7 @@ buffer."
             (setq m (intern (completing-read "Select major mode: " modes nil t)))
             (chris/simple--scratch-buffer-setup region m)))
       (4 (chris/simple--scratch-buffer-setup region default-mode))
-      (_ (chris/simple--scratch-buffer-setup region default-mode)))))
+      (_ (chris/simple--scratch-buffer-setup region)))))
 
 (defun chris/toggle-line-numbers ()
   "Toggles the display of line numbers. Applies locally to the current buffer"
