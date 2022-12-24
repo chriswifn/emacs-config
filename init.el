@@ -720,7 +720,7 @@ buffer."
     (pcase (prefix-numeric-value arg)
       (16 (progn
             (setq m (intern (completing-read "Select major mode: " modes nil t)))
-            (chris/simple--scratch-buffer-setup region default-mode)))
+            (chris/simple--scratch-buffer-setup region m)))
       (4 (chris/simple--scratch-buffer-setup region default-mode))
       (_ (chris/simple--scratch-buffer-setup region)))))
 
