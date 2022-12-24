@@ -331,6 +331,7 @@ and much more.
 | SPC o u    | undo-tree-visualize     | Open undo-tree                               |
 | SPC o l    | org-toggle-link-display | Display org-mode links (don't truncate them) |
 | SPC o c    | org-capture             | Open org-capture for "note-taking"           |
+| SPC o a    | org-agenda              | Open org-agenda for "taks-scheduling"        |
 | SPC o o    | occur "^*+"             | Get an outline (headings) of org-mode files  |
 
 #+begin_src emacs-lisp
