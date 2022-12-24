@@ -533,7 +533,8 @@ structures — constructed to be both simple enough for the novice and powerful 
 
 ** General org-mode configuration
 
-Some basic settings for org-mode
+Some basic settings for org-mode.
+To easily insert blocks press ~C-c C-,~.
 
 #+begin_src emacs-lisp
 (use-package org
