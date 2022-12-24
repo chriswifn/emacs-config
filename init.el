@@ -159,6 +159,7 @@
   "ou" '(undo-tree-visualize :wk "undo-tree")
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
+  "oa" '(org-agenda :wk "org campture")
   "oo" '(occur "^*+" :wk "org sidebar"))
 
 (chris/leader-keys
