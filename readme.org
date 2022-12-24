@@ -404,6 +404,8 @@ This makes the Hydra very seamless, it's like a minor mode that disables itself 
 [[https://github.com/emacs-evil/evil][Evil]] is an extensible vi layer for Emacs. It emulates the main features of Vim,
 and provides facilities for writing custom extensions. Also see our page on EmacsWiki.
 
+*** General evil setup
+
 #+begin_src emacs-lisp
 (use-package evil
   :general
@@ -468,6 +470,19 @@ This is a collection of Evil bindings for the parts of Emacs that Evil does not 
   ;; (add-to-list 'evil-collection-mode-list '(pdf pdf-view)) ;; evilify pdf-view
   :config
   (evil-collection-init))
+#+end_src
+
+*** Evil org
+
+[[https://github.com/Somelauw/evil-org-mode][evil-org-mode]] is used to supplemental evil-mode key-bindings to Emacs org-mode.
+
+#+begin_src emacs-lisp
+(use-package evil-org
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 #+end_src
 
 *** Evil commentary
@@ -550,7 +565,6 @@ To easily insert blocks press ~C-c C-,~.
   (setq org-hide-emphasis-markers t)
   (setq org-src-preserve-indentation 1)
   (setq org-edit-src-content-indentation 0)
-  (setq org-log-done t)
 
   ;; configure babel languages
   (with-eval-after-load 'org
@@ -563,6 +577,18 @@ To easily insert blocks press ~C-c C-,~.
 
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org")))
+#+end_src
+
+** org-agenda
+
+Organize your life with org-agenda.
+
+#+begin_src emacs-lisp
+(setq org-agenda-files '("~/org/Agenda.org"))
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+(setq org-log-done 'time)
 #+end_src
 
 ** org-roam

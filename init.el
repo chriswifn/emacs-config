@@ -238,6 +238,13 @@
   :config
   (evil-collection-init))
 
+(use-package evil-org
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+
 (use-package evil-commentary
   :after evil
   :config
@@ -276,7 +283,6 @@
   (setq org-hide-emphasis-markers t)
   (setq org-src-preserve-indentation 1)
   (setq org-edit-src-content-indentation 0)
-  (setq org-log-done t)
 
   ;; configure babel languages
   (with-eval-after-load 'org
@@ -289,6 +295,12 @@
 
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org")))
+
+(setq org-agenda-files '("~/org/Agenda.org"))
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+(setq org-log-done 'time)
 
 (use-package org-roam
   :init
