@@ -280,6 +280,7 @@ and much more.
 | SPC b p    | previous-buffer              | Goto the previous buffer                                                        |
 | SPC b B    | ibuffer-list-buffers         | Get a list of all open buffers                                                  |
 | SPC b r    | revert-buffer                | Revert the buffer to the initial state                                          |
+| SPC b s    | chris/simple-scratch-buffer  | Open a scratch buffer with same major mode as current buffer                    |
 | SPC b K    | kill-buffer                  | Pick from a menu of buffers to kill                                             |
 
 #+begin_src emacs-lisp
