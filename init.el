@@ -663,17 +663,12 @@ When no VC root is available, use standard `switch-to-buffer'."
             (kill-buffer buffer)))
         (buffer-list)))
 
-(setq chris-simple-scratch-buffer-default-mode 'org-mode)
-(defcustom chris-simple-scratch-buffer-default-mode 'org-mode
-  "Default major mode for `chris/simple-scratch-buffer'."
-  :type 'symbol)
-
 ;;; Generic setup
 (defun chris/simple--scratch-list-modes ()
   "List known major modes."
   (cl-loop for sym the symbols of obarray
 	   when (and (functionp sym)
-		     (provided-mode-derived-p sym 'prog-mode))
+		     (and (provided-mode-derived-p sym 'prog-mode 'org-mode)))
 	   collect sym))
 
 (defun chris/simple--scratch-buffer-setup (region &optional mode)
@@ -699,11 +694,8 @@ MODE use that major mode instead."
 (defun chris/simple-scratch-buffer (&optional arg)
   "Produce a bespoke scratch buffer matching current major mode.
 
-With optional ARG as a prefix argument (\\[universal-argument]),
-use `chris-simple-scratch-buffer-default-mode'.
-
-With ARG as a double prefix argument, prompt for a major mode
-with completion.
+If the major-mode is not derived from 'prog-mode, it prompts for
+a list of all derived prog-modes AND org-mode
 
 If region is active, copy its contents to the new scratch
 buffer."
@@ -717,12 +709,11 @@ buffer."
                         (region-end))
                      "")))
          (m))
-    (pcase (prefix-numeric-value arg)
-      (16 (progn
-            (setq m (intern (completing-read "Select major mode: " modes nil t)))
-            (chris/simple--scratch-buffer-setup region m)))
-      (4 (chris/simple--scratch-buffer-setup region default-mode))
-      (_ (chris/simple--scratch-buffer-setup region)))))
+    (if (derived-mode-p 'prog-mode)
+        (chris/simple--scratch-buffer-setup region)
+      (progn
+	(setq m (intern (completing-read "Select major mode: " modes nil t)))
+	(chris/simple--scratch-buffer-setup region m)))))
 
 (defun chris/toggle-line-numbers ()
   "Toggles the display of line numbers. Applies locally to the current buffer"
