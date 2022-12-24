@@ -874,7 +874,9 @@ and special Dired commands to operate on the listed files. Dired works with both
   (chris/leader-keys
     "d" '(:ignore t :wk "dired")
     "dd" '(dired :wk "Open Dired")
-    "dj" '(dired-jump :wk "Jump to current directory in dired")))
+    "dj" '(dired-jump :wk "Jump to current directory in dired"))
+  :config
+  (put 'dired-find-alternate-file 'disabled nil))
 #+end_src
 
 ** Sudo Edit
@@ -1141,9 +1143,8 @@ the currently focused buffer.
 ** dired buffer
 
 Conveniently configure dired and a function to kill all open dired buffers.
-#+begin_src emacs-lisp
-(put 'dired-find-alternate-file 'disabled nil)
 
+#+begin_src emacs-lisp
 (defun chris/kill-dired-buffers ()
   "Kill all open dired buffers."
   (interactive)

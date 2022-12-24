@@ -455,7 +455,9 @@
   (chris/leader-keys
     "d" '(:ignore t :wk "dired")
     "dd" '(dired :wk "Open Dired")
-    "dj" '(dired-jump :wk "Jump to current directory in dired")))
+    "dj" '(dired-jump :wk "Jump to current directory in dired"))
+  :config
+  (put 'dired-find-alternate-file 'disabled nil))
 
 (use-package sudo-edit)
 
@@ -652,8 +654,6 @@ When no VC root is available, use standard `switch-to-buffer'."
     (progn
       (window-configuration-to-register '_)
       (delete-other-windows))))
-
-(put 'dired-find-alternate-file 'disabled nil)
 
 (defun chris/kill-dired-buffers ()
   "Kill all open dired buffers."
