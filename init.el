@@ -663,6 +663,7 @@ When no VC root is available, use standard `switch-to-buffer'."
             (kill-buffer buffer)))
         (buffer-list)))
 
+(setq chris-simple-scratch-buffer-default-mode 'org-mode)
 (defcustom chris-simple-scratch-buffer-default-mode 'org-mode
   "Default major mode for `chris/simple-scratch-buffer'."
   :type 'symbol)
@@ -719,7 +720,7 @@ buffer."
     (pcase (prefix-numeric-value arg)
       (16 (progn
             (setq m (intern (completing-read "Select major mode: " modes nil t)))
-            (chris/simple--scratch-buffer-setup region m)))
+            (chris/simple--scratch-buffer-setup region default-mode)))
       (4 (chris/simple--scratch-buffer-setup region default-mode))
       (_ (chris/simple--scratch-buffer-setup region)))))
 

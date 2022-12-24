@@ -1164,6 +1164,7 @@ Expected behavior:
 - Otherwise it will default to ~org-mode~ as the major mode
 
 #+begin_src emacs-lisp
+(setq chris-simple-scratch-buffer-default-mode 'org-mode)
 (defcustom chris-simple-scratch-buffer-default-mode 'org-mode
   "Default major mode for `chris/simple-scratch-buffer'."
   :type 'symbol)
