@@ -1110,6 +1110,13 @@ the currently focused buffer.
 
 ** Create custom scratch buffers
 
+=chris/simple-scratch-buffer= is a function to dynamically create scratch buffers based on
+currently active buffer.
+Expected behavior:
+- If the current buffer has minor mode ~prog-mode~ the scratch buffer open with major mode
+  of the current buffer
+- Otherwise it will default to ~org-mode~ as the major mode
+
 #+begin_src emacs-lisp
 (defcustom chris-simple-scratch-buffer-default-mode 'org-mode
   "Default major mode for `chris/simple-scratch-buffer'."
@@ -1169,7 +1176,7 @@ buffer."
             (setq m (intern (completing-read "Select major mode: " modes nil t)))
             (chris/simple--scratch-buffer-setup region m)))
       (4 (chris/simple--scratch-buffer-setup region default-mode))
-      (_ (chris/simple--scratch-buffer-setup region)))))
+      (_ (chris/simple--scratch-buffer-setup region default-mode)))))
 #+end_src
 
 ** Toggle line numbers
