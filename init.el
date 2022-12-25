@@ -700,8 +700,7 @@ a list of all derived prog-modes AND org-mode
 If region is active, copy its contents to the new scratch
 buffer."
   (interactive "P")
-  (let* ((default-mode chris-simple-scratch-buffer-default-mode)
-         (modes (chris/simple--scratch-list-modes))
+  (let* ((modes (chris/simple--scratch-list-modes))
          (region (with-current-buffer (current-buffer)
                    (if (region-active-p)
                        (buffer-substring-no-properties
