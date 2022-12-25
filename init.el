@@ -400,7 +400,20 @@
           (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
-(modus-themes-load-vivendi)
+;; (modus-themes-load-vivendi)
+
+(use-package solar
+  :straight (:type built-in)
+  :config
+  (setq calendar-latitude 52.520008
+	calendar-longitude 13.404954))
+
+(use-package circadian
+  :after solar
+  :config
+  (setq circadian-themes '((:sunrise . modus-operandi)
+			   (:sunset . modus-vivendi)))
+  (circadian-setup))
 
 (use-package diminish)
 (diminish 'auto-revert-mode)

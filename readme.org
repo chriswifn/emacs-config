@@ -743,7 +743,24 @@ Each theme’s color palette is designed to meet the needs of the numerous inter
           (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
-(modus-themes-load-vivendi)
+;; (modus-themes-load-vivendi)
+#+end_src
+
+** Change theme based on daytime
+
+#+begin_src emacs-lisp
+(use-package solar
+  :straight (:type built-in)
+  :config
+  (setq calendar-latitude 52.520008
+	calendar-longitude 13.404954))
+
+(use-package circadian
+  :after solar
+  :config
+  (setq circadian-themes '((:sunrise . modus-operandi)
+			   (:sunset . modus-vivendi)))
+  (circadian-setup))
 #+end_src
 
 ** Modeline
