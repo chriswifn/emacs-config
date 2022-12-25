@@ -866,15 +866,50 @@ Hide the mode lines and change their colors."
   ("C-x g" . magit-status)
   ("C-x C-g" . magit-list-repositories))
 
-(use-package haskell-mode)
+(use-package haskell-mode
+  :config
+  (defun chris/haskell-open-repl (&optional arg)
+    "Opens a Haskell REPL."
+    (interactive "P")
+    (if-let (window
+             (display-buffer
+              (haskell-session-interactive-buffer (haskell-session))))
+	(window-buffer window)
+      (error "Failed to display Haskell REPL")))
+  (add-hook 'haskell-mode-hook
+            #'haskell-collapse-mode ; support folding haskell code blocks
+  (add-to-list 'completion-ignored-extensions ".hi")))
 
-(use-package lua-mode)
+(use-package lua-mode
+  :config
+  (setq lua-indent-level 2)
+  (setq lua-electric-flag nil)
+  (defun lua-abbrev-mode-off () (abbrev-mode 0))
+  (add-hook 'lua-mode-hook 'lua-abbrev-mode-off)
+  (setq save-abbrevs nil))
 
-(use-package yaml-mode)
+(use-package emmet-mode
+  :config
+  (setq emmet-indent-after-insert nil)
+  (setq emmet-indentation 2)
+  (setq emmet-self-closing-tag-style "/")
+  :hook
+  (sgml-mode-hook . emmet-mode)
+  (css-mode-hook . emmet-mode))
 
-(use-package emmet-mode)
-
-(use-package php-mode)
+(use-package php-mode
+  :config
+  (add-hook 'php-mode-hook (lambda ()
+           (defun ywb-php-lineup-arglist-intro (langelem)
+             (save-excursion
+         (goto-char (cdr langelem))
+         (vector (+ (current-column) c-basic-offset))))
+           (defun ywb-php-lineup-arglist-close (langelem)
+             (save-excursion
+         (goto-char (cdr langelem))
+         (vector (current-column))))
+           (c-set-offset 'arglist-intro 'ywb-php-lineup-arglist-intro)
+           (c-set-offset 'arglist-close 'ywb-php-lineup-arglist-close))))
 
 (straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
