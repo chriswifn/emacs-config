@@ -293,6 +293,11 @@
        (python . t)
        (shell . t)))
 
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
     (push '("conf-unix" . conf-unix) org-src-lang-modes))
 
   (setq org-directory "~/org")
