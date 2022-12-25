@@ -4,6 +4,12 @@
 
 Currently tailored for GNU Emacs 28.2
 
+Conventions of this configuration:
+- Custom functions are prefixed by ~chris/~
+- Custom variables are prefixed by ~chris-~
+
+I try to fulfill these conventions but sometimes I forget about it.
+
 * Early init file
 :PROPERTIES:
 :header-args: :tangle early-init.el
