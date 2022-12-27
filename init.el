@@ -25,6 +25,8 @@
 
   (setq indent-tabs-mode nil) ;; no tabs
 
+  (blink-cursor-mode -1) ;; no blinking
+
   (setq make-backup-files nil) ;; keep everything under vc 
   (setq auto-save-default nil)
 
@@ -153,6 +155,7 @@
   "o" '(:ignore t :wk "open")
   "ot" '(vterm :wk "vterm")
   "oe" '(eshell :wk "eshell")
+  "op" '(list-processes :wk "get a list of processes")
   "os" '(fontaine-set-preset :wk "fontaine")
   "ow" '(woman :wk "woman")
   "of" '(chris/olivetti-mode :wk "olivetti")
@@ -488,14 +491,8 @@
                "sxiv"
                '(file))
          (list (openwith-make-extension-regexp
-                '("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
-               "libreoffice"
-               '(file))
-         '("\\.lyx" "lyx" (file))
-         '("\\.chm" "kchmviewer" (file))
-         (list (openwith-make-extension-regexp
-                '("pdf" "ps" "ps.gz" "dvi"))
-               "zathura"
+                '("doc" "xls" "xlsx" "ppt" "odt" "ods" "odg" "odp"))
+               "$HOME/.local/share/applications/LibreOffice-still.basic-x86_64.AppImage"
                '(file))
          ))
   (openwith-mode 1))
@@ -1024,3 +1021,8 @@ of `org-tree-slide-mode'."
   :hook
   (org-tree-slide-mode . chris/org-presentation)
   )
+
+(use-package pdf-tools
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page))

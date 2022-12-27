@@ -114,6 +114,8 @@ Some of them are disabled in this configuration:
 
   (setq indent-tabs-mode nil) ;; no tabs
 
+  (blink-cursor-mode -1) ;; no blinking
+
   (setq make-backup-files nil) ;; keep everything under vc 
   (setq auto-save-default nil)
 
@@ -346,6 +348,7 @@ and much more.
   "o" '(:ignore t :wk "open")
   "ot" '(vterm :wk "vterm")
   "oe" '(eshell :wk "eshell")
+  "op" '(list-processes :wk "get a list of processes")
   "os" '(fontaine-set-preset :wk "fontaine")
   "ow" '(woman :wk "woman")
   "of" '(chris/olivetti-mode :wk "olivetti")
@@ -934,14 +937,8 @@ With openwith, you can do this seamlessly when you use C-x C-f.  It also works w
                "sxiv"
                '(file))
          (list (openwith-make-extension-regexp
-                '("doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
-               "libreoffice"
-               '(file))
-         '("\\.lyx" "lyx" (file))
-         '("\\.chm" "kchmviewer" (file))
-         (list (openwith-make-extension-regexp
-                '("pdf" "ps" "ps.gz" "dvi"))
-               "zathura"
+                '("doc" "xls" "xlsx" "ppt" "odt" "ods" "odg" "odp"))
+               "$HOME/.local/share/applications/LibreOffice-still.basic-x86_64.AppImage"
                '(file))
          ))
   (openwith-mode 1))
@@ -1795,4 +1792,13 @@ of `org-tree-slide-mode'."
   :hook
   (org-tree-slide-mode . chris/org-presentation)
   )
+#+end_src
+
+** pdf-tools
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page))
 #+end_src
