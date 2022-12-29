@@ -314,6 +314,10 @@
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org")))
 
+(use-package org-download
+  :config
+  (setq org-download-screenshot-method "maim -s %s"))
+
 (setq org-agenda-files '("~/org/Agenda.org"))
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
@@ -493,11 +497,6 @@
   :config
   (setq openwith-associations
         (list
-         (list (openwith-make-extension-regexp
-                '("xbm" "pbm" "pgm" "ppm" "pnm"
-                  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
-               "sxiv"
-               '(file))
          (list (openwith-make-extension-regexp
                 '("doc" "xls" "xlsx" "ppt" "odt" "ods" "odg" "odp"))
                "$HOME/.local/share/applications/LibreOffice-still.basic-x86_64.AppImage"

@@ -603,6 +603,10 @@ To easily insert blocks press ~C-c C-,~.
 
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org")))
+
+(use-package org-download
+  :config
+  (setq org-download-screenshot-method "maim -s %s"))
 #+end_src
 
 ** org-agenda
@@ -939,11 +943,6 @@ With openwith, you can do this seamlessly when you use C-x C-f.  It also works w
   :config
   (setq openwith-associations
         (list
-         (list (openwith-make-extension-regexp
-                '("xbm" "pbm" "pgm" "ppm" "pnm"
-                  "png" "gif" "bmp" "tif" "jpeg" "jpg"))
-               "sxiv"
-               '(file))
          (list (openwith-make-extension-regexp
                 '("doc" "xls" "xlsx" "ppt" "odt" "ods" "odg" "odp"))
                "$HOME/.local/share/applications/LibreOffice-still.basic-x86_64.AppImage"
