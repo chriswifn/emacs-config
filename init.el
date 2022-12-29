@@ -429,7 +429,7 @@
           (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
 (define-key global-map (kbd "C-c t") #'modus-themes-toggle)
-(modus-themes-load-operandi)
+(modus-themes-load-vivendi)
 
 (use-package diminish)
 (diminish 'auto-revert-mode)
