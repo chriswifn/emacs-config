@@ -190,11 +190,19 @@
     ("l" enlarge-window-horizontally)
     ("n" balance-windows)
     ("f" nil "finished" :exit t))
+
+  ;; bluetooth
+  (defhydra hydra-bluetooth (:timeout 4)
+    "connect/disconnect from bluetooth"
+    ("c" (start-process-shell-command "bluetoothctl" nil "bluetoothctl -- connect E8:EE:CC:00:AD:24"))
+    ("d" (start-process-shell-command "bleutoothctl" nil "bluetoothctl -- disconnect"))
+    ("f" nil "finished" :exit t))
   :general
   (chris/leader-keys
     "h" '(:ignore t :wk "hydra")
     "hf" '(hydra-text-scale/body :wk "scale text")
-    "hs" '(hydra-split-size/body :wk "split size")))
+    "hs" '(hydra-split-size/body :wk "split size")
+    "hb" '(hydra-bluetooth/body :wk "bluetooth")))
 
 (use-package evil
   :general
