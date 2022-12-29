@@ -212,6 +212,14 @@
   (setq evil-split-window-below t)
   (setq evil-vsplit-window-right t)
 
+  ;; cursors
+  (setq evil-normal-state-cursor 'box)
+  (setq evil-insert-state-cursor 'box)
+  (setq evil-visual-state-cursor 'box)
+  (setq evil-motion-state-cursor 'box)
+  (setq evil-replace-state-cursor 'box)
+  (setq evil-operator-state-cursor 'box)
+
   (setq evil-want-C-i-jump nil) ;; hopefully this will fix weird tab behaviour
 
   (setq evil-undo-system 'undo-tree) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
