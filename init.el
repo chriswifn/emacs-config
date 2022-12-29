@@ -374,6 +374,10 @@
 	   :default-weight semilight
 	   :default-height 140
 	   :bold-weight extrabold)
+	  (code
+	   :default-weight semilight
+	   :default-height 160
+	   :bold-weight extrabold)
 	  (presentation
 	   :default-weight semilight
 	   :default-height 170
