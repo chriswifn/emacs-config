@@ -784,6 +784,22 @@ questions.  Else use completion to select the tab to switch to."
   (define-key evil-outer-text-objects-map "C" (evil-textobj-tree-sitter-get-textobj "class.outer"))
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 
+(use-package aggressive-indent
+  :diminish
+  :init
+  (global-aggressive-indent-mode 1))
+(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
+
+(use-package highlight-indent-guides
+  :diminish
+  :config
+  (setq highlight-indent-guides-auto-odd-face-perc 30)
+  (setq highlight-indent-guides-auto-even-face-perc 35)
+  (setq highlight-indent-guides-auto-character-face-perc 40)
+  (setq highlight-indent-guides-method 'character)
+  :hook
+  (prog-mode . highlight-indent-guides-mode))
+
 (use-package async
   :init
   (dired-async-mode 1))
