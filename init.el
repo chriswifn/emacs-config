@@ -387,6 +387,8 @@
 (diminish 'undo-tree-mode)
 (diminish 'eldoc-mode)
 
+(display-battery-mode)
+
 (use-package vertico
   :init
   (vertico-mode +1))
