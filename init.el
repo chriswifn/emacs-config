@@ -842,7 +842,7 @@ questions.  Else use completion to select the tab to switch to."
     "cl" '(chris/open-lua-repl :wk "run-lua"))
   (chris/leader-keys
     :keymaps 'lua-mode-map
-    "rl" 'lua-send-buffer))
+    "lr" 'lua-send-buffer))
 
 (use-package python-mode
   :straight (:type built-in)
@@ -853,7 +853,7 @@ questions.  Else use completion to select the tab to switch to."
     :keymaps 'python-mode-map
     "cp" 'run-python)
   (chris/leader-keys
-    "rp" 'python-shell-send-buffer))
+    "pr" 'python-shell-send-buffer))
 
 (use-package php-mode
   :mode ("\\.php\\'" . php-mode))

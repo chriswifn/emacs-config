@@ -1226,7 +1226,7 @@ questions.  Else use completion to select the tab to switch to."
     "cl" '(chris/open-lua-repl :wk "run-lua"))
   (chris/leader-keys
     :keymaps 'lua-mode-map
-    "rl" 'lua-send-buffer))
+    "lr" 'lua-send-buffer))
 #+end_src
 
 ** python
@@ -1241,7 +1241,7 @@ questions.  Else use completion to select the tab to switch to."
     :keymaps 'python-mode-map
     "cp" 'run-python)
   (chris/leader-keys
-    "rp" 'python-shell-send-buffer))
+    "pr" 'python-shell-send-buffer))
 #+end_src
 
 ** php
