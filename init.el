@@ -458,6 +458,11 @@
   (setq consult-preview-key "$")
   :bind ("C-s" . 'consult-line))
 
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
 (recentf-mode +1)
 
 (use-package affe
@@ -897,6 +902,7 @@ Hide the mode lines and change their colors."
   (add-to-list 'completion-ignored-extensions ".hi")))
 
 (use-package lua-mode
+  :interpreter ("lua" . lua-mode)
   :config
   (setq lua-indent-level 2)
   (setq lua-electric-flag nil)

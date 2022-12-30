@@ -840,6 +840,11 @@ and the line-based search command consult-line. Some of the Consult commands are
   (setq consult-preview-key "$")
   :bind ("C-s" . 'consult-line))
 
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
 (recentf-mode +1)
 #+end_src
 
@@ -1544,6 +1549,7 @@ Some languages modes. Nothing to see here.
 
 #+begin_src emacs-lisp
 (use-package lua-mode
+  :interpreter ("lua" . lua-mode)
   :config
   (setq lua-indent-level 2)
   (setq lua-electric-flag nil)
