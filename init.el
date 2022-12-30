@@ -7,9 +7,9 @@
       (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -20,66 +20,44 @@
   :straight (:type built-in)
   :config
   (setq user-full-name "Christian Hageloch")
-
-  (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
-
-  (setq indent-tabs-mode nil) ;; no tabs
-
-  (blink-cursor-mode -1) ;; no blinking
-
-  (setq make-backup-files nil) ;; keep everything under vc 
+  (setq use-short-answers t)
+  (setq indent-tabs-mode nil)
+  (blink-cursor-mode nil)
+  (setq make-backup-files nil)
   (setq auto-save-default nil)
-
-  ;; keep backup and save files in a dedicated directory
   (setq backup-directory-alist
 	`((".*" . ,(concat user-emacs-directory "backups")))
 	auto-save-file-name-transforms
 	`((".*" ,(concat user-emacs-directory "backups") t)))
-
-  (setq create-lockfiles nil) ;; no need to create lockfiles
-
+  (setq create-lockfiles nil)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
   (setq display-line-numbers-type 'relative)
-
   (column-number-mode)
-
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
   (global-hl-line-mode t)
-
-  ;; Revert buffers when the underlying file has changed
   (global-auto-revert-mode 1)
-  ;; Revert Dired and other buffers
   (setq global-auto-revert-non-file-buffers t)
-
-  ;; follow symlinks
   (setq find-file-visit-truename t)
-
   (setq completion-cycle-threshold 3)
   (setq tab-always-indent 'complete)
+  (set-default-coding-systems 'utf-8))
 
-  ;; encoding
-  (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
-  (setq locale-coding-system 'utf-8
-	coding-system-for-read 'utf-8
-	coding-system-for-write 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
-  (setq default-process-coding-system '(utf-8-unix . utf-8-unix)))
-
-(defun config-reload ()
+(defun chris/config-reload ()
   "Reload the configuration file"
   (interactive)
   (load-file (expand-file-name "~/.emacs.d/init.el")))
 
 (use-package electric
   :straight (:type built-in)
+  :config
+  (setq electric-pair-pairs '(
+			     (?\{ . ?\})
+			     (?\( . ?\))
+			     (?\[ . ?\])
+			     (?\" . ?\")
+			     ))
   :init
-  (electric-pair-mode +1) ;; automatically insert closing parens 
-  (setq electric-pair-preserve-balance nil)) ;; more annoying than useful
+  (electric-pair-mode t))
 
 (use-package general
   :config
@@ -145,7 +123,7 @@
 
 (chris/leader-keys
   "t"  '(:ignore t :wk "toggle")
-  "tr" '(config-reload :wk "config")
+  "tr" '(chris/config-reload :wk "config")
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
   "ts" '(chris/tab-status-line :wk "tab-bar-line")
@@ -166,10 +144,8 @@
   "oo" '(occur "^*+" :wk "org sidebar"))
 
 (chris/leader-keys
-"c" '(:ignore t :wk "code")
-"cc" '(compile :wk "Compile")
-"cd" '(flymake-show-buffer-diagnostics :wk "show lsp diagnostics")
-"cm" '(open-matlab-shell :wk "Open Matlab shell"))
+  "c" '(:ignore t :wk "code-action")
+  "cc" '(compile :wk "Compile"))
 
 (use-package hydra
   :defer t
@@ -191,18 +167,11 @@
     ("n" balance-windows)
     ("f" nil "finished" :exit t))
 
-  ;; bluetooth
-  (defhydra hydra-bluetooth (:timeout 4)
-    "connect/disconnect from bluetooth"
-    ("c" (start-process-shell-command "bluetoothctl" nil "bluetoothctl -- connect E8:EE:CC:00:AD:24"))
-    ("d" (start-process-shell-command "bleutoothctl" nil "bluetoothctl -- disconnect"))
-    ("f" nil "finished" :exit t))
   :general
   (chris/leader-keys
     "h" '(:ignore t :wk "hydra")
     "hf" '(hydra-text-scale/body :wk "scale text")
-    "hs" '(hydra-split-size/body :wk "split size")
-    "hb" '(hydra-bluetooth/body :wk "bluetooth")))
+    "hs" '(hydra-split-size/body :wk "split size")))
 
 (use-package evil
   :general
@@ -270,23 +239,25 @@
   :config
   (evil-commentary-mode)) ;; globally enable evil-commentary
 
-(defun scroll-down-and-center ()
+(defun chris/scroll-down-and-center ()
+"Scroll down and center the text to the screen"
   (interactive)
   (evil-scroll-down 0)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
-(define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+(define-key evil-motion-state-map "\C-d" 'chris/scroll-down-and-center)
 
-(defun scroll-up-and-center ()
+(defun chris/scroll-up-and-center ()
+"Scroll up and center the text to the screen"
   (interactive)
   (evil-scroll-up 0)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
-(define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+(define-key evil-motion-state-map "\C-u" 'chris/scroll-up-and-center)
 
 (use-package which-key
-  :after evil
-  :init (which-key-mode)
+  :init
+  (which-key-mode)
   :config
   (which-key-setup-minibuffer))
 
@@ -322,10 +293,6 @@
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org")))
 
-(use-package org-download
-  :config
-  (setq org-download-screenshot-method "maim -s %s"))
-
 (setq org-agenda-files '("~/org/Agenda.org"))
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
@@ -360,80 +327,57 @@
   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
   :init
   (setq fontaine-presets
-	'((tiny
-	   :default-family "Iosevka Comfy Wide Fixed"
-	   :default-height 70)
-	  (small
-	   :default-family "Iosevka Comfy Fixed"
-	   :default-height 90)
-	  (regular
-	   :default-height 110)
-	  (medium
-	   :default-height 120)
-	  (large
-	   :default-weight semilight
-	   :default-height 140
-	   :bold-weight extrabold)
-	  (code
-	   :default-weight semilight
-	   :default-height 160
-	   :bold-weight extrabold)
-	  (presentation
-	   :default-weight semilight
-	   :default-height 170
-	   :bold-weight extrabold)
-	  (t
-	   ;; I keep all properties for didactic purposes, but most can be
-	   ;; omitted.  See the fontaine manual for the technicalities:
-	   ;; <https://protesilaos.com/emacs/fontaine>.
-	   :default-family "Iosevka Comfy Wide"
-	   :default-weight regular
-	   :default-height 110 
-	   :fixed-pitch-family nil ; falls back to :default-family
-	   :fixed-pitch-weight nil ; falls back to :default-weight
-	   :fixed-pitch-height 1.0
-	   :variable-pitch-family "Iosevka Comfy Duo"
-	   :variable-pitch-weight nil
-	   :variable-pitch-height 1.0
-	   :bold-family nil ; use whatever the underlying face has
-	   :bold-weight bold
-	   :italic-family nil
-	   :italic-slant italic
-	   :line-spacing nil))))
-
-;; some useful output to display in the modeline
-(display-battery-mode 1)
-(column-number-mode 1)
-
-;; display the current time and date in the minibuffer
-(defun display-current-time ()
-  (interactive)
-  (message (format-time-string "%Y-%m-%d %H:%M:%S")))
-(define-key global-map (kbd "<f1>") #'display-current-time)
-
-;; display wifi/eth/vpn status in the minibuffer
-(defun display-wifi-status ()
-  (interactive)
-  (message (shell-command-to-string "sb-internet-emacs")))
-(define-key global-map (kbd "<f2>") #'display-wifi-status)
+      '((regular
+         :default-height 110)
+        (medium
+         :default-weight semilight
+         :default-height 140)
+        (large
+         :default-weight semilight
+         :default-height 180
+         :bold-weight extrabold)
+        (t ; our shared fallback properties
+         :default-family "Iosevka Comfy Wide Fixed"
+         :default-weight normal
+         ;; :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "Iosevka Comfy Duo"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil))))
 
 (use-package modus-themes
   :config
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
-        modus-themes-subtle-line-numbers nil
-        modus-themes-fringes '(subtle)
-        modus-themes-hl-line '(intense)
-        modus-themes-mode-line '(borderless (padding . 4))
-        modus-themes-syntax '(faint green-strings alt-syntax)
+        modus-themes-common-palette-overrides
+        '(
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
+          (fringe unspecified))
         modus-themes-headings
         '((1 . (1.3))
           (2 . (1.2))
           (3 . (1.1))
           (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
-(define-key global-map (kbd "C-c t") #'modus-themes-toggle)
-(modus-themes-load-vivendi)
+
+(defun chris/modus-themes-custom-faces ()
+  (modus-themes-with-colors
+    (custom-set-faces
+     ;; Add "padding" to the mode lines
+     `(mode-line ((,c :box (:line-width 4 :color ,bg-mode-line-active))))
+     `(mode-line-inactive ((,c :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
+
+(add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
+
+(modus-themes-load-theme 'modus-vivendi)
 
 (use-package diminish)
 (diminish 'auto-revert-mode)
@@ -497,8 +441,6 @@
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
-(use-package sudo-edit)
-
 (use-package 0x0
   :general
   (chris/leader-keys
@@ -509,6 +451,8 @@
     "xk" '(0x0-upload-kill-ring :wk "0x0 upload kill ring")
     "xp" '(0x0-popup :wk "0x0 popup")
     "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
+
+(use-package sudo-edit)
 
 (use-package openwith
   :config
@@ -575,7 +519,7 @@ Fringes are disabled.  The modeline is hidden, except for
     (if chris/olivetti-mode
         (progn
           (olivetti-mode 1)
-	  (olivetti-set-width 120)
+          (olivetti-set-width 80)
           (set-window-fringes (selected-window) 0 0)
           (unless (derived-mode-p 'prog-mode)
             (chris/turn-on-hide-mode-line-mode))
@@ -802,39 +746,15 @@ questions.  Else use completion to select the tab to switch to."
                           (tab-bar-switch-to-tab
                            (completing-read "Select tab: " tabs nil t)))))))
 
-(define-minor-mode chris/tab-status-line
-  "Make Tab bar a status line and configure the extras.
-Hide the mode lines and change their colors."
-  :global t
-  (if chris/tab-status-line
-      (progn
-        (setq tab-bar-show t)
-        (tab-bar-mode 1))
-    (setq tab-bar-show nil)
-    (tab-bar-mode -1)))
-
 (use-package company
   :config
   (setq company-idle-delay 0)
   (setq company-minium-prefix-length 3))
 
-(use-package aggressive-indent
-  :diminish
-  :init
-  (global-aggressive-indent-mode 1))
-(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
-
-(use-package highlight-indent-guides
-  :diminish
-  :config
-  (setq highlight-indent-guides-auto-odd-face-perc 30)
-  (setq highlight-indent-guides-auto-even-face-perc 35)
-  (setq highlight-indent-guides-auto-character-face-perc 40)
-  (setq highlight-indent-guides-method 'character)
-  :hook
-  (prog-mode . highlight-indent-guides-mode))
-
 (use-package eglot
+  :general
+  (chris/leader-keys
+    "cd" '(flymake-show-buffer-diagnostics :wk "show (lsp) diagnostics"))
   :commands
   eglot)
 
@@ -870,6 +790,121 @@ Hide the mode lines and change their colors."
   :init
   (rg-enable-default-bindings))
 
+(use-package haskell-mode
+  :mode ("\\.hs\\'" . haskell-mode)
+  :config
+  (defun chris/haskell-open-repl (&optional arg)
+    "Opens a Haskell REPL."
+    (interactive "P")
+    (if-let (window
+             (display-buffer
+              (haskell-session-interactive-buffer (haskell-session))))
+        (window-buffer window)
+      (error "Failed to display Haskell REPL")))
+
+  (defun chris/haskell-disable-electric-indent ()
+    "Disable electric indent mode if available"
+    (if (fboundp 'electric-indent-local-mode)
+        (electric-indent-local-mode -1)))
+
+  (defun chris/haskell-format-imports ()
+    "Sort and align import statements from anywhere in the source file."
+    (interactive)
+    (save-excursion
+      (haskell-navigate-imports)
+      (haskell-mode-format-imports)))
+  
+  (add-hook 'haskell-mode-hook
+            #'haskell-collapse-mode ; support folding haskell code blocks
+            (add-to-list 'completion-ignored-extensions ".hi"))
+
+  (add-hook 'haskell-cabal-mode-hook #'chris/haskell-disable-electric-indent)
+
+  :general
+  (chris/leader-keys
+    :keymaps 'haskell-mode-map
+    "hi" 'chris/haskell-format-imports))
+
+(use-package lua-mode
+  :mode ("\\.lua\\'". lua-mode)
+  :interpreter ("lua" . lua-mode)
+  :config
+  (defun chris/open-lua-repl ()
+    "open lua repl in horizontal split"
+    (interactive)
+    (split-window-horizontally)
+    (lua-show-process-buffer))
+  :init
+  (setq lua-indent-level 2
+	lua-indent-string-contents t)
+  :general
+  (chris/leader-keys
+    "cl" '(chris/open-lua-repl :wk "run-lua"))
+  (chris/leader-keys
+    :keymaps 'lua-mode-map
+    "rl" 'lua-send-buffer))
+
+(use-package python-mode
+  :straight (:type built-in)
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python3" . python-mode)
+  :general
+  (chris/leader-keys
+    :keymaps 'python-mode-map
+    "cp" 'run-python)
+  (chris/leader-keys
+    "rp" 'python-shell-send-buffer))
+
+(use-package php-mode
+  :mode ("\\.php\\'" . php-mode))
+
+(use-package racket-mode
+  :interpreter ("racket" . racket-mode)
+  :config
+  (defun chris/racket-run-and-switch-to-repl ()
+    "Call `racket-run-and-switch-to-repl' and enable insert state"
+    (interactive)
+    (racket-run-and-switch-to-repl)
+    (when (buffer-live-p (get-buffer racket-repl-buffer-name))
+      (with-current-buffer racket-repl-buffer-name
+	(evil-insert-state))))
+  :general
+  (chris/leader-keys
+    "cr" '(chris/racket-run-and-switch-to-repl :wk "run racket and switch to repl"))
+  (chris/leader-keys
+    :keymaps 'racket-mode-map
+    "rs" '(racket-send-last-sexp :wk "racket send last sexp")
+    "rd" '(racket-send-definiton :wk "racket send definition")
+    ))
+
+(straight-use-package 'matlab-mode)
+(autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+(add-to-list
+ 'auto-mode-alist
+ '("\\.m$" . matlab-mode))
+(setq matlab-indent-function t)
+(setq matlab-shell-command-switches '("-nosplash" "-nodesktop"))
+(setq matlab-shell-command "matlab")
+
+(defun chris/open-matlab-shell ()
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1)
+  (matlab-shell))
+
+(defun chris/run-matlab ()
+  "Run matlab code"
+  (interactive)
+  (matlab-shell-run-region (point-min) (point-max)))
+
+(chris/leader-keys
+ :keymaps 'matlab-mode-map
+ :states 'normal
+ "mr" '(chris/run-matlab :wk "Run matlab buffer"))
+
+(chris/leader-keys
+  "cm" '(chris/open-matlab-shell :wk "Open matlab shell"))
+
 (use-package magit
   :general
   (chris/leader-keys
@@ -886,74 +921,6 @@ Hide the mode lines and change their colors."
   :bind
   ("C-x g" . magit-status)
   ("C-x C-g" . magit-list-repositories))
-
-(use-package haskell-mode
-  :config
-  (defun chris/haskell-open-repl (&optional arg)
-    "Opens a Haskell REPL."
-    (interactive "P")
-    (if-let (window
-             (display-buffer
-              (haskell-session-interactive-buffer (haskell-session))))
-	(window-buffer window)
-      (error "Failed to display Haskell REPL")))
-  (add-hook 'haskell-mode-hook
-            #'haskell-collapse-mode ; support folding haskell code blocks
-  (add-to-list 'completion-ignored-extensions ".hi")))
-
-(use-package lua-mode
-  :interpreter ("lua" . lua-mode)
-  :config
-  (setq lua-indent-level 2)
-  (setq lua-electric-flag nil)
-  (defun lua-abbrev-mode-off () (abbrev-mode 0))
-  (add-hook 'lua-mode-hook 'lua-abbrev-mode-off)
-  (setq save-abbrevs nil))
-
-(use-package emmet-mode
-  :config
-  (setq emmet-indent-after-insert nil)
-  (setq emmet-indentation 2)
-  (setq emmet-self-closing-tag-style "/")
-  :hook
-  (sgml-mode-hook . emmet-mode)
-  (css-mode-hook . emmet-mode))
-
-(use-package php-mode
-  :config
-  (add-hook 'php-mode-hook (lambda ()
-           (defun ywb-php-lineup-arglist-intro (langelem)
-             (save-excursion
-         (goto-char (cdr langelem))
-         (vector (+ (current-column) c-basic-offset))))
-           (defun ywb-php-lineup-arglist-close (langelem)
-             (save-excursion
-         (goto-char (cdr langelem))
-         (vector (current-column))))
-           (c-set-offset 'arglist-intro 'ywb-php-lineup-arglist-intro)
-           (c-set-offset 'arglist-close 'ywb-php-lineup-arglist-close))))
-
-(straight-use-package 'matlab-mode)
-(autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-(add-to-list
- 'auto-mode-alist
- '("\\.m$" . matlab-mode))
-(setq matlab-indent-function t)
-(setq matlab-shell-command-switches '("-nosplash" "-nodesktop"))
-(setq matlab-shell-command "matlab")
-
-(defun open-matlab-shell ()
-  (interactive)
-  (split-window-horizontally)
-  (other-window 1)
-  (matlab-shell))
-
-(general-define-key
- ;; NOTE: keymaps specified with :keymaps must be quoted
- :keymaps 'matlab-mode-map
- :states 'normal
- "rm" 'matlab-shell-run-region
- )
 
 (use-package vterm
   :hook

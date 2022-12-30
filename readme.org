@@ -1,14 +1,8 @@
-#+title: Emacs configuration
+#+title: Emacs Configuration
 #+author: Christian Hageloch
 #+startup: overview
 
-Currently tailored for GNU Emacs 28.2
-
-Conventions of this configuration:
-- Custom functions are prefixed by ~chris/~
-- Custom variables are prefixed by ~chris-~
-
-I try to fulfill these conventions but sometimes I forget about it.
+Currently tailored for GNU Emacs 28.2.
 
 * Early init file
 :PROPERTIES:
@@ -16,8 +10,7 @@ I try to fulfill these conventions but sometimes I forget about it.
 :END:
 
 ~straight.el~ is used as the package management system.
-To revent ~package.el~ from loading packages the following piece of code is necessary prior to
-loading the init file
+To prevent ~package.el~ from loading packages and garbage-collection:
 
 #+begin_src emacs-lisp
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
@@ -25,16 +18,28 @@ loading the init file
 (setq package-enable-at-startup nil)
 #+end_src
 
-Also disable some gui elements in the ~early-init.el~ file
+Disable gui elements:
 
 #+begin_src emacs-lisp
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(defun chris/toggle-gui-elements (&optional on-off)
+  "Toggle menu bar, tool bar, scroll bars, and tool tip modes. If
+  optional ON-OFF is not specified, then toggle on/off state. If
+  ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode (or on-off (not scroll-bar-mode))))
+  (when  (fboundp 'tool-bar-mode)
+    (tool-bar-mode (or on-off (not tool-bar-mode))))
+  (unless (memq (window-system) '(mac ns))
+    (when (fboundp 'menu-bar-mode)
+      (menu-bar-mode (or on-off (not menu-bar-mode)))))
+  ;; tooltips in echo-aera
+  (when (fboundp 'tooltip-mode)
+    (tooltip-mode (or on-off (not tooltip-mode)))))
+
+(chris/toggle-gui-elements 0)
 
 (setq inhibit-splash-screen t
       use-file-dialog nil)
-;;; early-init.el ends here
 #+end_src
 
 
@@ -69,9 +74,9 @@ Some rules/conventions:
       (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -85,88 +90,40 @@ Some rules/conventions:
 :header-args: :tangle init.el
 :END:
 
-Set some defaults for standard Emacs.
-This includes:
-- disable some gui features
-- a function to reload the configuration file (~init.el~)
-- setup up electric-pair-mode
-
-** Defaults
-
-Emacs has some weird choices enabled by default in the ui and setup.
-Some of them are disabled in this configuration:
-- No ~yes-or-no~ questions: instead use ~y-or-n~
-- no backup files (managed by ~undo-tree~)
-- no lockfiles (why would anyone want that?)
-- no tabs
-- enable ~hl-line-mode~ to see what line is currently active
-- follow symlinks
-- line-numbers in ~prog-mode~
-- set all the encoding to ~utf-8~
+** General configuration options
 
 #+begin_src emacs-lisp
 (use-package emacs
   :straight (:type built-in)
   :config
   (setq user-full-name "Christian Hageloch")
-
-  (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
-
-  (setq indent-tabs-mode nil) ;; no tabs
-
-  (blink-cursor-mode -1) ;; no blinking
-
-  (setq make-backup-files nil) ;; keep everything under vc 
+  (setq use-short-answers t)
+  (setq indent-tabs-mode nil)
+  (blink-cursor-mode nil)
+  (setq make-backup-files nil)
   (setq auto-save-default nil)
-
-  ;; keep backup and save files in a dedicated directory
   (setq backup-directory-alist
 	`((".*" . ,(concat user-emacs-directory "backups")))
 	auto-save-file-name-transforms
 	`((".*" ,(concat user-emacs-directory "backups") t)))
-
-  (setq create-lockfiles nil) ;; no need to create lockfiles
-
+  (setq create-lockfiles nil)
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
   (setq display-line-numbers-type 'relative)
-
   (column-number-mode)
-
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
   (global-hl-line-mode t)
-
-  ;; Revert buffers when the underlying file has changed
   (global-auto-revert-mode 1)
-  ;; Revert Dired and other buffers
   (setq global-auto-revert-non-file-buffers t)
-
-  ;; follow symlinks
   (setq find-file-visit-truename t)
-
   (setq completion-cycle-threshold 3)
   (setq tab-always-indent 'complete)
-
-  ;; encoding
-  (set-charset-priority 'unicode) ;; utf8 in every nook and cranny
-  (setq locale-coding-system 'utf-8
-	coding-system-for-read 'utf-8
-	coding-system-for-write 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
-  (setq default-process-coding-system '(utf-8-unix . utf-8-unix)))
+  (set-default-coding-systems 'utf-8))
 #+end_src
 
-** Reload the configuration file
-
-Interactive function to load the ~init.el~ file.
-In order to make changes take effect, this ~readme.org~ file has to be tangled (~C-c C-v C-t~)
+** Reload configuration
 
 #+begin_src emacs-lisp
-(defun config-reload ()
+(defun chris/config-reload ()
   "Reload the configuration file"
   (interactive)
   (load-file (expand-file-name "~/.emacs.d/init.el")))
@@ -174,14 +131,18 @@ In order to make changes take effect, this ~readme.org~ file has to be tangled (
 
 ** Electric
 
-Autocompletion of closing brackets and parenthesis.
-
 #+begin_src emacs-lisp
 (use-package electric
   :straight (:type built-in)
+  :config
+  (setq electric-pair-pairs '(
+			     (?\{ . ?\})
+			     (?\( . ?\))
+			     (?\[ . ?\])
+			     (?\" . ?\")
+			     ))
   :init
-  (electric-pair-mode +1) ;; automatically insert closing parens 
-  (setq electric-pair-preserve-balance nil)) ;; more annoying than useful
+  (electric-pair-mode t))
 #+end_src
 
 
@@ -190,21 +151,7 @@ Autocompletion of closing brackets and parenthesis.
 :header-args: :tangle init.el
 :END:
 
-~Evil~ and ~General~ work quit well together.
-~Hydra~ is useful for continuous keybindings.
-~Whickkey~ is a package to display possible keybindings.
-
-** General
-
-[[https://github.com/noctuid/general.el][general.el]] provides a more convenient method for binding keys in emacs (for both evil and non-evil users).
-Like =use-package=, which provides a convenient, unified interface for managing packages,
-=general.el= is intended to provide a convenient, unified interface for key definitions.
-While this package does implement some completely new functionality
-(such as the ability to make vim-style keybindings under non-prefix keys with an optional timeout),
-its primary purpose is to build on existing functionality to make key definition more clear and concise.
-~general-define-key~ is user-extensible and supports defining multiple keys in multiple keymaps at once,
-implicitly wrapping key strings with ~(kbd ...)~, using named prefix key sequences (like the leader key in vim),
-and much more.
+** General ([[https://github.com/noctuid/general.el][general.el]])
 
 *** General setup
 
@@ -313,7 +260,7 @@ and much more.
 
 | Keybinding | Function                  | Description                         |
 |------------+---------------------------+-------------------------------------|
-| SPC t r    | config-reload             | Reload the configuration (~init.el~)  |
+| SPC t r    | chris/config-reload       | Reload the configuration (~init.el~)  |
 | SPC t l    | chris/toggle-line-numbers | Toggle visibility of line numbers   |
 | SPC t m    | chris/hide-mode-line-mode | Hide visibility of the modeline     |
 | SPC t t    | modus-themes-toggle       | Toggle between the two modus-themes |
@@ -321,14 +268,14 @@ and much more.
 #+begin_src emacs-lisp
 (chris/leader-keys
   "t"  '(:ignore t :wk "toggle")
-  "tr" '(config-reload :wk "config")
+  "tr" '(chris/config-reload :wk "config")
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
   "ts" '(chris/tab-status-line :wk "tab-bar-line")
   "tt" '(modus-themes-toggle :wk "theme"))
 #+end_src
 
-*** Keybindings to open programs within emacs
+*** Keybindings to open programs within Emacs
 
 | Keybinding | Function                | Description                                  |
 |------------+-------------------------+----------------------------------------------|
@@ -361,28 +308,13 @@ and much more.
 
 *** Keybindings for code
 
-| Keybinding | Function                        | Description                                    |
-|------------+---------------------------------+------------------------------------------------|
-| SPC c c    | compile                         | Compile function                               |
-| SPC c d    | flymake-show-buffer-diagnostics | Show errors in lsp-buffer (eglot in this case) |
-| SPC c m    | open-matlab-shell               | Open matlab shell in matlab buffer             |
-
 #+begin_src emacs-lisp
 (chris/leader-keys
-"c" '(:ignore t :wk "code")
-"cc" '(compile :wk "Compile")
-"cd" '(flymake-show-buffer-diagnostics :wk "show lsp diagnostics")
-"cm" '(open-matlab-shell :wk "Open Matlab shell"))
+  "c" '(:ignore t :wk "code-action")
+  "cc" '(compile :wk "Compile"))
 #+end_src
 
-** Hydra
-
-Once you summon the [[https://github.com/abo-abo/hydra][hydra]] through the prefixed binding (the body + any one head),
-all heads can be called in succession with only a short extension.
-
-The Hydra is vanquished once Hercules, any binding that isn't the Hydra's head, arrives.
-Note that Hercules, besides vanquishing the Hydra, will still serve his original purpose, calling his proper command.
-This makes the Hydra very seamless, it's like a minor mode that disables itself auto-magically.
+** Hydra ([[https://github.com/abo-abo/hydra][hydra]])
 
 #+begin_src emacs-lisp
 (use-package hydra
@@ -405,24 +337,14 @@ This makes the Hydra very seamless, it's like a minor mode that disables itself 
     ("n" balance-windows)
     ("f" nil "finished" :exit t))
 
-  ;; bluetooth
-  (defhydra hydra-bluetooth (:timeout 4)
-    "connect/disconnect from bluetooth"
-    ("c" (start-process-shell-command "bluetoothctl" nil "bluetoothctl -- connect E8:EE:CC:00:AD:24"))
-    ("d" (start-process-shell-command "bleutoothctl" nil "bluetoothctl -- disconnect"))
-    ("f" nil "finished" :exit t))
   :general
   (chris/leader-keys
     "h" '(:ignore t :wk "hydra")
     "hf" '(hydra-text-scale/body :wk "scale text")
-    "hs" '(hydra-split-size/body :wk "split size")
-    "hb" '(hydra-bluetooth/body :wk "bluetooth")))
+    "hs" '(hydra-split-size/body :wk "split size")))
 #+end_src
 
-** Evil
-
-[[https://github.com/emacs-evil/evil][Evil]] is an extensible vi layer for Emacs. It emulates the main features of Vim,
-and provides facilities for writing custom extensions. Also see our page on EmacsWiki.
+** Evil ([[https://github.com/emacs-evil/evil][evil]])
 
 *** General evil setup
 
@@ -464,14 +386,7 @@ and provides facilities for writing custom extensions. Also see our page on Emac
   (evil-set-initial-state 'magit-diff-mode 'insert))
 #+end_src
 
-*** Undo-tree
-
-Emacs has a powerful undo system ([[https://elpa.gnu.org/packages/undo-tree.html][undo-tree]]). Unlike the standard undo/redo system in
-most software, it allows you to recover *any* past state of a buffer
-(whereas the standard undo/redo system can lose past states as soon as you
-redo). However, this power comes at a price: many people find Emacs' undo
-system confusing and difficult to use, spawning a number of packages that
-replace it with the less powerful but more intuitive undo/redo system.
+*** Undo tree ([[https://elpa.gnu.org/packages/undo-tree.html][undo-tree]])
 
 #+begin_src emacs-lisp
 (use-package undo-tree
@@ -482,10 +397,7 @@ replace it with the less powerful but more intuitive undo/redo system.
   (global-undo-tree-mode))
 #+end_src
 
-*** Evil collection
-
-This is a collection of Evil bindings for the parts of Emacs that Evil does not cover properly by default, such as help-mode, M-x calendar, Eshell and more.
-[[https://github.com/emacs-evil/evil-collection][evil-collection]]
+*** Evil collection ([[https://github.com/emacs-evil/evil-collection][evil-collection]])
 
 #+begin_src emacs-lisp
 (use-package evil-collection ;; evilifies a bunch of things
@@ -500,9 +412,7 @@ This is a collection of Evil bindings for the parts of Emacs that Evil does not 
   (evil-collection-init))
 #+end_src
 
-*** Evil org
-
-[[https://github.com/Somelauw/evil-org-mode][evil-org-mode]] is used to supplemental evil-mode key-bindings to Emacs org-mode.
+*** Evil-org ([[https://github.com/Somelauw/evil-org-mode][evil-org-mode]])
 
 #+begin_src emacs-lisp
 (use-package evil-org
@@ -513,13 +423,7 @@ This is a collection of Evil bindings for the parts of Emacs that Evil does not 
   (evil-org-agenda-set-keys))
 #+end_src
 
-*** Evil commentary
-
-[[https://github.com/linktohack/evil-commentary][evil-commentary]] is an Emacs package for evil-mode that intends to make it easy to comment out (lines of) code:
-
-- ~gcc~ comments out a line (takes a count)
--  ~gc~ comments out the target of a motion, e.g. gcap to comment out a paragraph (normal state) and gc to comment out the selection (visual state).
-
+*** Evil commentary ([[https://github.com/linktohack/evil-commentary][evil-commentary]])
 
 #+begin_src emacs-lisp
 (use-package evil-commentary
@@ -528,56 +432,43 @@ This is a collection of Evil bindings for the parts of Emacs that Evil does not 
   (evil-commentary-mode)) ;; globally enable evil-commentary
 #+end_src
 
-*** Change C-d and C-u behavior
-
-When jumping with ~C-d~ and ~C-u~ the current jump-line should be centered imo.
+*** C-d and C-u
 
 #+begin_src emacs-lisp
-(defun scroll-down-and-center ()
+(defun chris/scroll-down-and-center ()
+"Scroll down and center the text to the screen"
   (interactive)
   (evil-scroll-down 0)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
-(define-key evil-motion-state-map "\C-d" 'scroll-down-and-center)
+(define-key evil-motion-state-map "\C-d" 'chris/scroll-down-and-center)
 
-(defun scroll-up-and-center ()
+(defun chris/scroll-up-and-center ()
+"Scroll up and center the text to the screen"
   (interactive)
   (evil-scroll-up 0)
   (evil-scroll-line-to-center (line-number-at-pos)))
 
-(define-key evil-motion-state-map "\C-u" 'scroll-up-and-center)
+(define-key evil-motion-state-map "\C-u" 'chris/scroll-up-and-center)
 #+end_src
 
-** Whichkey
-
-[[https://github.com/justbur/emacs-which-key][which-key]] a minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup.
-For example, after enabling the minor mode if you enter C-x and wait for the default of 1 second the minibuffer will expand with all
-of the available key bindings that follow C-x (or as many as space allows given your settings).
-This includes prefixes like C-x 8 which are shown in a different face.
-Screenshots of what the popup will look like are included below. which-key started as a rewrite of guide-key-mode,
-but the feature sets have diverged to a certain extent.
+** Whichkey ([[https://github.com/justbur/emacs-which-key][emacs-which-key]])
 
 #+begin_src emacs-lisp
 (use-package which-key
-  :after evil
-  :init (which-key-mode)
+  :init
+  (which-key-mode)
   :config
   (which-key-setup-minibuffer))
 #+end_src
 
 
-* Org mode
+* Org-mode
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
- 
-[[https://orgmode.org/][Org]] is a highly flexible structured plain text file format, composed of a few simple, yet versatile,
-structures — constructed to be both simple enough for the novice and powerful enough for the expert. 
 
-** General org-mode configuration
-
-Some basic settings for org-mode.
-To easily insert blocks press ~C-c C-,~.
+** General org-mode setup
 
 #+begin_src emacs-lisp
 (use-package org
@@ -611,15 +502,9 @@ To easily insert blocks press ~C-c C-,~.
 
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/notes.org")))
-
-(use-package org-download
-  :config
-  (setq org-download-screenshot-method "maim -s %s"))
 #+end_src
 
-** org-agenda
-
-Organize your life with org-agenda.
+** Org-agenda
 
 #+begin_src emacs-lisp
 (setq org-agenda-files '("~/org/Agenda.org"))
@@ -629,12 +514,7 @@ Organize your life with org-agenda.
 (setq org-log-done 'time)
 #+end_src
 
-** org-roam
-
-[[https://github.com/org-roam/org-roam][Org-roam]] is a plain-text knowledge management system. It brings some of Roam's more powerful features into the Org-mode ecosystem.
-
-Org-roam borrows principles from the Zettelkasten method, providing a solution for non-hierarchical note-taking.
-It should also work as a plug-and-play solution for anyone already using Org-mode for their personal wiki.
+** Org-roam ([[https://github.com/org-roam/org-roam][org-roam]])
 
 #+begin_src emacs-lisp
 (use-package org-roam
@@ -665,18 +545,7 @@ It should also work as a plug-and-play solution for anyone already using Org-mod
 :header-args: :tangle init.el
 :END:
 
-This section is dedicated to setting appearance related settings.
-
-** Fonts
-
-[[https://github.com/protesilaos/fontaine][fontaine]] lets the user specify presets of font configurations and set them on demand on graphical Emacs frames. The user option fontaine-presets holds all such presets.
-
-Presets consist of a list of properties that govern the family, weight, and height of the faces default, fixed-pitch,
-fixed-pitch-serif, variable-pitch, bold, and italic.
-Each preset is identified by a user-defined symbol as the car of a property list.
-It looks like this (check the default value of fontaine-presets for how everything is pieced together):
-
-The font is Protesilaos Stavrou's patched [[https://gitlab.com/protesilaos/iosevka-comfy][Iosevka Comfy]] Font.
+** Fonts ([[https://github.com/protesilaos/fontaine][fontaine]])
 
 #+begin_src emacs-lisp  
 (use-package fontaine
@@ -686,102 +555,65 @@ The font is Protesilaos Stavrou's patched [[https://gitlab.com/protesilaos/iosev
   (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
   :init
   (setq fontaine-presets
-	'((tiny
-	   :default-family "Iosevka Comfy Wide Fixed"
-	   :default-height 70)
-	  (small
-	   :default-family "Iosevka Comfy Fixed"
-	   :default-height 90)
-	  (regular
-	   :default-height 110)
-	  (medium
-	   :default-height 120)
-	  (large
-	   :default-weight semilight
-	   :default-height 140
-	   :bold-weight extrabold)
-	  (code
-	   :default-weight semilight
-	   :default-height 160
-	   :bold-weight extrabold)
-	  (presentation
-	   :default-weight semilight
-	   :default-height 170
-	   :bold-weight extrabold)
-	  (t
-	   ;; I keep all properties for didactic purposes, but most can be
-	   ;; omitted.  See the fontaine manual for the technicalities:
-	   ;; <https://protesilaos.com/emacs/fontaine>.
-	   :default-family "Iosevka Comfy Wide"
-	   :default-weight regular
-	   :default-height 110 
-	   :fixed-pitch-family nil ; falls back to :default-family
-	   :fixed-pitch-weight nil ; falls back to :default-weight
-	   :fixed-pitch-height 1.0
-	   :variable-pitch-family "Iosevka Comfy Duo"
-	   :variable-pitch-weight nil
-	   :variable-pitch-height 1.0
-	   :bold-family nil ; use whatever the underlying face has
-	   :bold-weight bold
-	   :italic-family nil
-	   :italic-slant italic
-	   :line-spacing nil))))
+      '((regular
+         :default-height 110)
+        (medium
+         :default-weight semilight
+         :default-height 140)
+        (large
+         :default-weight semilight
+         :default-height 180
+         :bold-weight extrabold)
+        (t ; our shared fallback properties
+         :default-family "Iosevka Comfy Wide Fixed"
+         :default-weight normal
+         ;; :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "Iosevka Comfy Duo"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil))))
 #+end_src
 
-** Useful output
-
-Some scripts that ouput standard out to minibuffer.
-
-#+begin_src emacs-lisp
-;; some useful output to display in the modeline
-(display-battery-mode 1)
-(column-number-mode 1)
-
-;; display the current time and date in the minibuffer
-(defun display-current-time ()
-  (interactive)
-  (message (format-time-string "%Y-%m-%d %H:%M:%S")))
-(define-key global-map (kbd "<f1>") #'display-current-time)
-
-;; display wifi/eth/vpn status in the minibuffer
-(defun display-wifi-status ()
-  (interactive)
-  (message (shell-command-to-string "sb-internet-emacs")))
-(define-key global-map (kbd "<f2>") #'display-wifi-status)
-#+end_src
-
-** Theme
-
-The [[https://protesilaos.com/emacs/modus-themes#h:f0f3dbcb-602d-40cf-b918-8f929c441baf][Modus]] themes are designed for accessible readability.
-They conform with the highest standard for color contrast between any given combination of background and foreground values.
-This corresponds to the WCAG AAA standard, which specifies a minimum rate of distance in relative luminance of 7:1.
-
-Modus Operandi (~modus-operandi~) is a light theme, while Modus Vivendi (~modus-vivendi~) is dark.
-Each theme’s color palette is designed to meet the needs of the numerous interfaces that are possible in the Emacs computing environment. 
+** Theme ([[https://protesilaos.com/emacs/modus-themes#h:f0f3dbcb-602d-40cf-b918-8f929c441baf][modus-themes]])
 
 #+begin_src emacs-lisp
 (use-package modus-themes
   :config
   (setq modus-themes-bold-constructs t
         modus-themes-italic-construct nil
-        modus-themes-subtle-line-numbers nil
-        modus-themes-fringes '(subtle)
-        modus-themes-hl-line '(intense)
-        modus-themes-mode-line '(borderless (padding . 4))
-        modus-themes-syntax '(faint green-strings alt-syntax)
+        modus-themes-common-palette-overrides
+        '(
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
+          (fringe unspecified))
         modus-themes-headings
         '((1 . (1.3))
           (2 . (1.2))
           (3 . (1.1))
           (t . (1.0)))
         modus-themes-org-blocks 'gray-background))
-(define-key global-map (kbd "C-c t") #'modus-themes-toggle)
-(modus-themes-load-vivendi)
+
+(defun chris/modus-themes-custom-faces ()
+  (modus-themes-with-colors
+    (custom-set-faces
+     ;; Add "padding" to the mode lines
+     `(mode-line ((,c :box (:line-width 4 :color ,bg-mode-line-active))))
+     `(mode-line-inactive ((,c :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
+
+(add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
+
+(modus-themes-load-theme 'modus-vivendi)
 #+end_src
 
-** Modeline
+** Modeline ([[https://github.com/emacsmirror/diminish][diminish]])
 
-The [[https://github.com/emacsmirror/diminish][diminish]] implements hiding or abbreviation of the mode line displays (lighters) of minor-modes.
 #+begin_src emacs-lisp
 (use-package diminish)
 (diminish 'auto-revert-mode)
@@ -798,21 +630,7 @@ The [[https://github.com/emacsmirror/diminish][diminish]] implements hiding or a
 :header-args: :tangle init.el
 :END:
 
-** Vertico and orderless
-
-[[https://github.com/minad/vertico][vertico]] provides a performant and minimalistic vertical completion UI based on the default completion system.
-The focus of Vertico is to provide a UI which behaves correctly under all circumstances.
-By reusing the built-in facilities system, Vertico achieves full compatibility with built-in Emacs completion commands and completion tables.
-Vertico only provides the completion UI but aims to be highly flexible, extendable and modular.
-Additional enhancements are available as extensions or complementary packages.
-The code base is small and maintainable.
-The main vertico.el package is only about 600 lines of code without white space and comments.
-
-The [[https://github.com/oantolin/orderless][orderless]] package provides an orderless completion style that divides the pattern into space-separated components,
-and matches candidates that match all of the components in any order.
-Each component can match in any one of several ways: literally, as a regexp, as an initialism,
-in the flex style, or as multiple word prefixes. By default, regexp and literal matches are enabled.
-
+** Vertico and orderless ([[https://github.com/minad/vertico][vertico]]) ([[https://github.com/oantolin/orderless][orderless]])
 
 #+begin_src emacs-lisp
 (use-package vertico
@@ -826,13 +644,7 @@ in the flex style, or as multiple word prefixes. By default, regexp and literal 
         completion-category-overrides '((fie (styles partial-completion)))))
 #+end_src
 
-** Consult
-
-[[https://github.com/minad/consult][consult]] provides practical commands based on the Emacs completion function completing-read.
-Completion allows you to quickly select an item from a list of candidates.
-Consult offers in particular an advanced buffer switching command consult-buffer to switch between buffers and recently opened files.
-Furthermore Consult provides multiple search commands, an asynchronous consult-grep and consult-ripgrep,
-and the line-based search command consult-line. Some of the Consult commands are enhanced versions of built-in Emacs commands.
+** Consult ([[https://github.com/minad/consult][consult]])
 
 #+begin_src emacs-lisp
 (use-package consult
@@ -848,13 +660,7 @@ and the line-based search command consult-line. Some of the Consult commands are
 (recentf-mode +1)
 #+end_src
 
-** Affe
-
-The [[https://github.com/minad/affe][affe]] package provides an asynchronous fuzzy finder similar to the fzf command-line fuzzy finder, written in pure Elisp.
-A producer process is started in the background, e.g., find or grep.
-The output produced by this process is filtered by an external asynchronous Emacs process.
-The Emacs UI always stays responsive since the work is off-loaded to other processes.
-The results are presented in the minibuffer using Consult, which allows to quickly select from the available items.
+** Affe ([[https://github.com/minad/affe][affe]])
 
 #+begin_src emacs-lisp
 (use-package affe
@@ -867,9 +673,6 @@ The results are presented in the minibuffer using Consult, which allows to quick
 
 ** Savehist
 
-A very simple alternative to more involved SessionManagement solutions.
-[[https://www.emacswiki.org/emacs/SaveHist][savehist]]
-
 #+begin_src emacs-lisp
 (use-package savehist
   :straight (:type built-in)
@@ -879,13 +682,7 @@ A very simple alternative to more involved SessionManagement solutions.
   (savehist-mode))
 #+end_src
 
-** Marginalia
-
-The [[https://github.com/minad/marginalia][marginalia]] package provides marginalia-mode which adds marginalia to the minibuffer completions.
-Marginalia are marks or annotations placed at the margin of the page of a book or in this case helpful colorful annotations
-placed at the margin of the minibuffer for your completion candidates.
-Marginalia can only add annotations to the completion candidates.
-It cannot modify the appearance of the candidates themselves, which are shown unaltered as supplied by the original command.
+** Marginalia ([[https://github.com/minad/marginalia][marginalia]])
 
 #+begin_src emacs-lisp
 (use-package marginalia
@@ -903,13 +700,7 @@ It cannot modify the appearance of the candidates themselves, which are shown un
 :header-args: :tangle init.el
 :END:
 
-This section provides some useful file-management tools.
-
 ** Dired
-
-[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][Dired]] makes an Emacs buffer containing a listing of a directory, and optionally some of its subdirectories as well.
-You can use the normal Emacs commands to move around in this buffer,
-and special Dired commands to operate on the listed files. Dired works with both local and remote directories. 
 
 #+begin_src emacs-lisp
 (use-package dired
@@ -923,18 +714,7 @@ and special Dired commands to operate on the listed files. Dired works with both
   (put 'dired-find-alternate-file 'disabled nil))
 #+end_src
 
-** Sudo Edit
-
-Open files with elevated priviliges.
-
-#+begin_src emacs-lisp
-(use-package sudo-edit)
-#+end_src
-
-** 0x0
-
-Integration with 0x0.st services from emacs. Intended for use in ERC to share images, files, and blocks of code.
-[[https://github.com/emacsmirror/0x0][0x0]]
+** 0x0 ([[https://github.com/emacsmirror/0x0][0x0]])
 
 #+begin_src emacs-lisp
 (use-package 0x0
@@ -949,11 +729,13 @@ Integration with 0x0.st services from emacs. Intended for use in ERC to share im
     "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
 #+end_src
 
-** Openwith
+** Sudo Edit
 
-[[https://github.com/thisirs/openwith][openwith]] is a simple but very useful package to make Emacs associate various file types with external applications.
-For example, Emacs can open PDFs, but you may want to open them with a dedicated PDF viewer instead.
-With openwith, you can do this seamlessly when you use C-x C-f.  It also works with recentf and ido.
+#+begin_src emacs-lisp
+(use-package sudo-edit)
+#+end_src
+
+** Openwith ([[https://github.com/thisirs/openwith][openwith]])
 
 #+begin_src emacs-lisp
 (use-package openwith
@@ -969,8 +751,6 @@ With openwith, you can do this seamlessly when you use C-x C-f.  It also works w
 #+end_src
 
 ** Calendar
-
-German holidays for Calendar.
 
 #+begin_src emacs-lisp
 (setq calendar-week-start-day 1
@@ -1013,12 +793,7 @@ German holidays for Calendar.
 (setq calendar-holidays holiday-christian-holidays)
 #+end_src
 
-** Olivetti
-
-[[https://github.com/rnkn/olivetti][olivetti]] is a simple Emacs minor mode for a nice writing environment.
-
-The minor mode =chris/olivetti-mode= automatically toggles the visibility
-of the mode-line and sets the width of the display to 120 characters.
+** Olivetti ([[https://github.com/rnkn/olivetti][olivetti]])
 
 #+begin_src emacs-lisp
 (use-package olivetti
@@ -1036,7 +811,7 @@ Fringes are disabled.  The modeline is hidden, except for
     (if chris/olivetti-mode
         (progn
           (olivetti-mode 1)
-	  (olivetti-set-width 120)
+          (olivetti-set-width 80)
           (set-window-fringes (selected-window) 0 0)
           (unless (derived-mode-p 'prog-mode)
             (chris/turn-on-hide-mode-line-mode))
@@ -1101,12 +876,7 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 :header-args: :tangle init.el
 :END:
 
-This section is dedicated to provide some useful features in managing buffers.
-
-** Get all buffers with same major mode as current file
-
-=chris/buffers-major-mode= provides a list of all open buffers that share the same
-major mode as the current buffer.
+** Get all buffers with the same major mode as the current file
 
 #+begin_src emacs-lisp
 (defun chris/buffers-major-mode (&optional arg)
@@ -1129,9 +899,6 @@ accordingly.  Else use standard completion."
 #+end_src
 
 ** Get all buffers in current project (vc-root)
-
-=chris/buffers-vc-root= provides a list of all open buffers that share the same
-project-root (~vc-root~) as the current buffer.
 
 #+begin_src emacs-lisp
 (defun chris/buffers-vc-root (&optional arg)
@@ -1159,9 +926,6 @@ When no VC root is available, use standard `switch-to-buffer'."
 
 ** Maximize a buffer
 
-=chris/toggle-maximize-buffer= is a function to toggle the maximized display of
-the currently focused buffer.
-
 #+begin_src emacs-lisp
 (defun chris/toggle-maximize-buffer ()
   "Maximize buffer"
@@ -1173,9 +937,7 @@ the currently focused buffer.
       (delete-other-windows))))
 #+end_src
 
-** dired buffer
-
-Conveniently configure dired and a function to kill all open dired buffers.
+** Kill all dired buffers
 
 #+begin_src emacs-lisp
 (defun chris/kill-dired-buffers ()
@@ -1188,16 +950,6 @@ Conveniently configure dired and a function to kill all open dired buffers.
 #+end_src
 
 ** Create custom scratch buffers
-
-=chris/simple-scratch-buffer= is a function to dynamically create scratch buffers based on
-currently active buffer.
-
-Expected behavior:
-
-- If the current major mode is derived from ~prog-mode~, it opens a scratch buffer with the
-  current major mode
-- If the current major mode is not derived from ~prog-mode~, it promps for a selection of
-  all possible ~prog-mode~ derivatives =AND= ~org-mode~ as an additional selection item
 
 #+begin_src emacs-lisp
 ;;; Generic setup
@@ -1254,8 +1006,6 @@ buffer."
 
 ** Toggle line numbers
 
-=chris/toggle-line-numbers= is a function that toggles the display of line-numbers.
-
 #+begin_src emacs-lisp
 (defun chris/toggle-line-numbers ()
   "Toggles the display of line numbers. Applies locally to the current buffer"
@@ -1266,15 +1016,10 @@ buffer."
 #+end_src
 
 
-* Projectile
+* Projectile ([[https://github.com/bbatsov/projectile][projectile]])
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
-
-[[https://github.com/bbatsov/projectile][projectile]] is a project interaction library for Emacs.
-Its goal is to provide a nice set of features operating on a project level without introducing external dependencies (when feasible).
-For instance - finding project files has a portable implementation written in pure Emacs Lisp without the use of GNU find
-(but for performance sake an indexing mechanism backed by external commands exists as well).
 
 #+begin_src emacs-lisp
 (use-package projectile
@@ -1296,14 +1041,12 @@ For instance - finding project files has a portable implementation written in pu
 #+end_src
 
 
-* Workspaces
+* Workspaces (=tab-bar.el=)
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
 
-~tab-bar.el~ kind of emulates workspaces in a way if configured properly.
-By default in this configuration the actual tab-bar at the top of the screen
-is disabled.
+** General =tab-bar.el= setup
 
 #+begin_src emacs-lisp
 (use-package tab-bar
@@ -1328,11 +1071,6 @@ is disabled.
 
 ** Manage tabs
 
-=chris/tab-bar-select-tab-dwim= manages tabs in the following way:
-- if there is only one tab, the function will create a second one
-- if there are exactly two tabs, it will toggle between them
-- if there are more than two tabs, it will open a menu of the active tabs to choose from
-
 #+begin_src emacs-lisp
 (defun chris/tab-bar-select-tab-dwim ()
   "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
@@ -1353,31 +1091,13 @@ questions.  Else use completion to select the tab to switch to."
                            (completing-read "Select tab: " tabs nil t)))))))
 #+end_src
 
-#+begin_src emacs-lisp
-(define-minor-mode chris/tab-status-line
-  "Make Tab bar a status line and configure the extras.
-Hide the mode lines and change their colors."
-  :global t
-  (if chris/tab-status-line
-      (progn
-        (setq tab-bar-show t)
-        (tab-bar-mode 1))
-    (setq tab-bar-show nil)
-    (tab-bar-mode -1)))
-#+end_src
-
 
 * IDE Features
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
 
-This section provides some useful IDE-"like" features.
-
-** Completion
-
-[[http://company-mode.github.io/][company]] is a text completion framework for Emacs. The name stands for "complete anything".
-It uses pluggable back-ends and front-ends to retrieve and display completion candidates.
+** Completion ([[http://company-mode.github.io/][company]])
 
 #+begin_src emacs-lisp
 (use-package company
@@ -1386,52 +1106,18 @@ It uses pluggable back-ends and front-ends to retrieve and display completion ca
   (setq company-minium-prefix-length 3))
 #+end_src
 
-** Indentation
-
-electric-indent-mode is enough to keep your code nicely aligned when all you do is type.
-However, once you start shifting blocks around, transposing lines, or slurping and barfing sexps, indentation is bound to go wrong.
-
-[[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] is a minor mode that keeps your code always indented. It reindents after every change, making it more reliable than electric-indent-mode.
-
-#+begin_src emacs-lisp
-(use-package aggressive-indent
-  :diminish
-  :init
-  (global-aggressive-indent-mode 1))
-(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
-
-(use-package highlight-indent-guides
-  :diminish
-  :config
-  (setq highlight-indent-guides-auto-odd-face-perc 30)
-  (setq highlight-indent-guides-auto-even-face-perc 35)
-  (setq highlight-indent-guides-auto-character-face-perc 40)
-  (setq highlight-indent-guides-method 'character)
-  :hook
-  (prog-mode . highlight-indent-guides-mode))
-#+end_src
-
-** LSP
-
-[[https://github.com/joaotavora/eglot][eglot]] is a client for Language Server Protocol servers 
+** LSP ([[https://github.com/joaotavora/eglot][eglot]])
 
 #+begin_src emacs-lisp
 (use-package eglot
+  :general
+  (chris/leader-keys
+    "cd" '(flymake-show-buffer-diagnostics :wk "show (lsp) diagnostics"))
   :commands
   eglot)
 #+end_src
 
-** Treesitter
-
-[[https://emacs-tree-sitter.github.io/][tree-sitter]] is an Emacs binding for Tree-sitter, an incremental parsing system.
-
-It aims to be the foundation for a new breed of Emacs packages that understand code structurally. For example:
-
-- Faster, fine-grained code highlighting.
-- More flexible code folding.
-- Structural editing (like Paredit, or even better) for non-Lisp code.
-- More informative indexing for imenu.
-
+** Treesitter ([[https://emacs-tree-sitter.github.io/][tree-sitter]])
 
 #+begin_src emacs-lisp
 (use-package tree-sitter-langs)
@@ -1459,14 +1145,7 @@ It aims to be the foundation for a new breed of Emacs packages that understand c
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 #+end_src
 
-** Async
-
-[[https://github.com/jwiegley/emacs-async][async.el]] is a module for doing asynchronous processing in Emacs. Some async applications are provided as well with this package:
-
-- Dired-async
-- smtp-mail-async
-- async-bytecomp
-
+** Async ([[https://github.com/jwiegley/emacs-async][async]])
 
 #+begin_src emacs-lisp
 (use-package async
@@ -1474,11 +1153,7 @@ It aims to be the foundation for a new breed of Emacs packages that understand c
   (dired-async-mode 1))
 #+end_src
 
-** rg
-
-[[https://github.com/dajva/rg.el][rg.el]] is a replacement for both grep like (search one file) and ag like (search many files) tools.
-It's fast and versatile and written in Rust.
-For some introduction and benchmarks, see ripgrep is faster than {grep, ag, git grep, ucg, pt, sift}.
+** rg ([[https://github.com/dajva/rg.el][rg.el]])
 
 #+begin_src emacs-lisp
 (use-package rg
@@ -1487,18 +1162,155 @@ For some introduction and benchmarks, see ripgrep is faster than {grep, ag, git 
 #+end_src
 
 
-* Git
+* Languages
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
 
-[[https://magit.vc/][Magit]] is a complete text-based user interface to Git.
-It fills the glaring gap between the Git command-line interface and various GUIs,
-letting you perform trivial as well as elaborate version control tasks with just a couple of mnemonic key presses.
-Magit looks like a prettified version of what you get after running a few Git commands but in Magit every bit of visible information
-is also actionable to an extent that goes far beyond what any Git GUI provides and it takes care of automatically refreshing this output when it becomes outdated.
-In the background Magit just runs Git commands and if you wish you can see what exactly is being run,
-making it possible for you to learn the git command-line by using Magit.
+** Haskell
+
+#+begin_src emacs-lisp
+(use-package haskell-mode
+  :mode ("\\.hs\\'" . haskell-mode)
+  :config
+  (defun chris/haskell-open-repl (&optional arg)
+    "Opens a Haskell REPL."
+    (interactive "P")
+    (if-let (window
+             (display-buffer
+              (haskell-session-interactive-buffer (haskell-session))))
+        (window-buffer window)
+      (error "Failed to display Haskell REPL")))
+
+  (defun chris/haskell-disable-electric-indent ()
+    "Disable electric indent mode if available"
+    (if (fboundp 'electric-indent-local-mode)
+        (electric-indent-local-mode -1)))
+
+  (defun chris/haskell-format-imports ()
+    "Sort and align import statements from anywhere in the source file."
+    (interactive)
+    (save-excursion
+      (haskell-navigate-imports)
+      (haskell-mode-format-imports)))
+  
+  (add-hook 'haskell-mode-hook
+            #'haskell-collapse-mode ; support folding haskell code blocks
+            (add-to-list 'completion-ignored-extensions ".hi"))
+
+  (add-hook 'haskell-cabal-mode-hook #'chris/haskell-disable-electric-indent)
+
+  :general
+  (chris/leader-keys
+    :keymaps 'haskell-mode-map
+    "hi" 'chris/haskell-format-imports))
+#+end_src
+
+** Lua
+
+#+begin_src emacs-lisp
+(use-package lua-mode
+  :mode ("\\.lua\\'". lua-mode)
+  :interpreter ("lua" . lua-mode)
+  :config
+  (defun chris/open-lua-repl ()
+    "open lua repl in horizontal split"
+    (interactive)
+    (split-window-horizontally)
+    (lua-show-process-buffer))
+  :init
+  (setq lua-indent-level 2
+	lua-indent-string-contents t)
+  :general
+  (chris/leader-keys
+    "cl" '(chris/open-lua-repl :wk "run-lua"))
+  (chris/leader-keys
+    :keymaps 'lua-mode-map
+    "rl" 'lua-send-buffer))
+#+end_src
+
+** python
+
+#+begin_src emacs-lisp
+(use-package python-mode
+  :straight (:type built-in)
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python3" . python-mode)
+  :general
+  (chris/leader-keys
+    :keymaps 'python-mode-map
+    "cp" 'run-python)
+  (chris/leader-keys
+    "rp" 'python-shell-send-buffer))
+#+end_src
+
+** php
+
+#+begin_src emacs-lisp
+(use-package php-mode
+  :mode ("\\.php\\'" . php-mode))
+#+end_src
+
+** racket
+
+#+begin_src emacs-lisp
+(use-package racket-mode
+  :interpreter ("racket" . racket-mode)
+  :config
+  (defun chris/racket-run-and-switch-to-repl ()
+    "Call `racket-run-and-switch-to-repl' and enable insert state"
+    (interactive)
+    (racket-run-and-switch-to-repl)
+    (when (buffer-live-p (get-buffer racket-repl-buffer-name))
+      (with-current-buffer racket-repl-buffer-name
+	(evil-insert-state))))
+  :general
+  (chris/leader-keys
+    "cr" '(chris/racket-run-and-switch-to-repl :wk "run racket and switch to repl"))
+  (chris/leader-keys
+    :keymaps 'racket-mode-map
+    "rs" '(racket-send-last-sexp :wk "racket send last sexp")
+    "rd" '(racket-send-definiton :wk "racket send definition")
+    ))
+#+end_src
+
+** matlab
+
+#+begin_src emacs-lisp
+(straight-use-package 'matlab-mode)
+(autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+(add-to-list
+ 'auto-mode-alist
+ '("\\.m$" . matlab-mode))
+(setq matlab-indent-function t)
+(setq matlab-shell-command-switches '("-nosplash" "-nodesktop"))
+(setq matlab-shell-command "matlab")
+
+(defun chris/open-matlab-shell ()
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1)
+  (matlab-shell))
+
+(defun chris/run-matlab ()
+  "Run matlab code"
+  (interactive)
+  (matlab-shell-run-region (point-min) (point-max)))
+
+(chris/leader-keys
+ :keymaps 'matlab-mode-map
+ :states 'normal
+ "mr" '(chris/run-matlab :wk "Run matlab buffer"))
+
+(chris/leader-keys
+  "cm" '(chris/open-matlab-shell :wk "Open matlab shell"))
+#+end_src
+
+
+* Git ([[https://magit.vc/][Magit]])
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
 #+begin_src emacs-lisp
 (use-package magit
@@ -1520,116 +1332,12 @@ making it possible for you to learn the git command-line by using Magit.
 #+end_src
 
 
-* Languages
-:PROPERTIES:
-:header-args: :tangle init.el
-:END:
-
-Some languages modes. Nothing to see here.
-
-** Haskell
-
-#+begin_src emacs-lisp
-(use-package haskell-mode
-  :config
-  (defun chris/haskell-open-repl (&optional arg)
-    "Opens a Haskell REPL."
-    (interactive "P")
-    (if-let (window
-             (display-buffer
-              (haskell-session-interactive-buffer (haskell-session))))
-	(window-buffer window)
-      (error "Failed to display Haskell REPL")))
-  (add-hook 'haskell-mode-hook
-            #'haskell-collapse-mode ; support folding haskell code blocks
-  (add-to-list 'completion-ignored-extensions ".hi")))
-#+end_src
-
-** Lua
-
-#+begin_src emacs-lisp
-(use-package lua-mode
-  :interpreter ("lua" . lua-mode)
-  :config
-  (setq lua-indent-level 2)
-  (setq lua-electric-flag nil)
-  (defun lua-abbrev-mode-off () (abbrev-mode 0))
-  (add-hook 'lua-mode-hook 'lua-abbrev-mode-off)
-  (setq save-abbrevs nil))
-#+end_src
-
-** emmet mode 
-
-#+begin_src emacs-lisp
-(use-package emmet-mode
-  :config
-  (setq emmet-indent-after-insert nil)
-  (setq emmet-indentation 2)
-  (setq emmet-self-closing-tag-style "/")
-  :hook
-  (sgml-mode-hook . emmet-mode)
-  (css-mode-hook . emmet-mode))
-#+end_src
-
-** Php
-
-#+begin_src emacs-lisp
-(use-package php-mode
-  :config
-  (add-hook 'php-mode-hook (lambda ()
-           (defun ywb-php-lineup-arglist-intro (langelem)
-             (save-excursion
-         (goto-char (cdr langelem))
-         (vector (+ (current-column) c-basic-offset))))
-           (defun ywb-php-lineup-arglist-close (langelem)
-             (save-excursion
-         (goto-char (cdr langelem))
-         (vector (current-column))))
-           (c-set-offset 'arglist-intro 'ywb-php-lineup-arglist-intro)
-           (c-set-offset 'arglist-close 'ywb-php-lineup-arglist-close))))
-#+end_src
-
-** Matlab
-
-The =open-matlab-shell= opens a matlab shell in a split that is 40c high.
-
-#+begin_src emacs-lisp
-(straight-use-package 'matlab-mode)
-(autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-(add-to-list
- 'auto-mode-alist
- '("\\.m$" . matlab-mode))
-(setq matlab-indent-function t)
-(setq matlab-shell-command-switches '("-nosplash" "-nodesktop"))
-(setq matlab-shell-command "matlab")
-
-(defun open-matlab-shell ()
-  (interactive)
-  (split-window-horizontally)
-  (other-window 1)
-  (matlab-shell))
-
-(general-define-key
- ;; NOTE: keymaps specified with :keymaps must be quoted
- :keymaps 'matlab-mode-map
- :states 'normal
- "rm" 'matlab-shell-run-region
- )
-
-#+end_src
-
-
 * Terminal
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
 
-This section provides terminal "emulation" for this configuration.
-
-** vterm
-
-Emacs-libvterm ([[https://github.com/akermu/emacs-libvterm][vterm]]) is fully-fledged terminal emulator inside GNU Emacs based on libvterm, a C library.
-As a result of using compiled code (instead of elisp), emacs-libvterm is fully capable, fast, and it can seamlessly handle large outputs.
+** VTerm ([[https://github.com/akermu/emacs-libvterm][vterm]])
 
 It is important to configure the system shell (in this case bash in the ~.bashrc~):
 
@@ -1669,12 +1377,9 @@ find_file() {
   (setq vterm-timer-delay 0.01))
 #+end_src
 
-** eshell
+** Eshell ([[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][eshell]])
 
-[[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][eshell]] is a shell-like command interpreter implemented in Emacs Lisp.
-It invokes no external processes except for those requested by the user.
-It is intended to be an alternative to the IELM (see Emacs Lisp Interaction in The Emacs Editor)
-REPL for Emacs and with an interface similar to command shells such as bash, zsh, rc, or 4dos. 
+*** General setup for eshell
 
 #+begin_src emacs-lisp
 (defun chris/configure-eshell ()
@@ -1696,11 +1401,7 @@ REPL for Emacs and with an interface similar to command shells such as bash, zsh
     (setq eshell-visual-commands '("ssh" "tail" "htop" "pulsemixer" "top" "nvim" "vim"))))
 #+end_src
 
-*** custom functionality
-
-**** Git status
-
-Function to get the git status in magit.
+*** Git status
 
 #+begin_src emacs-lisp
 (defun eshell/gst (&rest args)
@@ -1708,9 +1409,7 @@ Function to get the git status in magit.
   (eshell/echo))   ;; The echo command suppresses output
 #+end_src
 
-**** find
-
-Custom find function.
+*** find
 
 #+begin_src emacs-lisp
 (defun eshell/find (&rest args)
@@ -1719,9 +1418,7 @@ Custom find function.
     (shell-command-to-string cmd)))
 #+end_src
 
-**** clear
-
-Custom clear function.
+*** clear
 
 #+begin_src emacs-lisp
 (defun my/eshell/clear ()
@@ -1739,9 +1436,7 @@ Custom clear function.
             (define-key eshell-mode-map "\C-l" 'my/eshell/clear)))
 #+end_src
 
-**** mkdir and cd
-
-Function to create a directory and change into the new directory.
+*** mkdir and cd
 
 #+begin_src emacs-lisp
 (defun eshell/mkdir-and-cd (dir)
@@ -1756,23 +1451,13 @@ Function to create a directory and change into the new directory.
 :header-args: :tangle init.el
 :END:
 
-Some other packages that don't really belong anywhere.
-
-** Rainbow mode
-
-Colorize color names in buffers.
+** Rainbow Mode
 
 #+begin_src emacs-lisp
 (use-package rainbow-mode)
 #+end_src
 
-** emms
-
-[[https://www.gnu.org/software/emms/][emms]] is the Emacs Multimedia System. Emms displays and plays multimedia from within GNU/Emacs using a variety of external players and from different sources.
-
-Emms can run as a minimalist player and controlled with a handful of M-x Emacs commands, or a fully-fledged, interactive media browser.
-Emms can display album art, play streaming audio, tag music files, search for lyrics, provide MPD connectivity, control the volume, and more.
-
+** EMMS ([[https://www.gnu.org/software/emms/][emms]])
 
 #+begin_src emacs-lisp
 (use-package emms
@@ -1798,9 +1483,7 @@ Emms can display album art, play streaming audio, tag music files, search for ly
       emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
 #+end_src
 
-** org-tree-slide
-
-[[https://github.com/takaxp/org-tree-slide][org-tree-slide]] is a presentation tool for org-mode based on the visibility of outline trees.
+** Presentations ([[https://github.com/takaxp/org-tree-slide][org-tree-slide]])
 
 #+begin_src emacs-lisp
 (use-package org-tree-slide
@@ -1827,7 +1510,7 @@ of `org-tree-slide-mode'."
   )
 #+end_src
 
-** pdf-tools
+** PDFs ([[https://github.com/vedang/pdf-tools][pdf-tools]])
 
 #+begin_src emacs-lisp
 (use-package pdf-tools
@@ -1835,3 +1518,4 @@ of `org-tree-slide-mode'."
   (pdf-tools-install)
   (setq-default pdf-view-display-size 'fit-page))
 #+end_src
+
