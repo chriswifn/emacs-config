@@ -944,9 +944,16 @@ Hide the mode lines and change their colors."
 
 (defun open-matlab-shell ()
   (interactive)
-  (split-window-below 40)
+  (split-window-horizontally)
   (other-window 1)
   (matlab-shell))
+
+(general-define-key
+ ;; NOTE: keymaps specified with :keymaps must be quoted
+ :keymaps 'matlab-mode-map
+ :states 'normal
+ "rm" 'matlab-shell-run-region
+ )
 
 (use-package vterm
   :hook

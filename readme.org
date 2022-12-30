@@ -1605,9 +1605,17 @@ The =open-matlab-shell= opens a matlab shell in a split that is 40c high.
 
 (defun open-matlab-shell ()
   (interactive)
-  (split-window-below 40)
+  (split-window-horizontally)
   (other-window 1)
   (matlab-shell))
+
+(general-define-key
+ ;; NOTE: keymaps specified with :keymaps must be quoted
+ :keymaps 'matlab-mode-map
+ :states 'normal
+ "rm" 'matlab-shell-run-region
+ )
+
 #+end_src
 
 
