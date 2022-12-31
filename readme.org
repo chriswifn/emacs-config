@@ -1161,9 +1161,9 @@ Keybindings:
   (let ((ssid (aref (tabulated-list-get-entry) 1))
         (passwordRequired (not (string= "--" (aref (tabulated-list-get-entry) 7)))))
     (if (not passwordRequired)
-        (shell-command (format "nmcli dev wifi connect \"%s\"" ssid))
+        (async-shell-command (format "nmcli dev wifi connect \"%s\"" ssid))
       (let ((password (read-passwd "Password: ")))
-        (progn (shell-command (format "nmcli dev wifi connect \"%s\" password %s" ssid password))
+        (progn (async-shell-command (format "nmcli dev wifi connect \"%s\" password %s" ssid password))
                (clear-string password))))))
 
 (defun chris/nmcli-wifi-disconnect ()
