@@ -1062,9 +1062,10 @@ Display a table of all pre configured internet connections.
 Keybindings:
 
 | Keybinding | Function                             | Description                       |
-| Return     | chris/nmcli-wifi-preexist-connect    | connect to the selected ssid      |
-| C-Return   | chris/nmcli-wifi-preexist-disconnect | disconnect from the selected ssid |
-| M-Return   | chris/nmcli-wifi-preexist-refresh    | refresh the buffer to see changes |
+|------------+--------------------------------------+-----------------------------------|
+| c          | chris/nmcli-wifi-preexist-connect    | connect to the selected ssid      |
+| d          | chris/nmcli-wifi-preexist-disconnect | disconnect from the selected ssid |
+| r          | chris/nmcli-wifi-preexist-refresh    | refresh the buffer to see changes |
 
 #+begin_src emacs-lisp
 (define-derived-mode chris/nmcli-wifi-preexist-mode tabulated-list-mode
@@ -1130,9 +1131,10 @@ Display a table of all possible wifi connections.
 Keybindings:
 
 | Keybinding | Function                    | Description                       |
-| Return     | chris/nmcli-wifi-connect    | connect to the selected ssid      |
-| C-Return   | chris/nmcli-wifi-disconnect | disconnect from the selected ssid |
-| M-Return   | chris/nmcli-wifi-refresh    | refresh the buffer to see changes |
+|------------+-----------------------------+-----------------------------------|
+| c          | chris/nmcli-wifi-connect    | connect to the selected ssid      |
+| d          | chris/nmcli-wifi-disconnect | disconnect from the selected ssid |
+| r          | chris/nmcli-wifi-refresh    | refresh the buffer to see changes |
 
 #+begin_src emacs-lisp
 (define-derived-mode chris/nmcli-wifi-mode tabulated-list-mode
