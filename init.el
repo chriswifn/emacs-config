@@ -397,6 +397,7 @@
 
 (display-battery-mode)
 (setq display-time-default-load-average nil)
+(setq display-time-24hr-format 1)
 (display-time-mode 1)
 
  (use-package hl-todo

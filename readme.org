@@ -636,6 +636,7 @@ Some rules/conventions:
 
 (display-battery-mode)
 (setq display-time-default-load-average nil)
+(setq display-time-24hr-format 1)
 (display-time-mode 1)
 #+end_src
 
