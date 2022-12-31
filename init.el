@@ -711,8 +711,8 @@ buffer."
     (display-line-numbers-mode)))
 
 (define-derived-mode chris/nmcli-wifi-preexist-mode tabulated-list-mode
-  "nmcli-wifi"
-  "nmcli WiFi Mode"
+  "nmcli-wifi-preexist"
+  "nmcli preexisting WiFi Mode"
   (let ((columns [("NAME" 20 t)
                   ("UUID" 40 t)
                   ("TYPE" 10 t)
