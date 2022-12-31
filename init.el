@@ -362,6 +362,8 @@
           (border-mode-line-inactive unspecified)
 	  (bg-mode-line-active bg-blue-subtle)
 	  (fg-mode-line-active fg-main)
+	  (prose-done green-faint)
+	  (prose-todo red-faint)
           (fringe unspecified))
         modus-themes-headings
         '((1 . (1.3))
@@ -390,6 +392,18 @@
 (diminish 'eldoc-mode)
 
 (display-battery-mode)
+
+ (use-package hl-todo
+    :hook (prog-mode . hl-todo-mode)
+    :config
+    (setq hl-todo-highlight-punctuation ":"
+          hl-todo-keyword-faces
+          `(("TODO"       warning bold)
+            ("FIXME"      error bold)
+            ("HACK"       font-lock-constant-face bold)
+            ("REVIEW"     font-lock-keyword-face bold)
+            ("NOTE"       success bold)
+            ("DEPRECATED" font-lock-doc-face bold))))
 
 (use-package vertico
   :init
