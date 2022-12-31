@@ -141,7 +141,11 @@
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
-  "oo" '(occur "^*+" :wk "org sidebar"))
+  "oo" '(occur "^*+" :wk "org sidebar")
+  "ob" '(bluetooth-list-devices :wk "List bluetooth devices")
+  "oi" '(chris/nmcli-wifi-preexist :wk "internet preexisting")
+  "oI" '(chris/nmcli-wifi :wk "Connect wifi")
+  )
 
 (chris/leader-keys
   "c" '(:ignore t :wk "code-action")
@@ -820,6 +824,8 @@ buffer."
 (define-key chris/nmcli-wifi-mode-map (kbd "<return>") 'chris/nmcli-wifi-connect)
 (define-key chris/nmcli-wifi-mode-map (kbd "<C-return>") 'chris/nmcli-wifi-disconnect)
 (define-key chris/nmcli-wifi-mode-map (kbd "<M-return>") 'chris/nmcli-wifi-refresh)
+
+(use-package bluetooth)
 
 (use-package projectile
   :general

@@ -277,18 +277,21 @@ Some rules/conventions:
 
 *** Keybindings to open programs within Emacs
 
-| Keybinding | Function                | Description                                  |
-|------------+-------------------------+----------------------------------------------|
-| SPC o t    | vterm                   | Open a vterm buffer                          |
-| SPC o e    | eshell                  | Open an eshell buffer                        |
-| SPC o s    | fontaine-set-preset     | Choose a fontaine preset                     |
-| SPC o w    | woman                   | Pick from a list of manpages and display it  |
-| SPC o f    | chris/olivetti-mode     | Open custom olivetti for better focus        |
-| SPC o u    | undo-tree-visualize     | Open undo-tree                               |
-| SPC o l    | org-toggle-link-display | Display org-mode links (don't truncate them) |
-| SPC o c    | org-capture             | Open org-capture for "note-taking"           |
-| SPC o a    | org-agenda              | Open org-agenda for "taks-scheduling"        |
-| SPC o o    | occur "^*+"             | Get an outline (headings) of org-mode files  |
+| Keybinding | Function                  | Description                                     |
+|------------+---------------------------+-------------------------------------------------|
+| SPC o t    | vterm                     | Open a vterm buffer                             |
+| SPC o e    | eshell                    | Open an eshell buffer                           |
+| SPC o s    | fontaine-set-preset       | Choose a fontaine preset                        |
+| SPC o w    | woman                     | Pick from a list of manpages and display it     |
+| SPC o f    | chris/olivetti-mode       | Open custom olivetti for better focus           |
+| SPC o u    | undo-tree-visualize       | Open undo-tree                                  |
+| SPC o l    | org-toggle-link-display   | Display org-mode links (don't truncate them)    |
+| SPC o c    | org-capture               | Open org-capture for "note-taking"              |
+| SPC o a    | org-agenda                | Open org-agenda for "taks-scheduling"           |
+| SPC o o    | occur "^*+"               | Get an outline (headings) of org-mode files     |
+| SPC o b    | bluetooth-list-devices    | Get a list of bluetooth devices                 |
+| SPC o i    | chris/nmcli-wifi-preexist | Menu to manage preexisting internet connections |
+| SPC o I    | chris/nmcli-wifi          | Menu to manage possible wifi connections        |
 
 #+begin_src emacs-lisp
 (chris/leader-keys
@@ -303,7 +306,11 @@ Some rules/conventions:
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
-  "oo" '(occur "^*+" :wk "org sidebar"))
+  "oo" '(occur "^*+" :wk "org sidebar")
+  "ob" '(bluetooth-list-devices :wk "List bluetooth devices")
+  "oi" '(chris/nmcli-wifi-preexist :wk "internet preexisting")
+  "oI" '(chris/nmcli-wifi :wk "Connect wifi")
+  )
 #+end_src
 
 *** Keybindings for code
@@ -1037,7 +1044,13 @@ buffer."
     (display-line-numbers-mode)))
 #+end_src
 
-** Handle nmcli through emacs
+
+* Desktop environment (kindof)
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
+
+** Internet 
 
 *** Handle preexisting connections
 
@@ -1174,6 +1187,40 @@ Keybindings:
 (define-key chris/nmcli-wifi-mode-map (kbd "<return>") 'chris/nmcli-wifi-connect)
 (define-key chris/nmcli-wifi-mode-map (kbd "<C-return>") 'chris/nmcli-wifi-disconnect)
 (define-key chris/nmcli-wifi-mode-map (kbd "<M-return>") 'chris/nmcli-wifi-refresh)
+#+end_src
+
+** Bluetooth
+
+Keybindings:
+
+| Key       | Command                                                                                                |
+|-----------+--------------------------------------------------------------------------------------------------------|
+| P         | pair with a device                                                                                     |
+| c         | connect to a device (may start pairing procedure); with a prefix argument, connect to a single profile |
+| d         | disconnect a device; with a prefix argument, disconnect a single profile                               |
+| a         | set or reset a device's alias                                                                          |
+| t         | toggle the trusted property of a device                                                                |
+| b         | toggle the blocked property of a device (disconnects connected device)                                 |
+| k         | remove a device (will disconnect and unpair)                                                           |
+| i         | show device information, such as RSSI value, device class and services                                 |
+| A         | show host adapter information                                                                          |
+| r         | start discovery (scan) mode                                                                            |
+| R         | stop discovery (scan) mode                                                                             |
+| D         | toggle the discoverable property of the adapter                                                        |
+| x         | toggle the pairable property of the adapter                                                            |
+| s         | toggle the power supply of the adapter                                                                 |
+| n         | next line                                                                                              |
+| p         | previous line                                                                                          |
+| <         | go to the beginning of the list                                                                        |
+| >         | go to the end of the list                                                                              |
+| g         | revert the buffer; this queries the bus for accessible devices                                         |
+| S         | sort list by column at point                                                                           |
+| h or ?    | describe the mode                                                                                      |
+| q         | bury the buffer                                                                                        |
+| =M-x imenu= | invoke imenu to select a device                                                                        |
+
+#+begin_src emacs-lisp
+(use-package bluetooth)
 #+end_src
 
 
