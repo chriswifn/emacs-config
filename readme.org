@@ -1037,6 +1037,145 @@ buffer."
     (display-line-numbers-mode)))
 #+end_src
 
+** Handle nmcli through emacs
+
+*** Handle preexisting connections
+
+Display a table of all pre configured internet connections.
+
+Keybindings:
+
+| Keybinding | Function                             | Description                       |
+| Return     | chris/nmcli-wifi-preexist-connect    | connect to the selected ssid      |
+| C-Return   | chris/nmcli-wifi-preexist-disconnect | disconnect from the selected ssid |
+| M-Return   | chris/nmcli-wifi-preexist-refresh    | refresh the buffer to see changes |
+
+#+begin_src emacs-lisp
+(define-derived-mode chris/nmcli-wifi-preexist-mode tabulated-list-mode
+  "nmcli-wifi"
+  "nmcli WiFi Mode"
+  (let ((columns [("NAME" 20 t)
+                  ("UUID" 40 t)
+                  ("TYPE" 10 t)
+                  ("DEVICE" 10 t)])
+        (rows (chris/nmcli-wifi-preexist--shell-command)))
+    (setq tabulated-list-format columns)
+    (setq tabulated-list-entries rows)
+    (tabulated-list-init-header)
+    (tabulated-list-print)))
+
+(defun chris/nmcli-wifi-preexist-refresh ()
+  (interactive)
+  (let ((rows (chris/nmcli-wifi-preexist--shell-command)))
+    (setq tabulated-list-entries rows)
+    (tabulated-list-print t t)))
+
+(defun chris/nmcli-wifi-preexist--shell-command ()
+  (interactive)
+  (mapcar (lambda (x)
+	    `(,(car (cdr x))
+	      ,(vconcat [] x)))
+          (mapcar (lambda (x)
+		    x)
+		  (cdr (mapcar (lambda (x)
+				 (split-string x "  " t " "))
+			       (split-string (shell-command-to-string "nmcli connection") "\n" t))))))
+
+(defun chris/nmcli-wifi-preexist ()
+  (interactive)
+  (switch-to-buffer "*nmcli-wifi-preexist*")
+  (chris/nmcli-wifi-preexist-mode))
+
+(defun chris/nmcli-wifi-preexist-connect ()
+  (interactive)
+  (let ((ssid (aref (tabulated-list-get-entry) 1)))
+    (async-shell-command (format "nmcli connection up \"%s\"" ssid))))
+
+(defun chris/nmcli-wifi-preexist-disconnect ()
+  (interactive)
+  (let ((ssid (aref (tabulated-list-get-entry) 1)))
+    (async-shell-command (format "nmcli connection down \"%s\"" ssid))))
+
+(define-key chris/nmcli-wifi-preexist-mode-map (kbd "<return>") 'chris/nmcli-wifi-preexist-connect)
+(define-key chris/nmcli-wifi-preexist-mode-map (kbd "<C-return>") 'chris/nmcli-wifi-preexist-disconnect)
+(define-key chris/nmcli-wifi-preexist-mode-map (kbd "<M-return>") 'chris/nmcli-wifi-preexist-refresh)
+
+(add-to-list 'display-buffer-alist
+	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+#+end_src
+
+*** Connect to internet
+
+Display a table of all possible wifi connections. 
+
+Keybindings:
+
+| Keybinding | Function                    | Description                       |
+| Return     | chris/nmcli-wifi-connect    | connect to the selected ssid      |
+| C-Return   | chris/nmcli-wifi-disconnect | disconnect from the selected ssid |
+| M-Return   | chris/nmcli-wifi-refresh    | refresh the buffer to see changes |
+
+#+begin_src emacs-lisp
+(define-derived-mode chris/nmcli-wifi-mode tabulated-list-mode
+  "nmcli-wifi"
+  "nmcli WiFi Mode"
+  (let ((columns [("IN-USE" 10 t)
+                  ("SSID" 30 t)
+                  ("MODE" 10 t)
+                  ("CHAN" 5 t)
+                  ("RATE" 15 t)
+                  ("SIGNAL" 10 t)
+                  ("BARS" 5 t)
+                  ("SECURITY" 10 t)])
+        (rows (chris/nmcli-wifi--shell-command)))
+    (setq tabulated-list-format columns)
+    (setq tabulated-list-entries rows)
+    (tabulated-list-init-header)
+    (tabulated-list-print)))
+
+;; TODO: Try to rescan first
+(defun chris/nmcli-wifi-refresh ()
+  (interactive)
+  (let ((rows (chris/nmcli-wifi--shell-command)))
+    (setq tabulated-list-entries rows)
+    (tabulated-list-print t t)))
+
+(defun chris/nmcli-wifi--shell-command ()
+  (interactive)
+  (mapcar (lambda (x)
+            `(,(car (cdr x))
+              ,(vconcat [] x)))
+          (mapcar (lambda (x)
+                    (if (string= "*" (car x)) x (cons "" x)))
+                  (cdr (mapcar (lambda (x)
+                                 (split-string x "  " t " "))
+                               (split-string (shell-command-to-string "nmcli dev wifi") "\n" t))))))
+
+(defun chris/nmcli-wifi ()
+  (interactive)
+  (switch-to-buffer "*nmcli-wifi*")
+  (chris/nmcli-wifi-mode))
+
+(defun chris/nmcli-wifi-connect ()
+  (interactive)
+  (let ((ssid (aref (tabulated-list-get-entry) 1))
+        (passwordRequired (not (string= "--" (aref (tabulated-list-get-entry) 7)))))
+    (if (not passwordRequired)
+        (shell-command (format "nmcli dev wifi connect \"%s\"" ssid))
+      (let ((password (read-passwd "Password: ")))
+        (progn (shell-command (format "nmcli dev wifi connect \"%s\" password %s" ssid password))
+               (clear-string password))))))
+
+(defun chris/nmcli-wifi-disconnect ()
+  (interactive)
+  (let ((ssid (aref (tabulated-list-get-entry) 2)))
+    (async-shell-command (format "nmcli connection down \"%s\"" ssid))))
+
+(define-key chris/nmcli-wifi-mode-map (kbd "<return>") 'chris/nmcli-wifi-connect)
+(define-key chris/nmcli-wifi-mode-map (kbd "<C-return>") 'chris/nmcli-wifi-disconnect)
+(define-key chris/nmcli-wifi-mode-map (kbd "<M-return>") 'chris/nmcli-wifi-refresh)
+#+end_src
+
 
 * Projectile ([[https://github.com/bbatsov/projectile][projectile]])
 :PROPERTIES:
