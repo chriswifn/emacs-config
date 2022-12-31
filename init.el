@@ -360,6 +360,8 @@
         '(
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
+	  (bg-mode-line-active bg-blue-subtle)
+	  (fg-mode-line-active fg-main)
           (fringe unspecified))
         modus-themes-headings
         '((1 . (1.3))
