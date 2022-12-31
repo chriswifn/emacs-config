@@ -1,7 +1,6 @@
 #+title: Emacs Configuration
 #+author: Christian Hageloch
 #+startup: overview
-#+OPTIONS: toc:2
 
 Currently tailored for GNU Emacs 28.2.
 
