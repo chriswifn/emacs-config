@@ -599,8 +599,8 @@ Some rules/conventions:
         '(
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
-	  (bg-mode-line-active bg-blue-subtle)
-	  (fg-mode-line-active fg-main)
+	  ;; (bg-mode-line-active bg-blue-subtle)
+	  ;; (fg-mode-line-active fg-main)
 	  (prose-done green-faint)
 	  (prose-todo red-faint)
           (fringe unspecified))
