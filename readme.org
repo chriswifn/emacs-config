@@ -1112,9 +1112,12 @@ Keybindings:
   (let ((ssid (aref (tabulated-list-get-entry) 1)))
     (async-shell-command (format "nmcli connection down \"%s\"" ssid))))
 
-(define-key chris/nmcli-wifi-preexist-mode-map (kbd "<return>") 'chris/nmcli-wifi-preexist-connect)
-(define-key chris/nmcli-wifi-preexist-mode-map (kbd "<C-return>") 'chris/nmcli-wifi-preexist-disconnect)
-(define-key chris/nmcli-wifi-preexist-mode-map (kbd "<M-return>") 'chris/nmcli-wifi-preexist-refresh)
+(general-define-key
+ :states 'normal
+ :keymaps 'chris/nmcli-wifi-preexist-mode-map
+ "c" '(chris/nmcli-wifi-preexist-connect :wk "connect")
+ "d" '(chris/nmcli-wifi-preexist-disconnect :wk "disconnect")
+ "r" '(chris/nmcli-wifi-preexist-refresh :wk "refresh"))
 
 (add-to-list 'display-buffer-alist
 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
@@ -1187,9 +1190,12 @@ Keybindings:
   (let ((ssid (aref (tabulated-list-get-entry) 2)))
     (async-shell-command (format "nmcli connection down \"%s\"" ssid))))
 
-(define-key chris/nmcli-wifi-mode-map (kbd "<return>") 'chris/nmcli-wifi-connect)
-(define-key chris/nmcli-wifi-mode-map (kbd "<C-return>") 'chris/nmcli-wifi-disconnect)
-(define-key chris/nmcli-wifi-mode-map (kbd "<M-return>") 'chris/nmcli-wifi-refresh)
+(general-define-key
+ :states 'normal
+ :keymaps 'chris/nmcli-wifi-mode-map
+ "c" '(chris/nmcli-wifi-connect :wk "connect")
+ "d" '(chris/nmcli-wifi-disconnect :wk "disconnect")
+ "r" '(chris/nmcli-wifi-refresh :wk "refresh"))
 #+end_src
 
 ** Bluetooth
