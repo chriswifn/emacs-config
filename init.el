@@ -396,6 +396,8 @@
 (diminish 'eldoc-mode)
 
 (display-battery-mode)
+(setq display-time-default-load-average nil)
+(display-time-mode 1)
 
  (use-package hl-todo
     :hook (prog-mode . hl-todo-mode)

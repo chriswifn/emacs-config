@@ -635,6 +635,8 @@ Some rules/conventions:
 (diminish 'eldoc-mode)
 
 (display-battery-mode)
+(setq display-time-default-load-average nil)
+(display-time-mode 1)
 #+end_src
 
 ** Highlight TODO's and other keywords ([[https://github.com/tarsius/hl-todo][hl-todo]])
