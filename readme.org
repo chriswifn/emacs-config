@@ -1120,8 +1120,8 @@ Keybindings:
  "d" '(chris/nmcli-wifi-preexist-disconnect :wk "disconnect")
  "r" '(chris/nmcli-wifi-preexist-refresh :wk "refresh"))
 
-(add-to-list 'display-buffer-alist
-	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+;; (add-to-list 'display-buffer-alist
+;; 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 #+end_src
 
 *** Connect to internet

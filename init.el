@@ -769,8 +769,8 @@ buffer."
  "d" '(chris/nmcli-wifi-preexist-disconnect :wk "disconnect")
  "r" '(chris/nmcli-wifi-preexist-refresh :wk "refresh"))
 
-(add-to-list 'display-buffer-alist
-	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+;; (add-to-list 'display-buffer-alist
+;; 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 (define-derived-mode chris/nmcli-wifi-mode tabulated-list-mode
   "nmcli-wifi"
