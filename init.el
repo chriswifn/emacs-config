@@ -385,7 +385,11 @@
 
 (add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
 
-(modus-themes-load-theme 'modus-vivendi)
+(if (string-match
+     "modus-vivendi"
+     (shell-command-to-string "cat ~/.config/awesome/theme/local_theme"))
+    (modus-themes-load-theme 'modus-vivendi)
+  (modus-themes-load-theme 'modus-operandi))
 
 (use-package diminish)
 (diminish 'auto-revert-mode)
