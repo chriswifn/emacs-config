@@ -284,7 +284,6 @@ Some rules/conventions:
 | SPC o s    | fontaine-set-preset       | Choose a fontaine preset                        |
 | SPC o w    | woman                     | Pick from a list of manpages and display it     |
 | SPC o f    | chris/olivetti-mode       | Open custom olivetti for better focus           |
-| SPC o u    | undo-tree-visualize       | Open undo-tree                                  |
 | SPC o l    | org-toggle-link-display   | Display org-mode links (don't truncate them)    |
 | SPC o c    | org-capture               | Open org-capture for "note-taking"              |
 | SPC o a    | org-agenda                | Open org-agenda for "taks-scheduling"           |
@@ -302,7 +301,6 @@ Some rules/conventions:
   "os" '(fontaine-set-preset :wk "fontaine")
   "ow" '(woman :wk "woman")
   "of" '(chris/olivetti-mode :wk "olivetti")
-  "ou" '(undo-tree-visualize :wk "undo-tree")
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
@@ -382,7 +380,7 @@ Some rules/conventions:
 
   (setq evil-want-C-i-jump nil) ;; hopefully this will fix weird tab behaviour
 
-  (setq evil-undo-system 'undo-tree) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
+  (setq evil-undo-system 'undo-redo) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
   :config
   (evil-mode t) ;; globally enable evil mode
   ;; set the initial state for some kinds of buffers.
@@ -391,17 +389,6 @@ Some rules/conventions:
   ;; buffers in which I want to immediately start typing should be in 'insert' state by default.
   (evil-set-initial-state 'eshell-mode 'insert)
   (evil-set-initial-state 'magit-diff-mode 'insert))
-#+end_src
-
-*** Undo tree ([[https://elpa.gnu.org/packages/undo-tree.html][undo-tree]])
-
-#+begin_src emacs-lisp
-(use-package undo-tree
-  :after evil
-  :config
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  :init
-  (global-undo-tree-mode))
 #+end_src
 
 *** Evil collection ([[https://github.com/emacs-evil/evil-collection][evil-collection]])

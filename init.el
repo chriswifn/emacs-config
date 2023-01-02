@@ -137,7 +137,6 @@
   "os" '(fontaine-set-preset :wk "fontaine")
   "ow" '(woman :wk "woman")
   "of" '(chris/olivetti-mode :wk "olivetti")
-  "ou" '(undo-tree-visualize :wk "undo-tree")
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
@@ -203,7 +202,7 @@
 
   (setq evil-want-C-i-jump nil) ;; hopefully this will fix weird tab behaviour
 
-  (setq evil-undo-system 'undo-tree) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
+  (setq evil-undo-system 'undo-redo) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
   :config
   (evil-mode t) ;; globally enable evil mode
   ;; set the initial state for some kinds of buffers.
@@ -212,13 +211,6 @@
   ;; buffers in which I want to immediately start typing should be in 'insert' state by default.
   (evil-set-initial-state 'eshell-mode 'insert)
   (evil-set-initial-state 'magit-diff-mode 'insert))
-
-(use-package undo-tree
-  :after evil
-  :config
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  :init
-  (global-undo-tree-mode))
 
 (use-package evil-collection ;; evilifies a bunch of things
   :after evil
