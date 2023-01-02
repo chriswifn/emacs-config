@@ -391,14 +391,13 @@
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
-(use-package diminish)
-(diminish 'auto-revert-mode)
-(diminish 'evil-collection-unimpaired-mode)
-(diminish 'which-key-mode)
-(diminish 'evil-commentary-mode)
-(diminish 'undo-tree-mode)
-(diminish 'eldoc-mode)
-
+(use-package minions
+  :config
+  (setq minions-mode-line-ligher ";")
+  (setq minions-prominent-modes
+	(list 'flymake-mode))
+  :init 
+  (minions-mode 1))
 (display-battery-mode)
 (setq display-time-default-load-average nil)
 (setq display-time-24hr-format 1)
@@ -931,13 +930,11 @@ questions.  Else use completion to select the tab to switch to."
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 
 (use-package aggressive-indent
-  :diminish
   :init
   (global-aggressive-indent-mode 1))
 (add-to-list 'aggressive-indent-excluded-modes 'python-mode)
 
 (use-package highlight-indent-guides
-  :diminish
   :config
   (setq highlight-indent-guides-auto-odd-face-perc 30)
   (setq highlight-indent-guides-auto-even-face-perc 35)
