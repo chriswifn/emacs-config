@@ -110,7 +110,6 @@ Some rules/conventions:
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (setq display-line-numbers-type 'relative)
   (column-number-mode)
-  (global-hl-line-mode t)
   (global-auto-revert-mode 1)
   (setq global-auto-revert-non-file-buffers t)
   (setq find-file-visit-truename t)
@@ -1352,15 +1351,6 @@ questions.  Else use completion to select the tab to switch to."
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 #+end_src
 
-** Indentation ([[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]]) ([[https://github.com/DarthFennec/highlight-indent-guides][highlight-indent-guides]])
-
-#+begin_src emacs-lisp
-(use-package aggressive-indent
-  :init
-  (global-aggressive-indent-mode 1))
-(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
-#+end_src
-
 ** Async ([[https://github.com/jwiegley/emacs-async][async]])
 
 #+begin_src emacs-lisp
@@ -1435,7 +1425,7 @@ questions.  Else use completion to select the tab to switch to."
     (split-window-horizontally)
     (lua-show-process-buffer))
   :init
-  (setq lua-indent-level 2
+  (setq lua-indent-level 4
 	lua-indent-string-contents t)
   :general
   (chris/leader-keys

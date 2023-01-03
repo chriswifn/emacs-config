@@ -33,7 +33,6 @@
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (setq display-line-numbers-type 'relative)
   (column-number-mode)
-  (global-hl-line-mode t)
   (global-auto-revert-mode 1)
   (setq global-auto-revert-non-file-buffers t)
   (setq find-file-visit-truename t)
@@ -919,11 +918,6 @@ questions.  Else use completion to select the tab to switch to."
   (define-key evil-outer-text-objects-map "C" (evil-textobj-tree-sitter-get-textobj "class.outer"))
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 
-(use-package aggressive-indent
-  :init
-  (global-aggressive-indent-mode 1))
-(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
-
 (use-package async
   :init
   (dired-async-mode 1))
@@ -977,7 +971,7 @@ questions.  Else use completion to select the tab to switch to."
     (split-window-horizontally)
     (lua-show-process-buffer))
   :init
-  (setq lua-indent-level 2
+  (setq lua-indent-level 4
 	lua-indent-string-contents t)
   :general
   (chris/leader-keys
