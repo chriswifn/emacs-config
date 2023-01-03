@@ -188,7 +188,7 @@
   (setq evil-want-keybinding nil)
 
   (setq evil-split-window-below t)
-  (setq evil-vsplit-window-right t)
+  (setq evil-vsplit-window-right nil)
 
   ;; cursors
   (setq evil-normal-state-cursor 'box)
