@@ -33,7 +33,6 @@
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (setq display-line-numbers-type 'relative)
   (column-number-mode)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (global-hl-line-mode t)
   (global-auto-revert-mode 1)
   (setq global-auto-revert-non-file-buffers t)
@@ -365,8 +364,7 @@
         '((1 . (1.3))
           (2 . (1.2))
           (3 . (1.1))
-          (t . (1.0)))
-        modus-themes-org-blocks 'gray-background))
+          (t . (1.0)))))
 
 (defun chris/modus-themes-custom-faces ()
   (modus-themes-with-colors
@@ -706,11 +704,11 @@ buffer."
 	(chris/simple--scratch-buffer-setup region m)))))
 
 (defun chris/toggle-line-numbers ()
-  "Toggles the display of line numbers. Applies locally to the current buffer"
+  "Toggles the display of line numbers."
   (interactive)
   (if (bound-and-true-p display-line-numbers-mode)
-      (display-line-numbers-mode -1)
-    (display-line-numbers-mode)))
+      (global-display-line-numbers-mode -1)
+    (global-display-line-numbers-mode)))
 
 (define-derived-mode chris/nmcli-wifi-preexist-mode tabulated-list-mode
   "nmcli-wifi-preexist"
