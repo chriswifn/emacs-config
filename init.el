@@ -806,6 +806,11 @@ buffer."
 		   "bluetoothctl disconnect E8:EE:CC:00:AD:24 && bluetoothctl power off")))
     (set-process-sentinel process 'chris/bluetooth-sentinel)))
 
+(chris/leader-keys
+  "a" '(:ignore t :wk "audio")
+  "ac" '(chris/bluetooth-connect-soundcore :wk "bluetooth connect")
+  "ad" '(chris/bluetooth-disconnect-soundcore :wk "bluetooth disconnect"))
+
 (use-package projectile
   :general
   (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
