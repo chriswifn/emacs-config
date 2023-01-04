@@ -1066,8 +1066,6 @@ buffer."
 
 ** Internet 
 
-*** Handle preexisting connections
-
 Display a table of all pre configured internet connections.
 
 Keybindings:
