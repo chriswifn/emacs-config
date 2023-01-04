@@ -744,6 +744,11 @@ buffer."
     (setq tabulated-list-entries rows)
     (tabulated-list-print t t)))
 
+(defun chris/nmcli-wifi-preexist-sentinel (process event)
+  (cond ((string-match-p "finished" event)
+	 (chris/nmcli-wifi-preexist-refresh)
+	 (kill-buffer "*async nmcli*"))))
+
 (defun chris/nmcli-wifi-preexist--shell-command ()
   (interactive)
   (mapcar (lambda (x)
@@ -762,13 +767,15 @@ buffer."
 
 (defun chris/nmcli-wifi-preexist-connect ()
   (interactive)
-  (let ((ssid (aref (tabulated-list-get-entry) 1)))
-    (async-shell-command (format "nmcli connection up \"%s\"" ssid))))
+  (let* ((ssid (aref (tabulated-list-get-entry) 1))
+	 (process (start-process-shell-command "nmcli" "*async nmcli*" (format "nmcli connection up \"%s\"" ssid))))
+    (set-process-sentinel process 'chris/nmcli-wifi-preexist-sentinel)))
 
 (defun chris/nmcli-wifi-preexist-disconnect ()
   (interactive)
-  (let ((ssid (aref (tabulated-list-get-entry) 1)))
-    (async-shell-command (format "nmcli connection down \"%s\"" ssid))))
+  (let* ((ssid (aref (tabulated-list-get-entry) 1))
+	 (process (start-process-shell-command "nmcli" "*async nmcli*" (format "nmcli connection down \"%s\"" ssid))))
+    (set-process-sentinel process 'chris/nmcli-wifi-preexist-sentinel)))
 
 (general-define-key
  :states 'normal
@@ -779,72 +786,6 @@ buffer."
 
 (add-to-list 'display-buffer-alist
 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
-
-(define-derived-mode chris/nmcli-wifi-mode tabulated-list-mode
-  "nmcli-wifi"
-  "nmcli WiFi Mode"
-  (let ((columns [("IN-USE" 10 t)
-                  ("SSID" 30 t)
-                  ("MODE" 10 t)
-                  ("CHAN" 5 t)
-                  ("RATE" 15 t)
-                  ("SIGNAL" 10 t)
-                  ("BARS" 5 t)
-                  ("SECURITY" 10 t)])
-        (rows (chris/nmcli-wifi--shell-command)))
-    (setq tabulated-list-format columns)
-    (setq tabulated-list-entries rows)
-    (tabulated-list-init-header)
-    (tabulated-list-print)))
-
-;; TODO: Try to rescan first
-(defun chris/nmcli-wifi-refresh ()
-  (interactive)
-  (let ((rows (chris/nmcli-wifi--shell-command)))
-    (setq tabulated-list-entries rows)
-    (tabulated-list-print t t)))
-
-(defun chris/nmcli-wifi--shell-command ()
-  (interactive)
-  (progn
-    (async-shell-command "nmcli device wifi rescan")
-    (mapcar (lambda (x)
-	      `(,(car (cdr x))
-		,(vconcat [] x)))
-	    (mapcar (lambda (x)
-		      (if (string= "*" (car x)) x (cons "" x)))
-		    (cdr (mapcar (lambda (x)
-				   (split-string x "  " t " "))
-				 (split-string (shell-command-to-string "nmcli dev wifi list") "\n" t)))))))
-
-(defun chris/nmcli-wifi ()
-  (interactive)
-  (switch-to-buffer "*nmcli-wifi*")
-  (chris/nmcli-wifi-mode))
-
-(defun chris/nmcli-wifi-connect ()
-  (interactive)
-  (let ((ssid (aref (tabulated-list-get-entry) 1))
-        (passwordRequired (not (string= "--" (aref (tabulated-list-get-entry) 7)))))
-    (if (not passwordRequired)
-        (async-shell-command (format "nmcli dev wifi connect \"%s\"" ssid))
-      (let ((password (read-passwd "Password: ")))
-        (progn (async-shell-command (format "nmcli dev wifi connect \"%s\" password %s" ssid password))
-	       (clear-string password))))))
-
-(defun chris/nmcli-wifi-disconnect ()
-  (interactive)
-  (let ((ssid (aref (tabulated-list-get-entry) 2)))
-    (async-shell-command (format "nmcli connection down \"%s\"" ssid))))
-
-(general-define-key
- :states 'normal
- :keymaps 'chris/nmcli-wifi-mode-map
- "c" '(chris/nmcli-wifi-connect :wk "connect")
- "d" '(chris/nmcli-wifi-disconnect :wk "disconnect")
- "r" '(chris/nmcli-wifi-refresh :wk "refresh"))
-
-(use-package bluetooth)
 
 (use-package projectile
   :general
