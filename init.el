@@ -767,8 +767,8 @@ buffer."
  "d" '(chris/nmcli-wifi-preexist-disconnect :wk "disconnect")
  "r" '(chris/nmcli-wifi-preexist-refresh :wk "refresh"))
 
-;; (add-to-list 'display-buffer-alist
-;; 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+(add-to-list 'display-buffer-alist
+	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 (define-derived-mode chris/nmcli-wifi-mode tabulated-list-mode
   "nmcli-wifi"
@@ -796,14 +796,16 @@ buffer."
 
 (defun chris/nmcli-wifi--shell-command ()
   (interactive)
-  (mapcar (lambda (x)
-            `(,(car (cdr x))
-              ,(vconcat [] x)))
-          (mapcar (lambda (x)
-                    (if (string= "*" (car x)) x (cons "" x)))
-                  (cdr (mapcar (lambda (x)
-                                 (split-string x "  " t " "))
-                               (split-string (shell-command-to-string "nmcli dev wifi") "\n" t))))))
+  (progn
+    (async-shell-command "nmcli device wifi rescan")
+    (mapcar (lambda (x)
+	      `(,(car (cdr x))
+		,(vconcat [] x)))
+	    (mapcar (lambda (x)
+		      (if (string= "*" (car x)) x (cons "" x)))
+		    (cdr (mapcar (lambda (x)
+				   (split-string x "  " t " "))
+				 (split-string (shell-command-to-string "nmcli dev wifi list") "\n" t)))))))
 
 (defun chris/nmcli-wifi ()
   (interactive)
@@ -818,7 +820,7 @@ buffer."
         (async-shell-command (format "nmcli dev wifi connect \"%s\"" ssid))
       (let ((password (read-passwd "Password: ")))
         (progn (async-shell-command (format "nmcli dev wifi connect \"%s\" password %s" ssid password))
-               (clear-string password))))))
+	       (clear-string password))))))
 
 (defun chris/nmcli-wifi-disconnect ()
   (interactive)
