@@ -961,6 +961,9 @@ questions.  Else use completion to select the tab to switch to."
             (add-to-list 'completion-ignored-extensions ".hi"))
 
   (add-hook 'haskell-cabal-mode-hook #'chris/haskell-disable-electric-indent)
+  :init
+  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
 
   :general
   (chris/leader-keys
