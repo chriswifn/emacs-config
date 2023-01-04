@@ -1141,7 +1141,6 @@ Keybindings:
 #+end_src
 
 
-
 * Projectile ([[https://github.com/bbatsov/projectile][projectile]])
 :PROPERTIES:
 :header-args: :tangle init.el
