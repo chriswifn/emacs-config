@@ -404,6 +404,16 @@
             ("NOTE"       success bold)
             ("DEPRECATED" font-lock-doc-face bold))))
 
+(use-package all-the-icons)
+
+(use-package all-the-icons-ibuffer
+  :after all-the-icons
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+(use-package all-the-icons-dired
+  :after all-the-icons
+  :hook (dired-mode . all-the-icons-dired-mode))
+
 (use-package vertico
   :init
   (vertico-mode +1))
