@@ -787,6 +787,25 @@ buffer."
 (add-to-list 'display-buffer-alist
 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
+(defun chris/bluetooth-sentinel (process event)
+  (message (concat "bluetooth: " event)))
+
+(defun chris/bluetooth-connect-soundcore ()
+  (interactive)
+  (let* ((process (start-process-shell-command
+		  "bluetoothctl"
+		  nil
+		  "bluetoothctl power on && bluetoothctl connect E8:EE:CC:00:AD:24")))
+    (set-process-sentinel process 'chris/bluetooth-sentinel)))
+
+(defun chris/bluetooth-disconnect-soundcore ()
+  (interactive)
+  (let* ((process (start-process-shell-command
+		   "bluetoothctl"
+		   nil
+		   "bluetoothctl disconnect E8:EE:CC:00:AD:24 && bluetoothctl power off")))
+    (set-process-sentinel process 'chris/bluetooth-sentinel)))
+
 (use-package projectile
   :general
   (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
