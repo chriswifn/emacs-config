@@ -221,20 +221,20 @@ Some rules/conventions:
 
 *** Keybindings for buffers
 
-| Keybinding | Function                     | Description                                                                     |
-|------------+------------------------------+---------------------------------------------------------------------------------|
-| SPC b i    | ibuffer                      | Open ibuffer                                                                    |
-| SPC b b    | consult-buffer               | Pick buffer from a list of open buffers                                         |
-| SPC b f    | chris/toggle-maximize-buffer | Toggle monocle mode for currently focused buffer                                |
-| SPC b k    | kill-current-buffer          | Kill the current buffer                                                         |
-| SPC b v    | chris/buffers-vc-root        | Pick buffer from a list of open buffers in current project directory            |
-| SPC b m    | chris/buffers-major-mode     | Picks buffer from a list of open buffers with same major mode of current buffer |
-| SPC b n    | next-buffer                  | Goto the next buffer                                                            |
-| SPC b p    | previous-buffer              | Goto the previous buffer                                                        |
-| SPC b B    | ibuffer-list-buffers         | Get a list of all open buffers                                                  |
-| SPC b r    | revert-buffer                | Revert the buffer to the initial state                                          |
-| SPC b s    | chris/simple-scratch-buffer  | Open a scratch buffer with same major mode as current buffer                    |
-| SPC b K    | kill-buffer                  | Pick from a menu of buffers to kill                                             |
+| Keybinding | Function                          | Description                                                                     |
+|------------+-----------------------------------+---------------------------------------------------------------------------------|
+| SPC b i    | ibuffer                           | Open ibuffer                                                                    |
+| SPC b b    | consult-buffer                    | Pick buffer from a list of open buffers                                         |
+| SPC b f    | chris/toggle-maximize-buffer      | Toggle monocle mode for currently focused buffer                                |
+| SPC b k    | kill-current-buffer               | Kill the current buffer                                                         |
+| SPC b v    | chris/buffers-vc-root             | Pick buffer from a list of open buffers in current project directory            |
+| SPC b m    | chris/buffers-major-mode          | Picks buffer from a list of open buffers with same major mode of current buffer |
+| SPC b n    | next-buffer                       | Goto the next buffer                                                            |
+| SPC b p    | previous-buffer                   | Goto the previous buffer                                                        |
+| SPC b B    | ibuffer-list-buffers              | Get a list of all open buffers                                                  |
+| SPC b r    | revert-buffer                     | Revert the buffer to the initial state                                          |
+| SPC b s    | chris/simple-scratch-buffer       | Open a scratch buffer with same major mode as current buffer                    |
+| SPC b K    | chris/kill-buffer-and-close-split | Kill current buffer and close the split                                         |
 
 #+begin_src emacs-lisp
 (chris/leader-keys
@@ -251,7 +251,7 @@ Some rules/conventions:
   "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
   "br" '(revert-buffer :wk "Revert Buffer")
   "bs" '(chris/simple-scratch-buffer :wk "Revert Buffer")
-  "bK" '(kill-buffer :wk "Kill buffer"))
+  "bK" '(chris/kill-buffer-and-close-split :wk "Kill buffer"))
 #+end_src
 
 *** Keybindings to toggle things
@@ -954,6 +954,16 @@ When no VC root is available, use standard `switch-to-buffer'."
     (progn
       (window-configuration-to-register '_)
       (delete-other-windows))))
+#+end_src
+
+** Kill a buffer and close the split
+
+#+begin_src emacs-lisp
+(defun chris/kill-buffer-and-close-split ()
+  "Kill buffer and close split"
+  (interactive)
+  (kill-current-buffer)
+  (evil-window-delete))
 #+end_src
 
 ** Kill all dired buffers

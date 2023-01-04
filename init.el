@@ -117,7 +117,7 @@
   "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
   "br" '(revert-buffer :wk "Revert Buffer")
   "bs" '(chris/simple-scratch-buffer :wk "Revert Buffer")
-  "bK" '(kill-buffer :wk "Kill buffer"))
+  "bK" '(chris/kill-buffer-and-close-split :wk "Kill buffer"))
 
 (chris/leader-keys
   "t"  '(:ignore t :wk "toggle")
@@ -642,6 +642,12 @@ When no VC root is available, use standard `switch-to-buffer'."
     (progn
       (window-configuration-to-register '_)
       (delete-other-windows))))
+
+(defun chris/kill-buffer-and-close-split ()
+  "Kill buffer and close split"
+  (interactive)
+  (kill-current-buffer)
+  (evil-window-delete))
 
 (defun chris/kill-dired-buffers ()
   "Kill all open dired buffers."
