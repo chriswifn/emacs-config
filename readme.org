@@ -1450,6 +1450,13 @@ questions.  Else use completion to select the tab to switch to."
     ))
 #+end_src
 
+** shell 
+
+#+begin_src emacs-lisp
+(add-hook 'sh-mode-hook 'flycheck-mode)
+(add-hook 'sh-mode-hook 'lsp-deferred)
+#+end_src
+
 ** matlab
 
 #+begin_src emacs-lisp

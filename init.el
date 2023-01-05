@@ -1023,6 +1023,9 @@ questions.  Else use completion to select the tab to switch to."
     "rd" '(racket-send-definiton :wk "racket send definition")
     ))
 
+(add-hook 'sh-mode-hook 'flycheck-mode)
+(add-hook 'sh-mode-hook 'lsp-deferred)
+
 (straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
 (add-to-list
