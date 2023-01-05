@@ -895,6 +895,10 @@ questions.  Else use completion to select the tab to switch to."
   (chris/leader-keys
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
 
+(use-package yasnippet
+  :hook
+  (prog-mode . yas-minor-mode))
+
 (use-package tree-sitter-langs)
 
 (use-package tree-sitter

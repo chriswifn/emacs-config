@@ -1284,6 +1284,14 @@ questions.  Else use completion to select the tab to switch to."
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
 #+end_src
 
+** Snippets
+
+#+begin_src emacs-lisp
+(use-package yasnippet
+  :hook
+  (prog-mode . yas-minor-mode))
+#+end_src
+
 ** Treesitter ([[https://emacs-tree-sitter.github.io/][tree-sitter]])
 
 #+begin_src emacs-lisp
