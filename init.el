@@ -92,8 +92,8 @@
 (chris/leader-keys
   "f" '(:ignore t :wk "file")
   "ff" '(find-file :wk "find file")
-  "fz" '(affe-find :wk "fuzzy finder")
-  "fg" '(affe-grep :wk "fuzzy finder (grep)")
+  "fz" '(consult-find :wk "fuzzy finder")
+  "fg" '(consult-grep :wk "fuzzy finder (grep)")
   "fr" '(consult-recent-file :wk "Recent files")
   "fs" '(save-buffer :wk "Save file")
   "fu" '(sudo-edit-find-file :wk "Sudo find file")
@@ -442,13 +442,6 @@
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (recentf-mode +1)
-
-(use-package affe
-  :after orderless
-  :init
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches)
-  (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package savehist
   :straight (:type built-in)

@@ -192,8 +192,8 @@ Some rules/conventions:
 | Keybinding | Function            | Description                                              |
 |------------+---------------------+----------------------------------------------------------|
 | SPC f f    | find-file           | Find a file in current working directory                 |
-| SPC f z    | affe-find           | Affe is a fuzzy finder (also works in current directory) |
-| SPC f g    | affe-grep           | Affe but not with files and rather with grep             |
+| SPC f z    | consult-find        | Affe is a fuzzy finder (also works in current directory) |
+| SPC f g    | consult-grep        | Affe but not with files and rather with grep             |
 | SPC f r    | consult-recent-file | Find recently opened files using recentf                 |
 | SPC f s    | save-buffer         | Save a file                                              |
 | SPC f u    | sudo-edit-find-file | Open a file as sudo                                      |
@@ -207,8 +207,8 @@ Some rules/conventions:
 (chris/leader-keys
   "f" '(:ignore t :wk "file")
   "ff" '(find-file :wk "find file")
-  "fz" '(affe-find :wk "fuzzy finder")
-  "fg" '(affe-grep :wk "fuzzy finder (grep)")
+  "fz" '(consult-find :wk "fuzzy finder")
+  "fg" '(consult-grep :wk "fuzzy finder (grep)")
   "fr" '(consult-recent-file :wk "Recent files")
   "fs" '(save-buffer :wk "Save file")
   "fu" '(sudo-edit-find-file :wk "Sudo find file")
@@ -698,17 +698,6 @@ Some rules/conventions:
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (recentf-mode +1)
-#+end_src
-
-** Affe ([[https://github.com/minad/affe][affe]])
-
-#+begin_src emacs-lisp
-(use-package affe
-  :after orderless
-  :init
-  (setq affe-regexp-function #'orderless-pattern-compiler
-        affe-highlight-function #'orderless-highlight-matches)
-  (consult-customize affe-grep :preview-key (kbd "M-.")))
 #+end_src
 
 ** Savehist
