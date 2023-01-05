@@ -14,7 +14,7 @@ To prevent ~package.el~ from loading packages and garbage-collection:
 
 #+begin_src emacs-lisp
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold (* 100000000))
 (setq package-enable-at-startup nil)
 #+end_src
 
@@ -1259,15 +1259,32 @@ questions.  Else use completion to select the tab to switch to."
   (setq company-minium-prefix-length 3))
 #+end_src
 
-** LSP ([[https://github.com/joaotavora/eglot][eglot]])
+** LSP ([[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]])
 
 #+begin_src emacs-lisp
-(use-package eglot
+(use-package lsp-mode
+  :config
+  (setq read-process-outpu-max (* 1024 1024))
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-log-io nil)
+  (setq lsp-enable-links nil)
+  (setq lsp-signature-render-documentation nil)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-completion-enable-additional-text-edit nil)
+  :init
+  (setq lsp-keep-workspace-alive nil)
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+  (lsp-mode . flycheck-mode)
+  :commands
+  (lsp lsp-deferred))
+
+(use-package flycheck
   :general
   (chris/leader-keys
-    "cd" '(flymake-show-buffer-diagnostics :wk "show (lsp) diagnostics"))
-  :commands
-  eglot)
+    "cd" '(list-flycheck-errors :wk "List flycheck errors")))
 #+end_src
 
 ** Treesitter ([[https://emacs-tree-sitter.github.io/][tree-sitter]])
@@ -1377,6 +1394,8 @@ questions.  Else use completion to select the tab to switch to."
   :init
   (setq lua-indent-level 4
 	lua-indent-string-contents t)
+  :hook
+  (lua-mode . lsp-deferred)
   :general
   (chris/leader-keys
     "cl" '(chris/open-lua-repl :wk "run-lua"))
@@ -1398,6 +1417,11 @@ questions.  Else use completion to select the tab to switch to."
     "cp" 'run-python)
   (chris/leader-keys
     "pr" 'python-shell-send-buffer))
+
+(use-package lsp-pyright
+  :hook (python-mode . (lambda ()
+			 (require 'lsp-pyright)
+			 (lsp-deferred))))
 #+end_src
 
 ** php

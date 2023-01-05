@@ -870,12 +870,29 @@ questions.  Else use completion to select the tab to switch to."
   (setq company-idle-delay 0)
   (setq company-minium-prefix-length 3))
 
-(use-package eglot
+(use-package lsp-mode
+  :config
+  (setq read-process-outpu-max (* 1024 1024))
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-log-io nil)
+  (setq lsp-enable-links nil)
+  (setq lsp-signature-render-documentation nil)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-completion-enable-additional-text-edit nil)
+  :init
+  (setq lsp-keep-workspace-alive nil)
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+  (lsp-mode . flycheck-mode)
+  :commands
+  (lsp lsp-deferred))
+
+(use-package flycheck
   :general
   (chris/leader-keys
-    "cd" '(flymake-show-buffer-diagnostics :wk "show (lsp) diagnostics"))
-  :commands
-  eglot)
+    "cd" '(list-flycheck-errors :wk "List flycheck errors")))
 
 (use-package tree-sitter-langs)
 
@@ -959,6 +976,8 @@ questions.  Else use completion to select the tab to switch to."
   :init
   (setq lua-indent-level 4
 	lua-indent-string-contents t)
+  :hook
+  (lua-mode . lsp-deferred)
   :general
   (chris/leader-keys
     "cl" '(chris/open-lua-repl :wk "run-lua"))
@@ -976,6 +995,11 @@ questions.  Else use completion to select the tab to switch to."
     "cp" 'run-python)
   (chris/leader-keys
     "pr" 'python-shell-send-buffer))
+
+(use-package lsp-pyright
+  :hook (python-mode . (lambda ()
+			 (require 'lsp-pyright)
+			 (lsp-deferred))))
 
 (use-package php-mode
   :mode ("\\.php\\'" . php-mode))

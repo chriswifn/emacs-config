@@ -1,5 +1,5 @@
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold (* 100000000))
 (setq package-enable-at-startup nil)
 
 (defun chris/toggle-gui-elements (&optional on-off)
