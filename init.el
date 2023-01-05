@@ -391,7 +391,8 @@
   :config
   (setq minions-mode-line-ligher ";")
   (setq minions-prominent-modes
-	(list 'flymake-mode))
+	(list 'flymake-mode
+	      'lsp-mode))
   :init 
   (minions-mode 1))
 (display-battery-mode)
