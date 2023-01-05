@@ -352,10 +352,10 @@
         modus-themes-italic-construct nil
         modus-themes-common-palette-overrides
         '(
-          (border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)
-	  (bg-mode-line-active bg-blue-subtle)
-	  (fg-mode-line-active fg-main)
+          ;; (border-mode-line-active unspecified)
+          ;; (border-mode-line-inactive unspecified)
+	  ;; (bg-mode-line-active bg-blue-subtle)
+	  ;; (fg-mode-line-active fg-main)
 	  (prose-done green-faint)
 	  (prose-todo red-faint)
           (fringe unspecified))
@@ -369,8 +369,15 @@
   (modus-themes-with-colors
     (custom-set-faces
      ;; Add "padding" to the mode lines
-     `(mode-line ((,c :box (:line-width 4 :color ,bg-mode-line-active))))
-     `(mode-line-inactive ((,c :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
+     `(mode-line ((,c :underline ,border-mode-line-active
+                      :overline ,border-mode-line-active
+                      :box (:line-width 4 :color ,bg-mode-line-active))))
+     `(mode-line-inactive ((,c :underline ,border-mode-line-inactive
+                               :overline ,border-mode-line-inactive
+                               :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
+
+;; ESSENTIAL to make the underline move to the bottom of the box:
+(setq x-underline-at-descent-line t)
 
 (add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
 
