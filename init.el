@@ -365,21 +365,21 @@
           (3 . (1.1))
           (t . (1.0)))))
 
-(defun chris/modus-themes-custom-faces ()
-  (modus-themes-with-colors
-    (custom-set-faces
-     ;; Add "padding" to the mode lines
-     `(mode-line ((,c :underline ,border-mode-line-active
-                      :overline ,border-mode-line-active
-                      :box (:line-width 4 :color ,bg-mode-line-active))))
-     `(mode-line-inactive ((,c :underline ,border-mode-line-inactive
-                               :overline ,border-mode-line-inactive
-                               :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
+;; (defun chris/modus-themes-custom-faces ()
+;;   (modus-themes-with-colors
+;;     (custom-set-faces
+;;      ;; Add "padding" to the mode lines
+;;      `(mode-line ((,c :underline ,border-mode-line-active
+;;                       :overline ,border-mode-line-active
+;;                       :box (:line-width 4 :color ,bg-mode-line-active))))
+;;      `(mode-line-inactive ((,c :underline ,border-mode-line-inactive
+;;                                :overline ,border-mode-line-inactive
+;;                                :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
 
 ;; ESSENTIAL to make the underline move to the bottom of the box:
-(setq x-underline-at-descent-line t)
+;; (setq x-underline-at-descent-line t)
 
-(add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
+;; (add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
 
 (if (string-match
      "modus-vivendi"
