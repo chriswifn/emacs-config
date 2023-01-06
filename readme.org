@@ -262,6 +262,7 @@ Some rules/conventions:
 | SPC t l    | chris/toggle-line-numbers | Toggle visibility of line numbers   |
 | SPC t m    | chris/hide-mode-line-mode | Hide visibility of the modeline     |
 | SPC t t    | modus-themes-toggle       | Toggle between the two modus-themes |
+| SPC t c    | chris/toggle-code         | Toggle "code-mode"                  |
 
 #+begin_src emacs-lisp
 (chris/leader-keys
@@ -270,7 +271,8 @@ Some rules/conventions:
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
   "ts" '(chris/tab-status-line :wk "tab-bar-line")
-  "tt" '(modus-themes-toggle :wk "theme"))
+  "tt" '(modus-themes-toggle :wk "theme")
+  "tc" '(chris/toggle-code :wk "code"))
 #+end_src
 
 *** Keybindings to open programs within Emacs
@@ -1282,6 +1284,20 @@ questions.  Else use completion to select the tab to switch to."
   :general
   (chris/leader-keys
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
+#+end_src
+
+** "Code mode"
+
+#+begin_src emacs-lisp
+(defun chris/toggle-code ()
+  "Toggle on line numbers and hl-line-mode for a better code experience"
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)
+    (display-line-numbers-mode))
+  (if (bound-and-true-p hl-line-mode)
+      (hl-line-mode -1)
+    (hl-line-mode)))
 #+end_src
 
 ** Snippets

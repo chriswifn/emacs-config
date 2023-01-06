@@ -125,7 +125,8 @@
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
   "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
   "ts" '(chris/tab-status-line :wk "tab-bar-line")
-  "tt" '(modus-themes-toggle :wk "theme"))
+  "tt" '(modus-themes-toggle :wk "theme")
+  "tc" '(chris/toggle-code :wk "code"))
 
 (chris/leader-keys
   "o" '(:ignore t :wk "open")
@@ -894,6 +895,16 @@ questions.  Else use completion to select the tab to switch to."
   :general
   (chris/leader-keys
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
+
+(defun chris/toggle-code ()
+  "Toggle on line numbers and hl-line-mode for a better code experience"
+  (interactive)
+  (if (bound-and-true-p display-line-numbers-mode)
+      (display-line-numbers-mode -1)
+    (display-line-numbers-mode))
+  (if (bound-and-true-p hl-line-mode)
+      (hl-line-mode -1)
+    (hl-line-mode)))
 
 (use-package yasnippet
   :hook
