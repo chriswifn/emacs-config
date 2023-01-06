@@ -994,6 +994,8 @@ questions.  Else use completion to select the tab to switch to."
   :straight (:type built-in)
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python3" . python-mode)
+  :init
+  (setq python-indent 4)
   :general
   (chris/leader-keys
     :keymaps 'python-mode-map
