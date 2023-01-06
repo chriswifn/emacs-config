@@ -21,7 +21,7 @@
   (setq user-full-name "Christian Hageloch")
   (setq use-short-answers t)
   (setq indent-tabs-mode nil)
-  (blink-cursor-mode nil)
+  (setq blink-cursor-mode nil)
   (setq make-backup-files nil)
   (setq auto-save-default nil)
   (setq backup-directory-alist
