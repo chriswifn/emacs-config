@@ -14,7 +14,7 @@ To prevent ~package.el~ from loading packages and garbage-collection:
 
 #+begin_src emacs-lisp
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
-(setq gc-cons-threshold (* 100000000))
+(setq gc-cons-threshold 100000000)
 (setq package-enable-at-startup nil)
 #+end_src
 
