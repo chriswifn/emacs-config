@@ -14,7 +14,6 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
-(straight-use-package 'org)
 
 (use-package emacs
   :straight (:type built-in)
@@ -222,13 +221,6 @@
   :config
   (evil-collection-init))
 
-(use-package evil-org
-  :after org
-  :hook (org-mode . (lambda () evil-org-mode))
-  :config
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys))
-
 (use-package evil-commentary
   :after evil
   :config
@@ -257,6 +249,7 @@
   (which-key-setup-minibuffer))
 
 (use-package org
+  :straight (:type built-in)
   :config
   (setq org-ellipsis " ")
   (setq orc-src-fontify-natively t)
@@ -401,17 +394,17 @@
 (setq display-time-24hr-format 1)
 (display-time-mode 1)
 
- (use-package hl-todo
-    :hook (prog-mode . hl-todo-mode)
-    :config
-    (setq hl-todo-highlight-punctuation ":"
-          hl-todo-keyword-faces
-          `(("TODO"       warning bold)
-            ("FIXME"      error bold)
-            ("HACK"       font-lock-constant-face bold)
-            ("REVIEW"     font-lock-keyword-face bold)
-            ("NOTE"       success bold)
-            ("DEPRECATED" font-lock-doc-face bold))))
+(use-package hl-todo
+   :hook (prog-mode . hl-todo-mode)
+   :config
+   (setq hl-todo-highlight-punctuation ":"
+         hl-todo-keyword-faces
+         `(("TODO"       warning bold)
+           ("FIXME"      error bold)
+           ("HACK"       font-lock-constant-face bold)
+           ("REVIEW"     font-lock-keyword-face bold)
+           ("NOTE"       success bold)
+           ("DEPRECATED" font-lock-doc-face bold))))
 
 (use-package all-the-icons)
 

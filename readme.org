@@ -81,7 +81,6 @@ Some rules/conventions:
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
-(straight-use-package 'org)
 #+end_src
 
 
@@ -406,17 +405,6 @@ Some rules/conventions:
   (evil-collection-init))
 #+end_src
 
-*** Evil-org ([[https://github.com/Somelauw/evil-org-mode][evil-org-mode]])
-
-#+begin_src emacs-lisp
-(use-package evil-org
-  :after org
-  :hook (org-mode . (lambda () evil-org-mode))
-  :config
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys))
-#+end_src
-
 *** Evil commentary ([[https://github.com/linktohack/evil-commentary][evil-commentary]])
 
 #+begin_src emacs-lisp
@@ -466,6 +454,7 @@ Some rules/conventions:
 
 #+begin_src emacs-lisp
 (use-package org
+  :straight (:type built-in)
   :config
   (setq org-ellipsis " ")
   (setq orc-src-fontify-natively t)
