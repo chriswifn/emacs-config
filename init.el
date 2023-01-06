@@ -395,16 +395,16 @@
 (display-time-mode 1)
 
 (use-package hl-todo
-   :hook (prog-mode . hl-todo-mode)
-   :config
-   (setq hl-todo-highlight-punctuation ":"
-         hl-todo-keyword-faces
-         `(("TODO"       warning bold)
-           ("FIXME"      error bold)
-           ("HACK"       font-lock-constant-face bold)
-           ("REVIEW"     font-lock-keyword-face bold)
-           ("NOTE"       success bold)
-           ("DEPRECATED" font-lock-doc-face bold))))
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        `(("TODO"       warning bold)
+          ("FIXME"      error bold)
+          ("HACK"       font-lock-constant-face bold)
+          ("REVIEW"     font-lock-keyword-face bold)
+          ("NOTE"       success bold)
+          ("DEPRECATED" font-lock-doc-face bold))))
 
 (use-package all-the-icons)
 
@@ -1055,6 +1055,7 @@ questions.  Else use completion to select the tab to switch to."
 (defun chris/matlab-shell-run-buffer ()
   "Run matlab code"
   (interactive)
+  (matlab-shell-run-command (concat "cd " default-directory))
   (matlab-shell-run-region (point-min) (point-max)))
 
 (chris/leader-keys
