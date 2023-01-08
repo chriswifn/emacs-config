@@ -889,6 +889,13 @@ questions.  Else use completion to select the tab to switch to."
   (chris/leader-keys
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
 
+(use-package lsp-ui
+  :commands
+  lsp-ui-mode)
+
+(use-package lsp-treemacs
+  :after lsp-mode)
+
 (defun chris/toggle-code ()
   "Toggle on line numbers and hl-line-mode for a better code experience"
   (interactive)
