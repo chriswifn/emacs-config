@@ -992,8 +992,8 @@ questions.  Else use completion to select the tab to switch to."
   :init
   (setq lua-indent-level 4
 	lua-indent-string-contents t)
-  :hook
-  (lua-mode . lsp-deferred)
+  ;; :hook
+  ;; (lua-mode . lsp-deferred)
   :general
   (chris/leader-keys
     "cl" '(chris/open-lua-repl :wk "run-lua"))
@@ -1041,8 +1041,8 @@ questions.  Else use completion to select the tab to switch to."
     "rd" '(racket-send-definiton :wk "racket send definition")
     ))
 
-(add-hook 'sh-mode-hook 'flycheck-mode)
-(add-hook 'sh-mode-hook 'lsp-deferred)
+;; (add-hook 'sh-mode-hook 'flycheck-mode)
+;; (add-hook 'sh-mode-hook 'lsp-deferred)
 
 (straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
