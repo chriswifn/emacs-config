@@ -377,7 +377,8 @@
 
 (if (string-match
      "modus-vivendi"
-     (shell-command-to-string "cat ~/.config/awesome/theme/local_theme"))
+     ;; (shell-command-to-string "cat ~/.config/awesome/theme/local_theme"))
+     (shell-command-to-string "cat ~/.config/herbstluftwm/active-theme"))
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
