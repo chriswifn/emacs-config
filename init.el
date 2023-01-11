@@ -605,6 +605,12 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
   :bind (("C-`"   . popper-toggle-latest)
 	 ("M-`"   . popper-cycle)
 	 ("C-M-`" . popper-toggle-type))
+  :general
+  (chris/leader-keys
+    "u" '(:ignore t :wk "popper")
+    "ut" '(popper-toggle-latest :wk "toggle latest")
+    "uc" '(popper-cycle :wk "cycle")
+    "up" '(popper-toggle-type :wk "toggle type (promote)"))
   :init
   (setq popper-reference-buffers
 	'("\\*Messages\\*"
