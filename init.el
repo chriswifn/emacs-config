@@ -600,6 +600,25 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
   "Turn off `chris/hide-mode-line-mode'."
   (chris/hide-mode-line-mode -1))
 
+(use-package popper
+  :ensure t ; or :straight t
+  :bind (("C-`"   . popper-toggle-latest)
+	 ("M-`"   . popper-cycle)
+	 ("C-M-`" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+	'("\\*Messages\\*"
+	  "Output\\*$"
+	  "\\*Async Shell Command\\*"
+	  "^\\*MATLAB\\*$"
+	  "^\\*Racket REPL.*\\*$"
+	  "^\\*lua\\*$"
+	  "^\\*Python\\*$"
+	  help-mode
+	  compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))                ; For echo area hints
+
 (defun chris/buffers-major-mode (&optional arg)
   "Select buffers that match the current buffer's major mode.
 With \\[universal-argument] produce an `ibuffer' filtered
@@ -667,9 +686,9 @@ When no VC root is available, use standard `switch-to-buffer'."
 (defun chris/simple--scratch-list-modes ()
   "List known major modes."
   (cl-loop for sym the symbols of obarray
-	   when (and (functionp sym)
-		     (and (provided-mode-derived-p sym 'prog-mode 'org-mode)))
-	   collect sym))
+           when (and (functionp sym)
+                     (provided-mode-derived-p sym 'prog-mode))
+           collect sym))
 
 (defun chris/simple--scratch-buffer-setup (region &optional mode)
   "Add contents to `scratch' buffer and name it accordingly.
@@ -687,9 +706,8 @@ MODE use that major mode instead."
       (save-excursion
         (insert text)
         (goto-char (point-min))
-        (comment-region (point-at-bol) (point-at-eol)))
-      (vertical-motion 2))
-    (pop-to-buffer buf)))
+        (comment-region (point-at-bol) (point-at-eol))))
+    (switch-to-buffer buf)))
 
 (defun chris/simple-scratch-buffer (&optional arg)
   "Produce a bespoke scratch buffer matching current major mode.
@@ -988,7 +1006,7 @@ questions.  Else use completion to select the tab to switch to."
   (defun chris/open-lua-repl ()
     "open lua repl in horizontal split"
     (interactive)
-    (split-window-horizontally)
+    ;; (split-window-horizontally)
     (lua-show-process-buffer))
   :init
   (setq lua-indent-level 4
@@ -1035,11 +1053,12 @@ questions.  Else use completion to select the tab to switch to."
 	(evil-insert-state))))
   :general
   (chris/leader-keys
-    "cr" '(chris/racket-run-and-switch-to-repl :wk "run racket and switch to repl"))
+    "cr" '(racket-repl :wk "run racket and switch to repl"))
   (chris/leader-keys
     :keymaps 'racket-mode-map
     "rs" '(racket-send-last-sexp :wk "racket send last sexp")
     "rd" '(racket-send-definiton :wk "racket send definition")
+    "rr" '(chris/racket-run-and-switch-to-repl :wk "run racket and switch to repl")
     ))
 
 ;; (add-hook 'sh-mode-hook 'flycheck-mode)
@@ -1054,12 +1073,6 @@ questions.  Else use completion to select the tab to switch to."
 (setq matlab-shell-command-switches '("-nosplash" "-nodesktop"))
 (setq matlab-shell-command "matlab")
 
-(defun chris/open-matlab-shell ()
-  (interactive)
-  (split-window-horizontally)
-  (other-window 1)
-  (matlab-shell))
-
 (defun chris/matlab-shell-run-buffer ()
   "Run matlab code"
   (interactive)
@@ -1072,7 +1085,7 @@ questions.  Else use completion to select the tab to switch to."
  "mr" '(chris/matlab-shell-run-buffer :wk "Run matlab buffer"))
 
 (chris/leader-keys
-  "cm" '(chris/open-matlab-shell :wk "Open matlab shell"))
+  "cm" '(matlab-shell :wk "Open matlab shell"))
 
 (use-package magit
   :general
