@@ -620,6 +620,7 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 	  "^\\*Racket REPL.*\\*$"
 	  "^\\*lua\\*$"
 	  "^\\*Python\\*$"
+	  "^\\*Process List\\*$"
 	  help-mode
 	  compilation-mode))
   (popper-mode +1)
