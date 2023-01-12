@@ -924,6 +924,7 @@ Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
 	  "^\\*Process List\\*$"
 	  help-mode
 	  compilation-mode))
+  (setq popper-display-function #'display-buffer-same-window)
   (popper-mode +1)
   (popper-echo-mode +1))                ; For echo area hints
 #+end_src
