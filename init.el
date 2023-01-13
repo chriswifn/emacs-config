@@ -35,9 +35,10 @@
   (global-auto-revert-mode 1)
   (setq global-auto-revert-non-file-buffers t)
   (setq find-file-visit-truename t)
+  (set-default-coding-systems 'utf-8)
+  :init
   (setq completion-cycle-threshold 3)
-  (setq tab-always-indent 'complete)
-  (set-default-coding-systems 'utf-8))
+  (setq tab-always-indent 'complete))
 
 (defun chris/config-reload ()
   "Reload the configuration file"
@@ -886,10 +887,47 @@ questions.  Else use completion to select the tab to switch to."
                           (tab-bar-switch-to-tab
                            (completing-read "Select tab: " tabs nil t)))))))
 
-(use-package company
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minium-prefix-length 3))
+;; (use-package company
+;;   :config
+;;   (setq company-idle-delay 0)
+;;   (setq company-minium-prefix-length 3))
+(use-package corfu
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto-delay 0.1)
+  (corfu-auto-prefix 2)
+  (corfu-separator ?\s)             ;; Orderless field separator
+  (corfu-quit-at-boundary 'separator)      ;; Never quit at completion boundary
+  (corfu-quit-no-match nil)           ;; Never quit, even if there is no match
+  (corfu-preselect-first nil)       ;; Disable candidate preselection
+  :init
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      (corfu-mode 1)))
+
+  (mapc #'evil-declare-ignore-repeat
+        '(corfu-next
+          corfu-previous
+          corfu-first
+          corfu-last))
+
+  (mapc #'evil-declare-change-repeat
+        '(corfu-insert
+          corfu-complete))
+  :bind
+  (:map corfu-map
+        ("C-s" . corfu-quit)
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
+  :hook ((prog-mode . corfu-mode)
+         (shell-mode . corfu-mode)
+         (cider-repl-mode . corfu-mode)
+         (minibuffer-setup . corfu-enable-in-minibuffer)
+         (eshell-mode . corfu-mode)))
 
 (use-package lsp-mode
   :config
