@@ -1225,7 +1225,7 @@ PWD is not in a git repo (or the git command is not found)."
          (mapconcat (lambda (elm) elm)
                     (last p-lst 2)
                     "/"))
-      pwd)))  ;; Otherwise, we just return the PWD
+      pwd)))
 
 (defun split-directory-prompt (directory)
   (if (string-match-p ".*/.*" directory)
@@ -1248,7 +1248,7 @@ more-helpful local prompt."
     (concat
      parent
      name
-     (propertize branch 'face for-git)
+     (when branch (propertize branch 'face for-git))
      " $ ")))
 (setq-default eshell-prompt-function #'eshell/eshell-local-prompt-function)
 (setq eshell-hightlight-prompt nil)
