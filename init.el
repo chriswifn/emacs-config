@@ -761,6 +761,7 @@ buffer."
     (tabulated-list-print)))
 
 (defun chris/nmcli-wifi-preexist-refresh ()
+  "Refresh wifi table."
   (interactive)
   (let ((rows (chris/nmcli-wifi-preexist--shell-command)))
     (setq tabulated-list-entries rows)
@@ -772,6 +773,7 @@ buffer."
 	 (kill-buffer "*async nmcli*"))))
 
 (defun chris/nmcli-wifi-preexist--shell-command ()
+  "Shell command to check for preconfigured wifi connections"
   (interactive)
   (mapcar (lambda (x)
 	    `(,(car (cdr x))
@@ -783,17 +785,20 @@ buffer."
 			       (split-string (shell-command-to-string "nmcli connection") "\n" t))))))
 
 (defun chris/nmcli-wifi-preexist ()
+  "Menu for (dis)connecting from preexisting wifi connections."
   (interactive)
   (switch-to-buffer "*nmcli-wifi-preexist*")
   (chris/nmcli-wifi-preexist-mode))
 
 (defun chris/nmcli-wifi-preexist-connect ()
+  "Connect to wifi."
   (interactive)
   (let* ((ssid (aref (tabulated-list-get-entry) 1))
 	 (process (start-process-shell-command "nmcli" "*async nmcli*" (format "nmcli connection up \"%s\"" ssid))))
     (set-process-sentinel process 'chris/nmcli-wifi-preexist-sentinel)))
 
 (defun chris/nmcli-wifi-preexist-disconnect ()
+  "Disconnect from wifi."
   (interactive)
   (let* ((ssid (aref (tabulated-list-get-entry) 1))
 	 (process (start-process-shell-command "nmcli" "*async nmcli*" (format "nmcli connection down \"%s\"" ssid))))
@@ -813,6 +818,7 @@ buffer."
   (message (concat "bluetooth: " event)))
 
 (defun chris/bluetooth-connect-soundcore ()
+  "Connect to bluetooth in-ears."
   (interactive)
   (let* ((process (start-process-shell-command
 		  "bluetoothctl"
@@ -821,6 +827,7 @@ buffer."
     (set-process-sentinel process 'chris/bluetooth-sentinel)))
 
 (defun chris/bluetooth-disconnect-soundcore ()
+  "Disconnect from bluetooth in-ears."
   (interactive)
   (let* ((process (start-process-shell-command
 		   "bluetoothctl"
