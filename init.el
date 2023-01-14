@@ -1173,14 +1173,11 @@ questions.  Else use completion to select the tab to switch to."
     (shell-command-to-string cmd)))
 
 (defun my/eshell/clear ()
-  "Clear `eshell' buffer.
-
-   Similar to the behavior of `comint-clear-buffer' in `shell'."
+  "Clear `eshell' buffer."
   (interactive)
-  (let ((input (eshell-get-old-input)))
-    (eshell/clear-scrollback)
-    (eshell-emit-prompt)
-    (insert input)))
+  (erase-buffer)
+  (eshell-send-input))
+
 
 (add-hook 'eshell-mode-hook
           (lambda ()
@@ -1190,6 +1187,71 @@ questions.  Else use completion to select the tab to switch to."
   "Create a directory then cd into it."
   (make-directory dir t)
   (eshell/cd dir))
+
+(defun curr-dir-git-branch-string (pwd)
+  "Returns current git branch as a string, or the empty string if
+PWD is not in a git repo (or the git command is not found)."
+  (interactive)
+  (when (and (not (file-remote-p pwd))
+             (eshell-search-path "git")
+             (locate-dominating-file pwd ".git"))
+    (let* ((git-url (shell-command-to-string "git config --get remote.origin.url"))
+           (git-repo (file-name-base (s-trim git-url)))
+           (git-output (shell-command-to-string (concat "git rev-parse --abbrev-ref HEAD")))
+           (git-branch (s-trim git-output)))
+      (concat " [" git-repo " " git-branch "]"))))
+
+(defun pwd-replace-home (pwd)
+  "Replace home in PWD with tilde (~) character."
+  (interactive)
+  (let* ((home (expand-file-name (getenv "HOME")))
+         (home-len (length home)))
+    (if (and
+         (>= (length pwd) home-len)
+         (equal home (substring pwd 0 home-len)))
+        (concat "~" (substring pwd home-len))
+      pwd)))
+
+(defun pwd-shorten-dirs (pwd)
+  "Shorten all directory names in PWD except the last two."
+  (let ((p-lst (split-string pwd "/")))
+    (if (> (length p-lst) 2)
+        (concat
+         (mapconcat (lambda (elm) (if (zerop (length elm)) ""
+				    (substring elm 0 1)))
+                    (butlast p-lst 2)
+                    "/")
+         "/"
+         (mapconcat (lambda (elm) elm)
+                    (last p-lst 2)
+                    "/"))
+      pwd)))  ;; Otherwise, we just return the PWD
+
+(defun split-directory-prompt (directory)
+  (if (string-match-p ".*/.*" directory)
+      (list (file-name-directory directory) (file-name-base directory))
+    (list "" directory)))
+
+(defun eshell/eshell-local-prompt-function ()
+  "A prompt for eshell that works locally (in that is assumes
+that it could run certain commands) in order to make a prettier,
+more-helpful local prompt."
+  (interactive) 
+  (let* ((pwd (eshell/pwd))
+         (directory (split-directory-prompt
+                     (pwd-shorten-dirs
+                      (pwd-replace-home pwd))))
+         (parent (car directory))
+         (name   (cadr directory))
+         (branch (curr-dir-git-branch-string pwd))
+	 (for-git '(:foreground "cyan" :weight bold)))
+    (concat
+     parent
+     name
+     (propertize branch 'face for-git)
+     " $ ")))
+(setq-default eshell-prompt-function #'eshell/eshell-local-prompt-function)
+(setq eshell-hightlight-prompt nil)
 
 (use-package rainbow-mode)
 
