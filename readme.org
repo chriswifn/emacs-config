@@ -1428,40 +1428,23 @@ questions.  Else use completion to select the tab to switch to."
 (use-package haskell-mode
   :mode ("\\.hs\\'" . haskell-mode)
   :config
-  (defun chris/haskell-open-repl (&optional arg)
-    "Opens a Haskell REPL."
-    (interactive "P")
-    (if-let (window
-             (display-buffer
-              (haskell-session-interactive-buffer (haskell-session))))
-        (window-buffer window)
-      (error "Failed to display Haskell REPL")))
-
-  (defun chris/haskell-disable-electric-indent ()
-    "Disable electric indent mode if available"
-    (if (fboundp 'electric-indent-local-mode)
-        (electric-indent-local-mode -1)))
-
-  (defun chris/haskell-format-imports ()
-    "Sort and align import statements from anywhere in the source file."
+  (defun haskell-evil-open-above ()
     (interactive)
-    (save-excursion
-      (haskell-navigate-imports)
-      (haskell-mode-format-imports)))
+    (evil-beginning-of-line)
+    (haskell-indentation-newline-and-indent)
+    (evil-previous-line)
+    (haskell-indentation-indent-line)
+    (evil-append-line nil))
+
+  (defun haskell-evil-open-below ()
+    (interactive)
+    (evil-append-line nil)
+    (haskell-indentation-newline-and-indent))
   
-  (add-hook 'haskell-mode-hook
-            #'haskell-collapse-mode ; support folding haskell code blocks
-            (add-to-list 'completion-ignored-extensions ".hi"))
-
-  (add-hook 'haskell-cabal-mode-hook #'chris/haskell-disable-electric-indent)
-  :init
-  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
-
-  :general
-  (chris/leader-keys
-    :keymaps 'haskell-mode-map
-    "hi" 'chris/haskell-format-imports))
+  (evil-define-key 'normal haskell-mode-map
+    "o" 'haskell-evil-open-below
+    "O" 'haskell-evil-open-above)
+  )
 #+end_src
 
 ** Lua
