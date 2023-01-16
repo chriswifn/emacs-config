@@ -424,13 +424,7 @@
   :init
   (ivy-mode))
 
-(use-package counsel
-  :bind
-  ("M-x" . counsel-M-x))
-
-(use-package smex
-  :init
-  (smex-initialize))
+(use-package counsel)
 
 (use-package savehist
   :straight (:type built-in)
