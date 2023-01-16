@@ -424,7 +424,9 @@
   :init
   (ivy-mode))
 
-(use-package counsel)
+(use-package counsel
+  :init
+  (counsel-mode))
 
 (use-package savehist
   :straight (:type built-in)
