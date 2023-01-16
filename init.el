@@ -943,8 +943,11 @@ questions.  Else use completion to select the tab to switch to."
     (hl-line-mode)))
 
 (use-package yasnippet
-  :hook
-  (prog-mode . yas-minor-mode))
+  :init
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :after yasnippet)
 
 (use-package tree-sitter-langs)
 
