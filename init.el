@@ -428,6 +428,10 @@
   :bind
   ("M-x" . counsel-M-x))
 
+(use-package smex
+  :init
+  (smex-initialize))
+
 (use-package savehist
   :straight (:type built-in)
   :config
