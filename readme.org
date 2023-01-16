@@ -184,32 +184,32 @@ Some rules/conventions:
     "<mouse-2>") ;; pasting with mouse wheel click
 
   (chris/leader-keys
-    "SPC" '(execute-extended-command :wk "execute command"))) ;; an alternative to 'M-x'
+    "SPC" '(counsel-M-x :wk "M-x"))) ;; an alternative to 'M-x'
 #+end_src
 
 *** Keybindings for files
 
-| Keybinding | Function            | Description                                              |
-|------------+---------------------+----------------------------------------------------------|
-| SPC f f    | find-file           | Find a file in current working directory                 |
-| SPC f z    | consult-find        | Affe is a fuzzy finder (also works in current directory) |
-| SPC f g    | consult-grep        | Affe but not with files and rather with grep             |
-| SPC f r    | consult-recent-file | Find recently opened files using recentf                 |
-| SPC f s    | save-buffer         | Save a file                                              |
-| SPC f u    | sudo-edit-find-file | Open a file as sudo                                      |
-| SPC f C    | copy-file           | Copy the current file                                    |
-| SPC f D    | delete-file         | Delete the current file                                  |
-| SPC f R    | rename-file         | Rename the current file                                  |
-| SPC f S    | write-file          | Safe the current file as <name>                          |
-| SPC f U    | sudo-edit           | Convert file write process to sudo                       |
+| Keybinding | Function            | Description                              |
+|------------+---------------------+------------------------------------------|
+| SPC f f    | counsel-find-file   | Find a file in current working directory |
+| SPC f z    | counsel-fzf         | fuzzy-finder                             |
+| SPC f g    | counsel-grep        | grep                                     |
+| SPC f r    | counsel-recentf     | Find recently opened files using recentf |
+| SPC f s    | save-buffer         | Save a file                              |
+| SPC f u    | sudo-edit-find-file | Open a file as sudo                      |
+| SPC f C    | copy-file           | Copy the current file                    |
+| SPC f D    | delete-file         | Delete the current file                  |
+| SPC f R    | rename-file         | Rename the current file                  |
+| SPC f S    | write-file          | Safe the current file as <name>          |
+| SPC f U    | sudo-edit           | Convert file write process to sudo       |
 
 #+begin_src emacs-lisp
 (chris/leader-keys
   "f" '(:ignore t :wk "file")
-  "ff" '(find-file :wk "find file")
-  "fz" '(consult-find :wk "fuzzy finder")
-  "fg" '(consult-grep :wk "fuzzy finder (grep)")
-  "fr" '(consult-recent-file :wk "Recent files")
+  "ff" '(counsel-find-file :wk "find file")
+  "fz" '(counsel-fzf :wk "fuzzy finder")
+  "fg" '(counsel-grep :wk "fuzzy finder (grep)")
+  "fr" '(counsel-recentf :wk "Recent files")
   "fs" '(save-buffer :wk "Save file")
   "fu" '(sudo-edit-find-file :wk "Sudo find file")
   "fC" '(copy-file :wk "Copy file")
@@ -224,7 +224,7 @@ Some rules/conventions:
 | Keybinding | Function                          | Description                                                                     |
 |------------+-----------------------------------+---------------------------------------------------------------------------------|
 | SPC b i    | ibuffer                           | Open ibuffer                                                                    |
-| SPC b b    | consult-buffer                    | Pick buffer from a list of open buffers                                         |
+| SPC b b    | counsel-switch-buffer             | Pick buffer from a list of open buffers                                         |
 | SPC b f    | chris/toggle-maximize-buffer      | Toggle monocle mode for currently focused buffer                                |
 | SPC b k    | kill-current-buffer               | Kill the current buffer                                                         |
 | SPC b v    | chris/buffers-vc-root             | Pick buffer from a list of open buffers in current project directory            |
@@ -240,7 +240,7 @@ Some rules/conventions:
 (chris/leader-keys
   "b" '(:ignore t :wk "buffer")
   "bi" '(ibuffer :wk "ibuffer")
-  "bb" '(consult-buffer :wk "switch buffer")
+  "bb" '(counsel-switch-buffer :wk "switch buffer")
   "bf" '(chris/toggle-maximize-buffer :wk "Toggle maximize buffer")
   "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
   "bk" '(kill-current-buffer :wk "Kill current buffer")
@@ -659,44 +659,22 @@ Some rules/conventions:
 #+end_src
 
 
-* Bottom menu
+* Completion 
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
 
-** Vertico and orderless ([[https://github.com/minad/vertico][vertico]]) ([[https://github.com/oantolin/orderless][orderless]])
-
 #+begin_src emacs-lisp
-(use-package vertico
+(use-package ivy
+  :bind
+  ("C-s" . swiper)
   :init
-  (vertico-mode +1))
+  (ivy-mode))
 
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((fie (styles partial-completion)))))
-#+end_src
+(use-package counsel
+  :bind
+  ("M-x" . counsel-M-x))
 
-** Consult ([[https://github.com/minad/consult][consult]])
-
-#+begin_src emacs-lisp
-(use-package consult
-  :init
-  (setq consult-preview-key "$")
-  :bind ("C-s" . 'consult-line))
-
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
-(recentf-mode +1)
-#+end_src
-
-** Savehist
-
-#+begin_src emacs-lisp
 (use-package savehist
   :straight (:type built-in)
   :config
@@ -705,17 +683,6 @@ Some rules/conventions:
   (savehist-mode))
 #+end_src
 
-** Marginalia ([[https://github.com/minad/marginalia][marginalia]])
-
-#+begin_src emacs-lisp
-(use-package marginalia
-  :after vertico
-  :ensure t
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init
-  (marginalia-mode))
-#+end_src
 
 
 * File management

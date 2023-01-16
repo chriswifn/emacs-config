@@ -87,14 +87,14 @@
     "<mouse-2>") ;; pasting with mouse wheel click
 
   (chris/leader-keys
-    "SPC" '(execute-extended-command :wk "execute command"))) ;; an alternative to 'M-x'
+    "SPC" '(counsel-M-x :wk "M-x"))) ;; an alternative to 'M-x'
 
 (chris/leader-keys
   "f" '(:ignore t :wk "file")
-  "ff" '(find-file :wk "find file")
-  "fz" '(consult-find :wk "fuzzy finder")
-  "fg" '(consult-grep :wk "fuzzy finder (grep)")
-  "fr" '(consult-recent-file :wk "Recent files")
+  "ff" '(counsel-find-file :wk "find file")
+  "fz" '(counsel-fzf :wk "fuzzy finder")
+  "fg" '(counsel-grep :wk "fuzzy finder (grep)")
+  "fr" '(counsel-recentf :wk "Recent files")
   "fs" '(save-buffer :wk "Save file")
   "fu" '(sudo-edit-find-file :wk "Sudo find file")
   "fC" '(copy-file :wk "Copy file")
@@ -106,7 +106,7 @@
 (chris/leader-keys
   "b" '(:ignore t :wk "buffer")
   "bi" '(ibuffer :wk "ibuffer")
-  "bb" '(consult-buffer :wk "switch buffer")
+  "bb" '(counsel-switch-buffer :wk "switch buffer")
   "bf" '(chris/toggle-maximize-buffer :wk "Toggle maximize buffer")
   "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
   "bk" '(kill-current-buffer :wk "Kill current buffer")
@@ -418,27 +418,15 @@
   :after all-the-icons
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package vertico
+(use-package ivy
+  :bind
+  ("C-s" . swiper)
   :init
-  (vertico-mode +1))
+  (ivy-mode))
 
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((fie (styles partial-completion)))))
-
-(use-package consult
-  :init
-  (setq consult-preview-key "$")
-  :bind ("C-s" . 'consult-line))
-
-(use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
-(recentf-mode +1)
+(use-package counsel
+  :bind
+  ("M-x" . counsel-M-x))
 
 (use-package savehist
   :straight (:type built-in)
@@ -446,14 +434,6 @@
   (setq history-length 25)
   :init
   (savehist-mode))
-
-(use-package marginalia
-  :after vertico
-  :ensure t
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init
-  (marginalia-mode))
 
 (use-package dired
   :straight (:type built-in)
