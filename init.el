@@ -878,6 +878,7 @@ questions.  Else use completion to select the tab to switch to."
   :config
   (setq company-idle-delay 0)
   (setq company-minium-prefix-length 3)
+  (setq company-format-margin-function nil)
   :init
   (global-company-mode 1))
 
