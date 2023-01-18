@@ -224,7 +224,7 @@ Some rules/conventions:
 | Keybinding | Function                          | Description                                                                     |
 |------------+-----------------------------------+---------------------------------------------------------------------------------|
 | SPC b i    | ibuffer                           | Open ibuffer                                                                    |
-| SPC b b    | counsel-switch-buffer             | Pick buffer from a list of open buffers                                         |
+| SPC b b    | ivy-switch-buffer                 | Pick buffer from a list of open buffers                                         |
 | SPC b f    | chris/toggle-maximize-buffer      | Toggle monocle mode for currently focused buffer                                |
 | SPC b k    | kill-current-buffer               | Kill the current buffer                                                         |
 | SPC b v    | chris/buffers-vc-root             | Pick buffer from a list of open buffers in current project directory            |
@@ -240,7 +240,7 @@ Some rules/conventions:
 (chris/leader-keys
   "b" '(:ignore t :wk "buffer")
   "bi" '(ibuffer :wk "ibuffer")
-  "bb" '(counsel-switch-buffer :wk "switch buffer")
+  "bb" '(ivy-switch-buffer :wk "switch buffer")
   "bf" '(chris/toggle-maximize-buffer :wk "Toggle maximize buffer")
   "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
   "bk" '(kill-current-buffer :wk "Kill current buffer")
@@ -672,6 +672,8 @@ Some rules/conventions:
   (ivy-mode))
 
 (use-package counsel
+  :config
+  (setq counsel-switch-buffer-preview-virtual-buffers nil)
   :init
   (counsel-mode))
 
@@ -1232,9 +1234,8 @@ questions.  Else use completion to select the tab to switch to."
           ((eq (length tabs) 1)
            (tab-next))
           (t
-           (consult-imenu ()
-                          (tab-bar-switch-to-tab
-                           (completing-read "Select tab: " tabs nil t)))))))
+           (tab-bar-switch-to-tab
+            (completing-read "Select tab: " tabs nil t))))))
 #+end_src
 
 

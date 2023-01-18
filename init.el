@@ -106,7 +106,7 @@
 (chris/leader-keys
   "b" '(:ignore t :wk "buffer")
   "bi" '(ibuffer :wk "ibuffer")
-  "bb" '(counsel-switch-buffer :wk "switch buffer")
+  "bb" '(ivy-switch-buffer :wk "switch buffer")
   "bf" '(chris/toggle-maximize-buffer :wk "Toggle maximize buffer")
   "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
   "bk" '(kill-current-buffer :wk "Kill current buffer")
@@ -425,6 +425,8 @@
   (ivy-mode))
 
 (use-package counsel
+  :config
+  (setq counsel-switch-buffer-preview-virtual-buffers nil)
   :init
   (counsel-mode))
 
@@ -870,9 +872,8 @@ questions.  Else use completion to select the tab to switch to."
           ((eq (length tabs) 1)
            (tab-next))
           (t
-           (consult-imenu ()
-                          (tab-bar-switch-to-tab
-                           (completing-read "Select tab: " tabs nil t)))))))
+           (tab-bar-switch-to-tab
+            (completing-read "Select tab: " tabs nil t))))))
 
 (use-package company
   :config
