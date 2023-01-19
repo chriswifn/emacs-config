@@ -1091,7 +1091,7 @@ questions.  Else use completion to select the tab to switch to."
 
 (use-package vterm
   :hook
-  (vterm-mode . (lambda () (setq-local global-hl-line-mode nil)))
+  (vterm-mode . evil-emacs-state)
   :init
   (setq vterm-timer-delay 0.01))
 
