@@ -64,7 +64,7 @@ Some rules/conventions:
 - Prefer multiple ~setq~ expressions to one.
 - Prefer ~:init~ to ~:custom~.
 
-** Boostrap ~straight.el~
+** Bootstrap ~straight.el~
 
 #+begin_src emacs-lisp
 (setq straight-use-package-by-default t)
