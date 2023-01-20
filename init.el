@@ -719,7 +719,8 @@ buffer."
   :general
   (chris/leader-keys
     "i" '(:keymap tab-prefix-map :wk "tab")
-    "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
+    "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select")
+    "ic" '(tab-close :wk "tab-close"))
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-button-show nil)
@@ -731,9 +732,8 @@ buffer."
   (setq tab-bar-new-tab-to 'right)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
-  :init
-  (tab-bar-history-mode 1)
-  (tab-bar-mode 1))
+  (tab-bar-mode -1)
+  (tab-bar-history-mode 1))
 
 (defun chris/tab-bar-select-tab-dwim ()
   "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.

@@ -1001,7 +1001,8 @@ Display a table of all pre configured internet connections.
   :general
   (chris/leader-keys
     "i" '(:keymap tab-prefix-map :wk "tab")
-    "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
+    "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select")
+    "ic" '(tab-close :wk "tab-close"))
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-button-show nil)
@@ -1013,9 +1014,8 @@ Display a table of all pre configured internet connections.
   (setq tab-bar-new-tab-to 'right)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
-  :init
-  (tab-bar-history-mode 1)
-  (tab-bar-mode 1))
+  (tab-bar-mode -1)
+  (tab-bar-history-mode 1))
 #+end_src
 
 ** Manage tabs
