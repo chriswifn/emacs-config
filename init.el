@@ -408,17 +408,6 @@
 
 (use-package sudo-edit)
 
-(use-package openwith
-  :config
-  (setq openwith-associations
-        (list
-         (list (openwith-make-extension-regexp
-                '("doc" "xls" "xlsx" "ppt" "odt" "ods" "odg" "odp"))
-               "$HOME/.local/share/applications/LibreOffice-still.basic-x86_64.AppImage"
-               '(file))
-         ))
-  (openwith-mode 1))
-
 (setq calendar-week-start-day 1
       calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
 			       "Donnerstag" "Freitag" "Samstag"]

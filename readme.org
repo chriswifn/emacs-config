@@ -611,21 +611,6 @@ Some rules/conventions:
 (use-package sudo-edit)
 #+end_src
 
-** Openwith ([[https://github.com/thisirs/openwith][openwith]])
-
-#+begin_src emacs-lisp
-(use-package openwith
-  :config
-  (setq openwith-associations
-        (list
-         (list (openwith-make-extension-regexp
-                '("doc" "xls" "xlsx" "ppt" "odt" "ods" "odg" "odp"))
-               "$HOME/.local/share/applications/LibreOffice-still.basic-x86_64.AppImage"
-               '(file))
-         ))
-  (openwith-mode 1))
-#+end_src
-
 ** Calendar
 
 #+begin_src emacs-lisp
