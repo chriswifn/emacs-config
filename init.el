@@ -134,8 +134,6 @@
   "oe" '(eshell :wk "eshell")
   "op" '(list-processes :wk "get a list of processes")
   "os" '(fontaine-set-preset :wk "fontaine")
-  "ow" '(woman :wk "woman")
-  "of" '(chris/olivetti-mode :wk "olivetti")
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
@@ -360,26 +358,9 @@
           (3 . (1.1))
           (t . (1.0)))))
 
-;; (defun chris/modus-themes-custom-faces ()
-;;   (modus-themes-with-colors
-;;     (custom-set-faces
-;;      ;; Add "padding" to the mode lines
-;;      `(mode-line ((,c :underline ,border-mode-line-active
-;;                       :overline ,border-mode-line-active
-;;                       :box (:line-width 4 :color ,bg-mode-line-active))))
-;;      `(mode-line-inactive ((,c :underline ,border-mode-line-inactive
-;;                                :overline ,border-mode-line-inactive
-;;                                :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
-
-;; ESSENTIAL to make the underline move to the bottom of the box:
-;; (setq x-underline-at-descent-line t)
-
-;; (add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
-
 (if (string-match
      "modus-vivendi"
-     ;; (shell-command-to-string "cat ~/.config/awesome/theme/local_theme"))
-     (shell-command-to-string "cat ~/.config/herbstluftwm/active-theme"))
+     (shell-command-to-string "cat ~/.config/bspwm/active-theme"))
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
@@ -395,28 +376,6 @@
 (setq display-time-default-load-average nil)
 (setq display-time-24hr-format 1)
 (display-time-mode 1)
-
-(use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :config
-  (setq hl-todo-highlight-punctuation ":"
-        hl-todo-keyword-faces
-        `(("TODO"       warning bold)
-          ("FIXME"      error bold)
-          ("HACK"       font-lock-constant-face bold)
-          ("REVIEW"     font-lock-keyword-face bold)
-          ("NOTE"       success bold)
-          ("DEPRECATED" font-lock-doc-face bold))))
-
-(use-package all-the-icons)
-
-(use-package all-the-icons-ibuffer
-  :after all-the-icons
-  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-(use-package all-the-icons-dired
-  :after all-the-icons
-  :hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package ivy
   :bind
@@ -446,17 +405,6 @@
     "dj" '(dired-jump :wk "Jump to current directory in dired"))
   :config
   (put 'dired-find-alternate-file 'disabled nil))
-
-(use-package 0x0
-  :general
-  (chris/leader-keys
-    "x" '(:ignore t :wk "web")
-    "x;" '(0x0-dwim t :wk "0x0 dwim")
-    "xt" '(0x0-upload-text :wk "0x0 upload text")
-    "xf" '(0x0-upload-file :wk "0x0 upload file")
-    "xk" '(0x0-upload-kill-ring :wk "0x0 upload kill ring")
-    "xp" '(0x0-popup :wk "0x0 popup")
-    "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
 
 (use-package sudo-edit)
 
@@ -509,79 +457,6 @@
         (holiday-float 11 0 1 "Totensonntag" 20)))
 
 (setq calendar-holidays holiday-christian-holidays)
-
-(use-package olivetti
-  :config
-  (setq olivetti-body-width 0.65)
-  (setq olivetti-minimum-body-width 72)
-  (setq olivetti-recall-visual-line-mode-entry-state t)
-
-  (define-minor-mode chris/olivetti-mode
-    "Toggle buffer-local `olivetti-mode' with additional parameters.
-Fringes are disabled.  The modeline is hidden, except for
-`prog-mode' buffers (see `chris/hidden-mode-line-mode')."
-    :init-value nil
-    :global nil
-    (if chris/olivetti-mode
-        (progn
-          (olivetti-mode 1)
-          (olivetti-set-width 80)
-          (set-window-fringes (selected-window) 0 0)
-          (unless (derived-mode-p 'prog-mode)
-            (chris/turn-on-hide-mode-line-mode))
-          (window-divider-mode 1))
-      (olivetti-mode -1)
-      (set-window-fringes (selected-window) nil) ; Use default width
-      (unless (derived-mode-p 'prog-mode)
-        (chris/turn-off-hide-mode-line-mode))
-      (window-divider-mode -1)
-      )))
-
-;; this piece of code is directly copied from Hlissner
-;; I attach a prefix to dinstinguish custom functions
-(defvar chris/hide-mode-line-format nil
-  "The modeline format to use when `chris/hide-mode-line-mode' is active.")
-
-(defvar chris/hide-mode-line-excluded-modes '(fundamental-mode)
-  "List of major modes where `chris/global-hide-mode-line-mode' won't affect.")
-
-(defvar-local chris/hide-mode-line--old-format nil
-  "Storage for the old `mode-line-format', so it can be restored when
-`chris/hide-mode-line-mode' is disabled.")
-
-(define-minor-mode chris/hide-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global nil
-  (if chris/hide-mode-line-mode
-      (progn
-	(add-hook 'after-change-major-mode-hook #'chris/hide-mode-line-mode nil t)
-	(unless chris/hide-mode-line--old-format
-	  (setq chris/hide-mode-line--old-format mode-line-format))
-	(setq mode-line-format chris/hide-mode-line-format))
-    (remove-hook 'after-change-major-mode-hook #'chris/hide-mode-line-mode t)
-    (setq mode-line-format chris/hide-mode-line--old-format
-	  chris/hide-mode-line--old-format nil))
-  (when (called-interactively-p 'any)
-    (redraw-display)))
-
-;; Ensure major-mode or theme changes don't overwrite these variables
-(put 'chris/hide-mode-line--old-format 'permanent-local t)
-(put 'chris/hide-mode-line-mode 'permanent-local-hook t)
-
-(define-globalized-minor-mode chris/global-hide-mode-line-mode
-  chris/hide-mode-line-mode chris/turn-on-hide-mode-line-mode
-  (redraw-display))
-
-(defun chris/turn-on-hide-mode-line-mode ()
-  "Turn on `chris/hide-mode-line-mode'.
-Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
-  (unless (memq major-mode chris/hide-mode-line-excluded-modes)
-    (chris/hide-mode-line-mode +1)))
-
-(defun chris/turn-off-hide-mode-line-mode ()
-  "Turn off `chris/hide-mode-line-mode'."
-  (chris/hide-mode-line-mode -1))
 
 (use-package popper
   :ensure t ; or :straight t
@@ -847,16 +722,18 @@ buffer."
     "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
   :config
   (setq tab-bar-close-button-show nil)
+  (setq tab-bar-new-button-show nil)
+  (setq tab-bar-forward-button-show nil)
+  (setq tab-bar-backward-button-show nil)
   (setq tab-bar-close-last-tab-choice nil)
   (setq tab-bar-close-tab-select 'recent)
   (setq tab-bar-new-tab-choice t)
   (setq tab-bar-new-tab-to 'right)
-  (setq tab-bar-position nil)
-  (setq tab-bar-show nil)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
-  (tab-bar-mode -1)
-  (tab-bar-history-mode 1))
+  :init
+  (tab-bar-history-mode 1)
+  (tab-bar-mode 1))
 
 (defun chris/tab-bar-select-tab-dwim ()
   "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
@@ -906,13 +783,6 @@ questions.  Else use completion to select the tab to switch to."
   :general
   (chris/leader-keys
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
-
-(use-package lsp-ui
-  :commands
-  lsp-ui-mode)
-
-(use-package lsp-treemacs
-  :after lsp-mode)
 
 (defun chris/toggle-code ()
   "Toggle on line numbers and hl-line-mode for a better code experience"
@@ -1045,9 +915,6 @@ questions.  Else use completion to select the tab to switch to."
     "rd" '(racket-send-definiton :wk "racket send definition")
     "rr" '(chris/racket-run-and-switch-to-repl :wk "run racket and switch to repl")
     ))
-
-;; (add-hook 'sh-mode-hook 'flycheck-mode)
-;; (add-hook 'sh-mode-hook 'lsp-deferred)
 
 (straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
@@ -1191,31 +1058,3 @@ file to edit."
       emms-playlist-buffer-name "*Music*"
       emms-info-asynchronously t
       emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
-
-(use-package org-tree-slide
-  :custom
-  (org-tree-slide-breadcrumbs nil)
-  (org-tree-slide-header nil)
-  (org-tree-slide-in-effect nil)
-  (org-tree-slide-slide-in-effect nil)
-  (org-tree-slide-heading-emphasis nil)
-  (org-tree-slide-cursor-init t)
-  (org-tree-slide-never-touch-face t)
-  :config
-  (defun chris/org-presentation ()
-    "Specifies conditions that should apply locally upon activation
-of `org-tree-slide-mode'."
-    (if (eq org-tree-slide-mode nil)
-	(progn
-          (chris/olivetti-mode -1)
-          (fontaine-set-preset 'regular))
-      (chris/olivetti-mode)
-      (fontaine-set-preset 'presentation)))
-  :hook
-  (org-tree-slide-mode . chris/org-presentation)
-  )
-
-(use-package pdf-tools
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page))

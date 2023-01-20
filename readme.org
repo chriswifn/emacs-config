@@ -14,7 +14,7 @@ To prevent ~package.el~ from loading packages and garbage-collection:
 
 #+begin_src emacs-lisp
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
-(setq gc-cons-threshold 100000000)
+(setq gc-cons-threshold (* 100 1024 1024))
 (setq package-enable-at-startup nil)
 #+end_src
 
@@ -149,7 +149,7 @@ Some rules/conventions:
 :header-args: :tangle init.el
 :END:
 
-** General ([[https://github.com/noctuid/general.el][general.el]])
+** General
 
 *** General setup
 
@@ -189,20 +189,6 @@ Some rules/conventions:
 
 *** Keybindings for files
 
-| Keybinding | Function            | Description                              |
-|------------+---------------------+------------------------------------------|
-| SPC f f    | counsel-find-file   | Find a file in current working directory |
-| SPC f z    | counsel-fzf         | fuzzy-finder                             |
-| SPC f g    | counsel-grep        | grep                                     |
-| SPC f r    | counsel-recentf     | Find recently opened files using recentf |
-| SPC f s    | save-buffer         | Save a file                              |
-| SPC f u    | sudo-edit-find-file | Open a file as sudo                      |
-| SPC f C    | copy-file           | Copy the current file                    |
-| SPC f D    | delete-file         | Delete the current file                  |
-| SPC f R    | rename-file         | Rename the current file                  |
-| SPC f S    | write-file          | Safe the current file as <name>          |
-| SPC f U    | sudo-edit           | Convert file write process to sudo       |
-
 #+begin_src emacs-lisp
 (chris/leader-keys
   "f" '(:ignore t :wk "file")
@@ -220,21 +206,6 @@ Some rules/conventions:
 #+end_src
 
 *** Keybindings for buffers
-
-| Keybinding | Function                          | Description                                                                     |
-|------------+-----------------------------------+---------------------------------------------------------------------------------|
-| SPC b i    | ibuffer                           | Open ibuffer                                                                    |
-| SPC b b    | ivy-switch-buffer                 | Pick buffer from a list of open buffers                                         |
-| SPC b f    | chris/toggle-maximize-buffer      | Toggle monocle mode for currently focused buffer                                |
-| SPC b k    | kill-current-buffer               | Kill the current buffer                                                         |
-| SPC b v    | chris/buffers-vc-root             | Pick buffer from a list of open buffers in current project directory            |
-| SPC b m    | chris/buffers-major-mode          | Picks buffer from a list of open buffers with same major mode of current buffer |
-| SPC b n    | next-buffer                       | Goto the next buffer                                                            |
-| SPC b p    | previous-buffer                   | Goto the previous buffer                                                        |
-| SPC b B    | ibuffer-list-buffers              | Get a list of all open buffers                                                  |
-| SPC b r    | revert-buffer                     | Revert the buffer to the initial state                                          |
-| SPC b s    | chris/simple-scratch-buffer       | Open a scratch buffer with same major mode as current buffer                    |
-| SPC b K    | chris/kill-buffer-and-close-split | Kill current buffer and close the split                                         |
 
 #+begin_src emacs-lisp
 (chris/leader-keys
@@ -256,14 +227,6 @@ Some rules/conventions:
 
 *** Keybindings to toggle things
 
-| Keybinding | Function                  | Description                         |
-|------------+---------------------------+-------------------------------------|
-| SPC t r    | chris/config-reload       | Reload the configuration (~init.el~)  |
-| SPC t l    | chris/toggle-line-numbers | Toggle visibility of line numbers   |
-| SPC t m    | chris/hide-mode-line-mode | Hide visibility of the modeline     |
-| SPC t t    | modus-themes-toggle       | Toggle between the two modus-themes |
-| SPC t c    | chris/toggle-code         | Toggle "code-mode"                  |
-
 #+begin_src emacs-lisp
 (chris/leader-keys
   "t"  '(:ignore t :wk "toggle")
@@ -277,21 +240,6 @@ Some rules/conventions:
 
 *** Keybindings to open programs within Emacs
 
-| Keybinding | Function                  | Description                                     |
-|------------+---------------------------+-------------------------------------------------|
-| SPC o t    | vterm                     | Open a vterm buffer                             |
-| SPC o e    | eshell                    | Open an eshell buffer                           |
-| SPC o s    | fontaine-set-preset       | Choose a fontaine preset                        |
-| SPC o w    | woman                     | Pick from a list of manpages and display it     |
-| SPC o f    | chris/olivetti-mode       | Open custom olivetti for better focus           |
-| SPC o l    | org-toggle-link-display   | Display org-mode links (don't truncate them)    |
-| SPC o c    | org-capture               | Open org-capture for "note-taking"              |
-| SPC o a    | org-agenda                | Open org-agenda for "taks-scheduling"           |
-| SPC o o    | occur "^*+"               | Get an outline (headings) of org-mode files     |
-| SPC o b    | bluetooth-list-devices    | Get a list of bluetooth devices                 |
-| SPC o i    | chris/nmcli-wifi-preexist | Menu to manage preexisting internet connections |
-| SPC o I    | chris/nmcli-wifi          | Menu to manage possible wifi connections        |
-
 #+begin_src emacs-lisp
 (chris/leader-keys
   "o" '(:ignore t :wk "open")
@@ -299,8 +247,6 @@ Some rules/conventions:
   "oe" '(eshell :wk "eshell")
   "op" '(list-processes :wk "get a list of processes")
   "os" '(fontaine-set-preset :wk "fontaine")
-  "ow" '(woman :wk "woman")
-  "of" '(chris/olivetti-mode :wk "olivetti")
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
@@ -319,7 +265,7 @@ Some rules/conventions:
   "cc" '(compile :wk "Compile"))
 #+end_src
 
-** Hydra ([[https://github.com/abo-abo/hydra][hydra]])
+** Hydra
 
 #+begin_src emacs-lisp
 (use-package hydra
@@ -349,7 +295,7 @@ Some rules/conventions:
     "hs" '(hydra-split-size/body :wk "split size")))
 #+end_src
 
-** Evil ([[https://github.com/emacs-evil/evil][evil]])
+** Evil
 
 *** General evil setup
 
@@ -391,7 +337,7 @@ Some rules/conventions:
   (evil-set-initial-state 'magit-diff-mode 'insert))
 #+end_src
 
-*** Evil collection ([[https://github.com/emacs-evil/evil-collection][evil-collection]])
+*** Evil collection
 
 #+begin_src emacs-lisp
 (use-package evil-collection ;; evilifies a bunch of things
@@ -406,7 +352,7 @@ Some rules/conventions:
   (evil-collection-init))
 #+end_src
 
-*** Evil commentary ([[https://github.com/linktohack/evil-commentary][evil-commentary]])
+*** Evil commentary
 
 #+begin_src emacs-lisp
 (use-package evil-commentary
@@ -435,7 +381,7 @@ Some rules/conventions:
 (define-key evil-motion-state-map "\C-u" 'chris/scroll-up-and-center)
 #+end_src
 
-** Whichkey ([[https://github.com/justbur/emacs-which-key][emacs-which-key]])
+** Whichkey
 
 #+begin_src emacs-lisp
 (use-package which-key
@@ -498,7 +444,7 @@ Some rules/conventions:
 (setq org-log-done 'time)
 #+end_src
 
-** Org-roam ([[https://github.com/org-roam/org-roam][org-roam]])
+** Org-roam
 
 #+begin_src emacs-lisp
 (use-package org-roam
@@ -529,7 +475,7 @@ Some rules/conventions:
 :header-args: :tangle init.el
 :END:
 
-** Fonts ([[https://github.com/protesilaos/fontaine][fontaine]])
+** Fonts
 
 #+begin_src emacs-lisp  
 (use-package fontaine
@@ -565,7 +511,7 @@ Some rules/conventions:
          :line-spacing nil))))
 #+end_src
 
-** Theme ([[https://protesilaos.com/emacs/modus-themes#h:f0f3dbcb-602d-40cf-b918-8f929c441baf][modus-themes]])
+** Theme
 
 #+begin_src emacs-lisp
 (use-package modus-themes
@@ -587,31 +533,14 @@ Some rules/conventions:
           (3 . (1.1))
           (t . (1.0)))))
 
-;; (defun chris/modus-themes-custom-faces ()
-;;   (modus-themes-with-colors
-;;     (custom-set-faces
-;;      ;; Add "padding" to the mode lines
-;;      `(mode-line ((,c :underline ,border-mode-line-active
-;;                       :overline ,border-mode-line-active
-;;                       :box (:line-width 4 :color ,bg-mode-line-active))))
-;;      `(mode-line-inactive ((,c :underline ,border-mode-line-inactive
-;;                                :overline ,border-mode-line-inactive
-;;                                :box (:line-width 4 :color ,bg-mode-line-inactive)))))))
-
-;; ESSENTIAL to make the underline move to the bottom of the box:
-;; (setq x-underline-at-descent-line t)
-
-;; (add-hook 'modus-themes-after-load-theme-hook #'chris/modus-themes-custom-faces)
-
 (if (string-match
      "modus-vivendi"
-     ;; (shell-command-to-string "cat ~/.config/awesome/theme/local_theme"))
-     (shell-command-to-string "cat ~/.config/herbstluftwm/active-theme"))
+     (shell-command-to-string "cat ~/.config/bspwm/active-theme"))
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 #+end_src
 
-** Modeline ([[https://github.com/tarsius/minions][minions]])
+** Modeline
 
 #+begin_src emacs-lisp
 (use-package minions
@@ -626,36 +555,6 @@ Some rules/conventions:
 (setq display-time-default-load-average nil)
 (setq display-time-24hr-format 1)
 (display-time-mode 1)
-#+end_src
-
-** Highlight TODO's and other keywords ([[https://github.com/tarsius/hl-todo][hl-todo]])
-
-#+begin_src emacs-lisp
-(use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :config
-  (setq hl-todo-highlight-punctuation ":"
-        hl-todo-keyword-faces
-        `(("TODO"       warning bold)
-          ("FIXME"      error bold)
-          ("HACK"       font-lock-constant-face bold)
-          ("REVIEW"     font-lock-keyword-face bold)
-          ("NOTE"       success bold)
-          ("DEPRECATED" font-lock-doc-face bold))))
-#+end_src
-
-** Icons
-
-#+begin_src emacs-lisp
-(use-package all-the-icons)
-
-(use-package all-the-icons-ibuffer
-  :after all-the-icons
-  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-(use-package all-the-icons-dired
-  :after all-the-icons
-  :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
 
 
@@ -704,21 +603,6 @@ Some rules/conventions:
     "dj" '(dired-jump :wk "Jump to current directory in dired"))
   :config
   (put 'dired-find-alternate-file 'disabled nil))
-#+end_src
-
-** 0x0 ([[https://github.com/emacsmirror/0x0][0x0]])
-
-#+begin_src emacs-lisp
-(use-package 0x0
-  :general
-  (chris/leader-keys
-    "x" '(:ignore t :wk "web")
-    "x;" '(0x0-dwim t :wk "0x0 dwim")
-    "xt" '(0x0-upload-text :wk "0x0 upload text")
-    "xf" '(0x0-upload-file :wk "0x0 upload file")
-    "xk" '(0x0-upload-kill-ring :wk "0x0 upload kill ring")
-    "xp" '(0x0-popup :wk "0x0 popup")
-    "xs" '(0x0-shorten-uri :wk "0x0 shorten url")))
 #+end_src
 
 ** Sudo Edit
@@ -783,83 +667,6 @@ Some rules/conventions:
         (holiday-float 11 0 1 "Totensonntag" 20)))
 
 (setq calendar-holidays holiday-christian-holidays)
-#+end_src
-
-** Olivetti ([[https://github.com/rnkn/olivetti][olivetti]])
-
-#+begin_src emacs-lisp
-(use-package olivetti
-  :config
-  (setq olivetti-body-width 0.65)
-  (setq olivetti-minimum-body-width 72)
-  (setq olivetti-recall-visual-line-mode-entry-state t)
-
-  (define-minor-mode chris/olivetti-mode
-    "Toggle buffer-local `olivetti-mode' with additional parameters.
-Fringes are disabled.  The modeline is hidden, except for
-`prog-mode' buffers (see `chris/hidden-mode-line-mode')."
-    :init-value nil
-    :global nil
-    (if chris/olivetti-mode
-        (progn
-          (olivetti-mode 1)
-          (olivetti-set-width 80)
-          (set-window-fringes (selected-window) 0 0)
-          (unless (derived-mode-p 'prog-mode)
-            (chris/turn-on-hide-mode-line-mode))
-          (window-divider-mode 1))
-      (olivetti-mode -1)
-      (set-window-fringes (selected-window) nil) ; Use default width
-      (unless (derived-mode-p 'prog-mode)
-        (chris/turn-off-hide-mode-line-mode))
-      (window-divider-mode -1)
-      )))
-
-;; this piece of code is directly copied from Hlissner
-;; I attach a prefix to dinstinguish custom functions
-(defvar chris/hide-mode-line-format nil
-  "The modeline format to use when `chris/hide-mode-line-mode' is active.")
-
-(defvar chris/hide-mode-line-excluded-modes '(fundamental-mode)
-  "List of major modes where `chris/global-hide-mode-line-mode' won't affect.")
-
-(defvar-local chris/hide-mode-line--old-format nil
-  "Storage for the old `mode-line-format', so it can be restored when
-`chris/hide-mode-line-mode' is disabled.")
-
-(define-minor-mode chris/hide-mode-line-mode
-  "Minor mode to hide the mode-line in the current buffer."
-  :init-value nil
-  :global nil
-  (if chris/hide-mode-line-mode
-      (progn
-	(add-hook 'after-change-major-mode-hook #'chris/hide-mode-line-mode nil t)
-	(unless chris/hide-mode-line--old-format
-	  (setq chris/hide-mode-line--old-format mode-line-format))
-	(setq mode-line-format chris/hide-mode-line-format))
-    (remove-hook 'after-change-major-mode-hook #'chris/hide-mode-line-mode t)
-    (setq mode-line-format chris/hide-mode-line--old-format
-	  chris/hide-mode-line--old-format nil))
-  (when (called-interactively-p 'any)
-    (redraw-display)))
-
-;; Ensure major-mode or theme changes don't overwrite these variables
-(put 'chris/hide-mode-line--old-format 'permanent-local t)
-(put 'chris/hide-mode-line-mode 'permanent-local-hook t)
-
-(define-globalized-minor-mode chris/global-hide-mode-line-mode
-  chris/hide-mode-line-mode chris/turn-on-hide-mode-line-mode
-  (redraw-display))
-
-(defun chris/turn-on-hide-mode-line-mode ()
-  "Turn on `chris/hide-mode-line-mode'.
-Unless in `fundamental-mode' or `chris/hide-mode-line-excluded-modes'."
-  (unless (memq major-mode chris/hide-mode-line-excluded-modes)
-    (chris/hide-mode-line-mode +1)))
-
-(defun chris/turn-off-hide-mode-line-mode ()
-  "Turn off `chris/hide-mode-line-mode'."
-  (chris/hide-mode-line-mode -1))
 #+end_src
 
 
@@ -1056,14 +863,6 @@ buffer."
 
 Display a table of all pre configured internet connections.
 
-Keybindings:
-
-| Keybinding | Function                             | Description                       |
-|------------+--------------------------------------+-----------------------------------|
-| c          | chris/nmcli-wifi-preexist-connect    | connect to the selected ssid      |
-| d          | chris/nmcli-wifi-preexist-disconnect | disconnect from the selected ssid |
-| r          | chris/nmcli-wifi-preexist-refresh    | refresh the buffer to see changes |
-
 #+begin_src emacs-lisp
 (define-derived-mode chris/nmcli-wifi-preexist-mode tabulated-list-mode
   "nmcli-wifi-preexist"
@@ -1164,7 +963,7 @@ Keybindings:
 #+end_src
 
 
-* Projectile ([[https://github.com/bbatsov/projectile][projectile]])
+* Projectile
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
@@ -1189,7 +988,7 @@ Keybindings:
 #+end_src
 
 
-* Workspaces (=tab-bar.el=)
+* Workspaces
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
@@ -1205,16 +1004,18 @@ Keybindings:
     "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select"))
   :config
   (setq tab-bar-close-button-show nil)
+  (setq tab-bar-new-button-show nil)
+  (setq tab-bar-forward-button-show nil)
+  (setq tab-bar-backward-button-show nil)
   (setq tab-bar-close-last-tab-choice nil)
   (setq tab-bar-close-tab-select 'recent)
   (setq tab-bar-new-tab-choice t)
   (setq tab-bar-new-tab-to 'right)
-  (setq tab-bar-position nil)
-  (setq tab-bar-show nil)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
-  (tab-bar-mode -1)
-  (tab-bar-history-mode 1))
+  :init
+  (tab-bar-history-mode 1)
+  (tab-bar-mode 1))
 #+end_src
 
 ** Manage tabs
@@ -1256,7 +1057,7 @@ questions.  Else use completion to select the tab to switch to."
   (global-company-mode 1))
 #+end_src
 
-** LSP ([[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]])
+** Lsp 
 
 #+begin_src emacs-lisp
 (use-package lsp-mode
@@ -1282,13 +1083,6 @@ questions.  Else use completion to select the tab to switch to."
   :general
   (chris/leader-keys
     "cd" '(list-flycheck-errors :wk "List flycheck errors")))
-
-(use-package lsp-ui
-  :commands
-  lsp-ui-mode)
-
-(use-package lsp-treemacs
-  :after lsp-mode)
 #+end_src
 
 ** "Code mode"
@@ -1316,7 +1110,7 @@ questions.  Else use completion to select the tab to switch to."
   :after yasnippet)
 #+end_src
 
-** Treesitter ([[https://emacs-tree-sitter.github.io/][tree-sitter]])
+** Treesitter
 
 #+begin_src emacs-lisp
 (use-package tree-sitter-langs)
@@ -1344,7 +1138,7 @@ questions.  Else use completion to select the tab to switch to."
   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 #+end_src
 
-** Async ([[https://github.com/jwiegley/emacs-async][async]])
+** Async
 
 #+begin_src emacs-lisp
 (use-package async
@@ -1352,7 +1146,7 @@ questions.  Else use completion to select the tab to switch to."
   (dired-async-mode 1))
 #+end_src
 
-** rg ([[https://github.com/dajva/rg.el][rg.el]])
+** rg
 
 #+begin_src emacs-lisp
 (use-package rg
@@ -1469,13 +1263,6 @@ questions.  Else use completion to select the tab to switch to."
     ))
 #+end_src
 
-** shell 
-
-#+begin_src emacs-lisp
-;; (add-hook 'sh-mode-hook 'flycheck-mode)
-;; (add-hook 'sh-mode-hook 'lsp-deferred)
-#+end_src
-
 ** matlab
 
 #+begin_src emacs-lisp
@@ -1504,7 +1291,7 @@ questions.  Else use completion to select the tab to switch to."
 #+end_src
 
 
-* Git ([[https://magit.vc/][Magit]])
+* Git
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
@@ -1534,7 +1321,7 @@ questions.  Else use completion to select the tab to switch to."
 :header-args: :tangle init.el
 :END:
 
-** VTerm ([[https://github.com/akermu/emacs-libvterm][vterm]])
+** VTerm
 
 It is important to configure the system shell (in this case bash in the ~.bashrc~):
 
@@ -1574,7 +1361,7 @@ find_file() {
   (setq vterm-timer-delay 0.01))
 #+end_src
 
-** Eshell ([[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][eshell]])
+** Eshell
 
 *** General setup for eshell
 
@@ -1685,7 +1472,7 @@ file to edit."
 (use-package rainbow-mode)
 #+end_src
 
-** EMMS ([[https://www.gnu.org/software/emms/][emms]])
+** EMMS
 
 #+begin_src emacs-lisp
 (use-package emms
@@ -1710,40 +1497,3 @@ file to edit."
       emms-info-asynchronously t
       emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
 #+end_src
-
-** Presentations ([[https://github.com/takaxp/org-tree-slide][org-tree-slide]])
-
-#+begin_src emacs-lisp
-(use-package org-tree-slide
-  :custom
-  (org-tree-slide-breadcrumbs nil)
-  (org-tree-slide-header nil)
-  (org-tree-slide-in-effect nil)
-  (org-tree-slide-slide-in-effect nil)
-  (org-tree-slide-heading-emphasis nil)
-  (org-tree-slide-cursor-init t)
-  (org-tree-slide-never-touch-face t)
-  :config
-  (defun chris/org-presentation ()
-    "Specifies conditions that should apply locally upon activation
-of `org-tree-slide-mode'."
-    (if (eq org-tree-slide-mode nil)
-	(progn
-          (chris/olivetti-mode -1)
-          (fontaine-set-preset 'regular))
-      (chris/olivetti-mode)
-      (fontaine-set-preset 'presentation)))
-  :hook
-  (org-tree-slide-mode . chris/org-presentation)
-  )
-#+end_src
-
-** PDFs ([[https://github.com/vedang/pdf-tools][pdf-tools]])
-
-#+begin_src emacs-lisp
-(use-package pdf-tools
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page))
-#+end_src
-
