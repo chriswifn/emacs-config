@@ -123,7 +123,6 @@
   "t"  '(:ignore t :wk "toggle")
   "tr" '(chris/config-reload :wk "config")
   "tl" '(chris/toggle-line-numbers :wk "linenumbers")
-  "tm" '(chris/hide-mode-line-mode :wk "linenumbers")
   "ts" '(chris/tab-status-line :wk "tab-bar-line")
   "tt" '(modus-themes-toggle :wk "theme")
   "tc" '(chris/toggle-code :wk "code"))
