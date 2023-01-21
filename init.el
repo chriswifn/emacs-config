@@ -348,6 +348,8 @@
 	  (string green-faint)
 	  (prose-done green-faint)
 	  (prose-todo red-faint)
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
           (fringe unspecified))
         modus-themes-headings
         '((1 . (1.3))
@@ -361,18 +363,11 @@
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
-(use-package minions
+(use-package doom-modeline
   :config
-  (setq minions-mode-line-ligher ";")
-  (setq minions-prominent-modes
-	(list 'flymake-mode
-	      'lsp-mode))
-  :init 
-  (minions-mode 1))
-(display-battery-mode)
-(setq display-time-default-load-average nil)
-(setq display-time-24hr-format 1)
-(display-time-mode 1)
+  (setq doom-modeline-height 28)
+  :init
+  (doom-modeline-mode 1))
 
 (use-package ivy
   :bind
@@ -455,6 +450,8 @@
     "ut" '(popper-toggle-latest :wk "toggle latest")
     "uc" '(popper-cycle :wk "cycle")
     "up" '(popper-toggle-type :wk "toggle type (promote)"))
+  :config
+  (setq popper-mode-line nil)
   :init
   (setq popper-reference-buffers
 	'("\\*Messages\\*"
@@ -718,7 +715,7 @@ buffer."
   (setq tab-bar-new-tab-to 'right)
   (setq tab-bar-tab-hints nil)
   (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
-  (tab-bar-mode -1)
+  (setq tab-bar-show nil)
   (tab-bar-history-mode 1))
 
 (defun chris/tab-bar-select-tab-dwim ()
