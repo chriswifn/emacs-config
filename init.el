@@ -816,6 +816,10 @@ questions.  Else use completion to select the tab to switch to."
   :init
   (rg-enable-default-bindings))
 
+(use-package hl-todo
+  :hook
+  (prog-mode . hl-todo-mode))
+
 (use-package haskell-mode
   :mode ("\\.hs\\'" . haskell-mode)
   :config
