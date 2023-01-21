@@ -344,10 +344,8 @@
         modus-themes-italic-construct nil
         modus-themes-common-palette-overrides
         '(
-          ;; (border-mode-line-active unspecified)
-          ;; (border-mode-line-inactive unspecified)
-	  ;; (bg-mode-line-active bg-blue-subtle)
-	  ;; (fg-mode-line-active fg-main)
+	  (comment yellow-faint)
+	  (string green-faint)
 	  (prose-done green-faint)
 	  (prose-todo red-faint)
           (fringe unspecified))
