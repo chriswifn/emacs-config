@@ -462,6 +462,7 @@
 	  "^\\*lua\\*$"
 	  "^\\*Python\\*$"
 	  "^\\*Process List\\*$"
+	  "^\\*Flycheck \\*"
 	  help-mode
 	  compilation-mode))
   (popper-mode +1)
@@ -745,7 +746,7 @@ questions.  Else use completion to select the tab to switch to."
 
 (use-package lsp-mode
   :config
-  (setq read-process-outpu-max (* 1024 1024))
+  (setq read-process-output-max (* 1024 1024))
   (setq lsp-idle-delay 0.500)
   (setq lsp-log-io nil)
   (setq lsp-enable-links nil)
@@ -753,6 +754,7 @@ questions.  Else use completion to select the tab to switch to."
   (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-ui-doc-enable nil)
   (setq lsp-completion-enable-additional-text-edit nil)
+  (setq lsp-modeline-diagnostics-scope :workspace)
   :init
   (setq lsp-keep-workspace-alive nil)
   (setq lsp-keymap-prefix "C-c l")
