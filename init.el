@@ -285,26 +285,13 @@
 (setq org-log-into-drawer t)
 (setq org-log-done 'time)
 
-(use-package org-roam
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/orgroam")
-  (org-roam-compeltion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
-  :general
-  (chris/leader-keys
-    "r" '(:ignore t :wk "org-roam")
-    "rt" '(org-roam-buffer-toggle :wk "toggle org-roam buffer")
-    "rf" '(org-roam-node-find :wk "find node")
-    "ri" '(org-roam-node-insert :wk "insert node"))
-  (chris/leader-keys "rd" '(:keymap org-roam-dailies-map :wk "dailies"))
+(use-package denote
   :config
-  (require 'org-roam-dailies)
-  (org-roam-db-autosync-mode)
-  (org-roam-setup))
+  (setq denote-directory (expand-file-name "~/notes/"))
+  (setq denote-known-keywords '("emacs" "programming" "administration" "linux"))
+  :hook
+  (dired-mode . denote-dired-mode)
+  (dired-mode . dired-hide-details-mode))
 
 (use-package fontaine
   :config
