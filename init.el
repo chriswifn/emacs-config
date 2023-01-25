@@ -132,7 +132,6 @@
   "ot" '(vterm :wk "vterm")
   "oe" '(eshell :wk "eshell")
   "op" '(list-processes :wk "get a list of processes")
-  "os" '(fontaine-set-preset :wk "fontaine")
   "ol" '(org-toggle-link-display :wk "Display org links")
   "oc" '(org-capture :wk "org campture")
   "oa" '(org-agenda :wk "org campture")
