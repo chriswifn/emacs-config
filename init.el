@@ -322,11 +322,48 @@
   :init
   (doom-modeline-mode 1))
 
+(use-package cape
+  :config
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+  )
+
+(use-package corfu
+  :config
+  (customize-set-variable 'corfu-cycle t)
+  (customize-set-variable 'corfu-auto t)
+  (customize-set-variable 'corfu-auto-prefix 2)
+  (customize-set-variable 'corfu-auto-delay 0.0)
+  (customize-set-variable 'corfu-echo-documentation 0.25)
+  :hook
+  (eshell-mode . (lambda () (setq-local corfu-quit-at-boundary t
+					corfu-quit-no-match t
+					corfu-auto nil)))
+  :init
+  (global-corfu-mode 1))
+
+(add-to-list 'load-path
+	     (expand-file-name "straight/build/corfu/extensions"
+			      straight-base-dir))
+
+(require 'corfu-popupinfo)
+(corfu-popupinfo-mode 1)
+(define-key corfu-map (kbd "M-p") #'corfu-popupinfo-scroll-down)
+(define-key corfu-map (kbd "M-n") #'corfu-popupinfo-scroll-up)
+(define-key corfu-map (kbd "M-d") #'corfu-popupinfo-toggle)
+
 (use-package ivy
   :bind
   ("C-s" . swiper)
   :init
   (ivy-mode))
+
+(use-package ivy-prescient
+  :after
+  ivy
+  :init
+  (ivy-prescient-mode))
 
 (use-package counsel
   :config
@@ -688,14 +725,6 @@ questions.  Else use completion to select the tab to switch to."
           (t
            (tab-bar-switch-to-tab
             (completing-read "Select tab: " tabs nil t))))))
-
-(use-package company
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minium-prefix-length 3)
-  (setq company-format-margin-function nil)
-  :init
-  (global-company-mode 1))
 
 (use-package lsp-mode
   :config
