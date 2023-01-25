@@ -304,10 +304,10 @@
          :default-height 140)
         (medium
          :default-weight semilight
-         :default-height 160)
+         :default-height 180)
         (large
          :default-weight semilight
-         :default-height 180
+         :default-height 200 
          :bold-weight extrabold)
         (t
          ;; :default-family "Iosevka Comfy Wide Fixed"
