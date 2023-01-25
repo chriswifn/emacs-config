@@ -318,7 +318,7 @@
 
 (use-package doom-modeline
   :config
-  (setq doom-modeline-height 28)
+  (setq doom-modeline-height 26)
   :init
   (doom-modeline-mode 1))
 
