@@ -293,36 +293,8 @@
   (dired-mode . denote-dired-mode)
   (dired-mode . dired-hide-details-mode))
 
-(use-package fontaine
-  :config
-  (setq x-underline-at-descent-line t)
-  (setq-default text-scale-remap-header-line t)
-  (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
-  :init
-  (setq fontaine-presets
-      '((regular
-         :default-height 110)
-        (medium
-         :default-weight semilight
-         :default-height 160)
-        (large
-         :default-weight semilight
-         :default-height 200 
-         :bold-weight extrabold)
-        (t
-         :default-family "Iosevka Comfy Wide Fixed"
-         :default-weight normal
-         :fixed-pitch-family nil
-         :fixed-pitch-weight nil
-         :fixed-pitch-height 1.0
-         :variable-pitch-family "Iosevka Comfy Duo"
-         :variable-pitch-weight normal
-         :variable-pitch-height 1.05
-         :bold-family nil ; use whatever the underlying face has
-         :bold-weight bold
-         :italic-family nil
-         :italic-slant italic
-         :line-spacing nil))))
+(add-to-list 'default-frame-alist '(font . "Monoid-9"))
+(set-face-attribute 'default t :font "Monoid-9")
 
 (use-package modus-themes
   :config
