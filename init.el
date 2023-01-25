@@ -308,12 +308,7 @@
 	  (prose-todo red-faint)
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
-          (fringe unspecified))
-        modus-themes-headings
-        '((1 . (1.3))
-          (2 . (1.2))
-          (3 . (1.1))
-          (t . (1.0)))))
+          (fringe unspecified))))
 
 (if (string-match
      "modus-vivendi"
