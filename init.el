@@ -1024,7 +1024,7 @@ file to edit."
 (emms-default-players)
 (emms-mode-line 0)
 (emms-playing-time 1)
-(setq emms-source-file-default-directory "~/Music/"
+(setq emms-source-file-default-directory "~/media/music/"
       emms-playlist-buffer-name "*Music*"
       emms-info-asynchronously t
       emms-source-file-directory-tree-function 'emms-source-file-directory-tree-find)
