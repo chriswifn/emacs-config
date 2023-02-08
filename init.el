@@ -219,6 +219,8 @@
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
+(global-set-key (kbd "C-c t") 'modus-themes-toggle)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 33 Modeline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
