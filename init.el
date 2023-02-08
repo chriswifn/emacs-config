@@ -1,5 +1,17 @@
 ;;; init.el --- Personal configuration file -*- lexical-binding: t; no-byte-compile: t; -*-
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 00 Table of contents
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (occur "^;; [0-9]+")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 01 Emacs package management (straight.el)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; bootstrap straight.el
+;; in favor of package.el for granular control over version numbers
+;; if ever needed
 (setq straight-use-package-by-default t)
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -15,179 +27,84 @@
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
 
-(use-package emacs
-  :straight (:type built-in)
-  :config
-  (setq user-full-name "Christian Hageloch")
-  (setq use-short-answers t)
-  (setq indent-tabs-mode nil)
-  (setq blink-cursor-mode nil)
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
-  (setq backup-directory-alist
-	`((".*" . ,(concat user-emacs-directory "backups")))
-	auto-save-file-name-transforms
-	`((".*" ,(concat user-emacs-directory "backups") t)))
-  (setq create-lockfiles nil)
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  (setq display-line-numbers-type 'relative)
-  (column-number-mode)
-  (global-auto-revert-mode 1)
-  (setq global-auto-revert-non-file-buffers t)
-  (setq find-file-visit-truename t)
-  (set-default-coding-systems 'utf-8)
-  :init
-  (setq completion-cycle-threshold 3)
-  (setq tab-always-indent 'complete))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 02 Name
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; set the full user name
+(setq user-full-name "Christian Hageloch")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 03 Basic settings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; no ring bell
+(setq ring-bell-function 'ignore)
+
+;; use y-or-n instead of yes-or-no
+(setq use-short-answers t)
+
+;; no indent tabs
+(setq indent-tabs-mode nil)
+
+;; blinking cursor is distracting
+(setq blink-cursor-mode nil)
+
+;; second quit key along side C-g
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;; put misc. configuration into another file (custom.el)
+(setq custom-file (locate-user-emacs-file "custom-vars.el"))
+(load custom-file 'noerror 'nomessage)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 10 Global shortcuts
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; reload the configuration file
 (defun chris/config-reload ()
   "Reload the configuration file"
   (interactive)
   (load-file (expand-file-name "~/.emacs.d/init.el")))
+(global-set-key (kbd "C-c r") 'chris/config-reload)
 
-(use-package electric
-  :straight (:type built-in)
+;; previous and next buffer
+(global-set-key (kbd "C-x C-p") 'previous-buffer)
+(global-set-key (kbd "C-x C-n") 'next-buffer)
+
+;; whichkey to help with keyboard shortcuts
+(use-package which-key
   :config
-  (setq electric-pair-pairs '(
-			     (?\{ . ?\})
-			     (?\( . ?\))
-			     (?\[ . ?\])
-			     (?\" . ?\")
-			     ))
+  (which-key-setup-minibuffer)
   :init
-  (electric-pair-mode t))
+  (which-key-mode))
 
-(use-package general
-  :config
-  ;; integrate general with evil
-  (general-evil-setup)
-  ;; set up 'SPC' as the global leader key
-  (general-create-definer chris/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC" ;; set leader
-    :global-prefix "M-SPC") ;; access leader in insert mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 20 Vim Keybindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; set up ',' as the local leader key
-  (general-create-definer chris/local-leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "," ;; set local leader
-    :global-prefix "M-,") ;; access local leader in insert mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 21 Vim emulation for text editing
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  (general-define-key
-   :states 'insert
-   "C-g" 'evil-normal-state) ;; don't stretch for ESC
-
-  ;; unbind some annoying default bindings
-  (general-unbind
-    "C-x C-r"	;; unbind find file read only
-    "C-x C-z"	;; unbind suspend frame
-    "C-x C-d"	;; unbind list directory
-    "<mouse-2>") ;; pasting with mouse wheel click
-
-  (chris/leader-keys
-    "SPC" '(counsel-M-x :wk "M-x"))) ;; an alternative to 'M-x'
-
-(chris/leader-keys
-  "f" '(:ignore t :wk "file")
-  "ff" '(counsel-find-file :wk "find file")
-  "fz" '(counsel-fzf :wk "fuzzy finder")
-  "fg" '(counsel-grep :wk "fuzzy finder (grep)")
-  "fr" '(counsel-recentf :wk "Recent files")
-  "fs" '(save-buffer :wk "Save file")
-  "fu" '(sudo-edit-find-file :wk "Sudo find file")
-  "fC" '(copy-file :wk "Copy file")
-  "fD" '(delete-file :wk "Delete file")
-  "fR" '(rename-file :wk "Rename file")
-  "fS" '(write-file :wk "Save file as...")
-  "fU" '(sudo-edit :wk "Sudo edit file"))
-
-(chris/leader-keys
-  "b" '(:ignore t :wk "buffer")
-  "bi" '(ibuffer :wk "ibuffer")
-  "bb" '(ivy-switch-buffer :wk "switch buffer")
-  "bf" '(chris/toggle-maximize-buffer :wk "Toggle maximize buffer")
-  "bc" '(clone-indirect-buffer-other-window :wk "Clone indirect buffer other window")
-  "bk" '(kill-current-buffer :wk "Kill current buffer")
-  "bv" '(chris/buffers-vc-root :wk "Buffers in project root") 
-  "bm" '(chris/buffers-major-mode :wk "Buffers with same major mode")
-  "bn" '(next-buffer :wk "Next buffer")
-  "bp" '(previous-buffer :wk "Previous buffer")
-  "bB" '(ibuffer-list-buffers :wk "Ibuffer list buffers")
-  "br" '(revert-buffer :wk "Revert Buffer")
-  "bs" '(chris/simple-scratch-buffer :wk "Revert Buffer")
-  "bK" '(chris/kill-buffer-and-close-split :wk "Kill buffer"))
-
-(chris/leader-keys
-  "t"  '(:ignore t :wk "toggle")
-  "tr" '(chris/config-reload :wk "config")
-  "tl" '(chris/toggle-line-numbers :wk "linenumbers")
-  "ts" '(chris/tab-status-line :wk "tab-bar-line")
-  "tt" '(modus-themes-toggle :wk "theme")
-  "tc" '(chris/toggle-code :wk "code"))
-
-(chris/leader-keys
-  "o" '(:ignore t :wk "open")
-  "ot" '(vterm :wk "vterm")
-  "oe" '(eshell :wk "eshell")
-  "op" '(list-processes :wk "get a list of processes")
-  "ol" '(org-toggle-link-display :wk "Display org links")
-  "oc" '(org-capture :wk "org campture")
-  "oa" '(org-agenda :wk "org campture")
-  "oo" '(occur "^*+" :wk "org sidebar")
-  "ob" '(bluetooth-list-devices :wk "List bluetooth devices")
-  "oi" '(chris/nmcli-wifi-preexist :wk "internet preexisting")
-  "oI" '(chris/nmcli-wifi :wk "Connect wifi")
-  )
-
-(chris/leader-keys
-  "c" '(:ignore t :wk "code-action")
-  "cc" '(compile :wk "Compile"))
-
-(use-package hydra
-  :defer t
-  :config
-  ;; scale text
-  (defhydra hydra-text-scale (:timeout 4)
-    "scale text"
-    ("j" text-scale-increase "in")
-    ("k" text-scale-decrease "out")
-    ("f" nil "finished" :exit t))
-
-  ;; split size
-  (defhydra hydra-split-size (:timeout 4)
-    "increase/decrease split size"
-    ("h" shrink-window-horizontally)
-    ("j" enlarge-window)
-    ("k" shrink-window)
-    ("l" enlarge-window-horizontally)
-    ("n" balance-windows)
-    ("f" nil "finished" :exit t))
-
-  :general
-  (chris/leader-keys
-    "h" '(:ignore t :wk "hydra")
-    "hf" '(hydra-text-scale/body :wk "scale text")
-    "hs" '(hydra-split-size/body :wk "split size")))
-
+;; evil is the superior way of editing text
 (use-package evil
-  :general
-  (chris/leader-keys
-    "w" '(:keymap evil-window-map :wk "window")) ;; window bindings
   :init
   (setq evil-search-module 'isearch)
 
-  (setq evil-want-C-u-scroll t) ;; allow scroll up with 'C-u'
-  (setq evil-want-C-d-scroll t) ;; allow scroll down with 'C-d'
+  ;; C-u and C-d are remaped later on
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-d-scroll t)
 
-  (setq evil-want-integration t) ;; necessary for evil collection
+  ;; for evil-collection
+  (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
 
+  ;; define direction of splits
   (setq evil-split-window-below t)
   (setq evil-vsplit-window-right nil)
 
-  ;; cursors
+  ;; set the cursor to box in every mode
   (setq evil-normal-state-cursor 'box)
   (setq evil-insert-state-cursor 'box)
   (setq evil-visual-state-cursor 'box)
@@ -195,34 +112,53 @@
   (setq evil-replace-state-cursor 'box)
   (setq evil-operator-state-cursor 'box)
 
-  (setq evil-want-C-i-jump nil) ;; hopefully this will fix weird tab behaviour
+  ;; C-i jump
+  (setq evil-want-C-i-jump nil)
 
-  (setq evil-undo-system 'undo-redo) ;; undo via 'u', and redo the undone change via 'C-r'; only available in emacs 28+.
+  ;; use the built-in undo-redo system as evil-undo-system
+  ;; other options:
+  ;; - undo-tree (does a lot, is useful for files that are not under version
+  ;;   control
+  ;; - undo-fu (never used that thing)
+  (setq evil-undo-system 'undo-redo)
   :config
-  (evil-mode t) ;; globally enable evil mode
-  ;; set the initial state for some kinds of buffers.
+  ;; use evil mode
+  (evil-mode t)
+
+  ;; set different evil modes for different emacs major modes
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal)
-  ;; buffers in which I want to immediately start typing should be in 'insert' state by default.
   (evil-set-initial-state 'eshell-mode 'insert)
   (evil-set-initial-state 'magit-diff-mode 'insert))
 
-(use-package evil-collection ;; evilifies a bunch of things
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 22 Evil collection
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; evil not only when editing text but also for navigating non file buffers
+(use-package evil-collection
   :after evil
   :init
-  (setq evil-collection-outline-bind-tab-p t) ;; '<TAB>' cycles visibility in 'outline-minor-mode'
-  ;; If I want to incrementally enable evil-collection mode-by-mode, I can do something like the following:
-  ;; (setq evil-collection-mode-list nil) ;; I don't like surprises
-  ;; (add-to-list 'evil-collection-mode-list 'magit) ;; evilify magit
-  ;; (add-to-list 'evil-collection-mode-list '(pdf pdf-view)) ;; evilify pdf-view
+  (setq evil-collection-outline-bind-tab-p t)
   :config
+  ;; load evil-collection
   (evil-collection-init))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Evil commentary
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; quick commenting using gcc and gc
 (use-package evil-commentary
   :after evil
   :config
-  (evil-commentary-mode)) ;; globally enable evil-commentary
+  (evil-commentary-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 24 Misc evil functionality
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; C-d but with centering the line after jump
 (defun chris/scroll-down-and-center ()
 "Scroll down and center the text to the screen"
   (interactive)
@@ -231,6 +167,7 @@
 
 (define-key evil-motion-state-map "\C-d" 'chris/scroll-down-and-center)
 
+;; C-u but with centering the line after jump
 (defun chris/scroll-up-and-center ()
 "Scroll up and center the text to the screen"
   (interactive)
@@ -239,62 +176,28 @@
 
 (define-key evil-motion-state-map "\C-u" 'chris/scroll-up-and-center)
 
-(use-package which-key
-  :init
-  (which-key-mode)
-  :config
-  (which-key-setup-minibuffer))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 30 Appearance
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package org
-  :straight (:type built-in)
-  :config
-  (setq org-ellipsis " ")
-  (setq orc-src-fontify-natively t)
-  (setq src-tab-acts-natively t)
-  (setq org-fontify-quote-and-verse-blocks t)
-  (setq org-fontify-whole-block-delimiter-line t)
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-export-with-smart-quotes t)
-  (setq org-src-window-setup 'current-window)
-  (setq org-hide-emphasis-markers t)
-  (setq org-src-preserve-indentation 1)
-  (setq org-edit-src-content-indentation 0)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 31 Font
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; configure babel languages
-  (with-eval-after-load 'org
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (shell . t)))
-
-    (require 'org-tempo)
-    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-    (add-to-list 'org-structure-template-alist '("py" . "src python"))
-
-    (push '("conf-unix" . conf-unix) org-src-lang-modes))
-
-  (setq org-directory "~/org")
-  (setq org-default-notes-file (concat org-directory "/notes.org")))
-
-(setq org-agenda-files '("~/org/Agenda.org"))
-(setq org-agenda-start-with-log-mode t)
-(setq org-log-done 'time)
-(setq org-log-into-drawer t)
-(setq org-log-done 'time)
-
-(use-package denote
-  :config
-  (setq denote-directory (expand-file-name "~/notes/"))
-  (setq denote-known-keywords '("emacs" "programming" "administration" "linux"))
-  :hook
-  (dired-mode . denote-dired-mode)
-  (dired-mode . dired-hide-details-mode))
-
+;; Install Monoid font from their website to .local/share/fonts
+;; or /usr/share/fonts
+;; https://larsenwork.com/monoid/
 (add-to-list 'default-frame-alist '(font . "Monoid-9"))
 (set-face-attribute 'default t :font "Monoid-9")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 32 Theme
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; modus themes for a good dark theme and the best light theme I have ever
+;; used (the only usable one)
+;; the version that are built-into emacs are outdated to the version
+;; installed through straight as has differnt configuration variables
 (use-package modus-themes
   :config
   (setq modus-themes-bold-constructs t
@@ -309,18 +212,34 @@
           (border-mode-line-inactive unspecified)
           (fringe unspecified))))
 
+;; load the theme based on the theme of the system
 (if (string-match
      "modus-vivendi"
      (shell-command-to-string "cat ~/.config/bspwm/active-theme"))
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 33 Modeline
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; the only reason to use this in favor of the built-in modeline isearch
+;; that it shows the index of the tab when activating tab-bar.el
 (use-package doom-modeline
   :config
-  (setq doom-modeline-height 26)
+  (setq doom-modeline-height 28)
   :init
   (doom-modeline-mode 1))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 40 Completion
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 41 Completion at point extension Cape
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; cap improvement for corfu
 (use-package cape
   :config
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -328,6 +247,13 @@
   (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
   )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 42 Corfu
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; more minimal and faster than company
+;; needs cape/a different provider for completions (like lsp-mode/eglot)
+;; to work
 (use-package corfu
   :config
   (customize-set-variable 'corfu-cycle t)
@@ -340,18 +266,15 @@
 					corfu-quit-no-match t
 					corfu-auto nil)))
   :init
+  ;; enable corfu-mode globally
   (global-corfu-mode 1))
 
-(add-to-list 'load-path
-	     (expand-file-name "straight/build/corfu/extensions"
-			      straight-base-dir))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 43 Completion frontend Ivy
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'corfu-popupinfo)
-(corfu-popupinfo-mode 1)
-(define-key corfu-map (kbd "M-p") #'corfu-popupinfo-scroll-down)
-(define-key corfu-map (kbd "M-n") #'corfu-popupinfo-scroll-up)
-(define-key corfu-map (kbd "M-d") #'corfu-popupinfo-toggle)
-
+;; ivy and ivy-prescient to remember search candidates
+;; TODO: switch to consult and vertico
 (use-package ivy
   :bind
   ("C-s" . swiper)
@@ -364,84 +287,95 @@
   :init
   (ivy-prescient-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 44 Ivy enhancement Counsel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; enhance ivy with counsel 
 (use-package counsel
+  :bind
+  ;; keybinding for recently edited files
+  ("C-x C-r" . counsel-recentf)
   :config
+  ;; no preview of buffers in switch-buffer 
   (setq counsel-switch-buffer-preview-virtual-buffers nil)
   :init
   (counsel-mode))
 
-(use-package savehist
-  :straight (:type built-in)
-  :config
-  (setq history-length 25)
-  :init
-  (savehist-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 50 File management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; file settings
+(setq create-lockfiles nil)
+(setq make-backup-files nil)
+(setq find-file-visit-truename t)
+(set-default-coding-systems 'utf-8)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 51 Sudo edit
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; edited files with elevated privileges
+(use-package sudo-edit)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 52 Dired
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; dired and async to run processes async
 (use-package dired
   :straight (:type built-in)
-  :general
-  (chris/leader-keys
-    "d" '(:ignore t :wk "dired")
-    "dd" '(dired :wk "Open Dired")
-    "dj" '(dired-jump :wk "Jump to current directory in dired"))
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
-(use-package sudo-edit)
+(use-package async
+  :init
+  (dired-async-mode 1))
 
-(setq calendar-week-start-day 1
-      calendar-day-name-array ["Sonntag" "Montag" "Dienstag" "Mittwoch"
-			       "Donnerstag" "Freitag" "Samstag"]
-      calendar-month-name-array ["Januar" "Februar" "März" "April" "Mai"
-				 "Juni" "Juli" "August" "September"
-				 "Oktober" "November" "Dezember"])
-(setq solar-n-hemi-seasons
-      '("Frühlingsanfang" "Sommeranfang" "Herbstanfang" "Winteranfang"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 60 Buffer management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq holiday-general-holidays
-      '((holiday-fixed 1 1 "Neujahr")
-        (holiday-fixed 5 1 "1. Mai")
-        (holiday-fixed 10 3 "Tag der Deutschen Einheit")))
+;; relative line numbers
+(setq display-line-numbers-type 'relative)
 
-;; Feiertage für Bayern, weitere auskommentiert
-(setq holiday-christian-holidays
-      '((holiday-float 12 0 -4 "1. Advent" 24)
-        (holiday-float 12 0 -3 "2. Advent" 24)
-        (holiday-float 12 0 -2 "3. Advent" 24)
-        (holiday-float 12 0 -1 "4. Advent" 24)
-        (holiday-fixed 12 25 "1. Weihnachtstag")
-        (holiday-fixed 12 26 "2. Weihnachtstag")
-        (holiday-fixed 1 6 "Heilige Drei Könige")
-        (holiday-easter-etc -48 "Rosenmontag")
-        ;; (holiday-easter-etc -3 "Gründonnerstag")
-        (holiday-easter-etc  -2 "Karfreitag")
-        (holiday-easter-etc   0 "Ostersonntag")
-        (holiday-easter-etc  +1 "Ostermontag")
-        (holiday-easter-etc +39 "Christi Himmelfahrt")
-        (holiday-easter-etc +49 "Pfingstsonntag")
-        (holiday-easter-etc +50 "Pfingstmontag")
-        (holiday-easter-etc +60 "Fronleichnam")
-        (holiday-fixed 8 15 "Mariae Himmelfahrt")
-        (holiday-fixed 11 1 "Allerheiligen")
-        ;; (holiday-float 11 3 1 "Buss- und Bettag" 16)
-        (holiday-float 11 0 1 "Totensonntag" 20)))
+;; display line numbers globally
+(global-display-line-numbers-mode 1)
 
-(setq calendar-holidays holiday-christian-holidays)
+;; remove line numbers from list of major modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		vterm-mode-hook
+		shell-mode-hook
+		treemacs-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
+;; highlight the current line
+(global-hl-line-mode 1)
+
+;; revert buffers
+(global-auto-revert-mode)
+
+;; revert all buffers (also the non-file ones)
+(setq global-auto-revert-non-file-buffers t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 61 Popper
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; handle pop-up buffers
 (use-package popper
   :ensure t ; or :straight t
+  ;; keybindings for popper
   :bind (("C-`"   . popper-toggle-latest)
 	 ("M-`"   . popper-cycle)
 	 ("C-M-`" . popper-toggle-type))
-  :general
-  (chris/leader-keys
-    "u" '(:ignore t :wk "popper")
-    "ut" '(popper-toggle-latest :wk "toggle latest")
-    "uc" '(popper-cycle :wk "cycle")
-    "up" '(popper-toggle-type :wk "toggle type (promote)"))
   :config
   (setq popper-mode-line nil)
   :init
+  ;; list of buffers to treat as pop-ups
   (setq popper-reference-buffers
 	'("\\*Messages\\*"
 	  "Output\\*$"
@@ -454,64 +388,26 @@
 	  "^\\*Flycheck \\*"
 	  help-mode
 	  compilation-mode))
+  ;; enable popper
   (popper-mode +1)
-  (popper-echo-mode +1))                ; For echo area hints
+  (popper-echo-mode +1))
 
-(defun chris/buffers-major-mode (&optional arg)
-  "Select buffers that match the current buffer's major mode.
-With \\[universal-argument] produce an `ibuffer' filtered
-accordingly.  Else use standard completion."
-  (interactive "P")
-  (let* ((major major-mode)
-	 (prompt "Buffers for ")
-	 (mode-string (format "%s" major))
-	 (mode-string-pretty (propertize mode-string 'face 'success)))
-    (if arg
-	(ibuffer t (concat "*" prompt mode-string "*")
-		 (list (cons 'used-mode major)))
-      (switch-to-buffer
-       (read-buffer
-	(concat prompt mode-string-pretty ": ") nil t
-	(lambda (pair) ; pair is (name-string . buffer-object)
-	  (with-current-buffer (cdr pair) (derived-mode-p major))))))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 62 Winner Mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/buffers-vc-root (&optional arg)
-  "Select buffers that match the present `vc-root-dir'.
-With \\[universal-argument] produce an `ibuffer' filtered
-accordingly.  Else use standard completion.
+;; control window setup and previous states
+(use-package winner
+  :straight (:type built-in)
+  :init
+  (winner-mode 1))
 
-When no VC root is available, use standard `switch-to-buffer'."
-  (interactive "P")
-  (let* ((root (vc-root-dir))
-         (prompt "Buffers for VC ")
-         (vc-string (format "%s" root))
-         (vc-string-pretty (propertize vc-string 'face 'success)))
-    (if root
-        (if arg
-            (ibuffer t (concat "*" prompt vc-string "*")
-                     (list (cons 'filename (expand-file-name root))))
-          (switch-to-buffer
-           (read-buffer
-            (concat prompt vc-string-pretty ": ") nil t
-            (lambda (pair) ; pair is (name-string . buffer-object)
-              (with-current-buffer (cdr pair) (string= (vc-root-dir) root))))))
-      (call-interactively 'switch-to-buffer))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 63 Kill all dired buffers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/toggle-maximize-buffer ()
-  "Maximize buffer"
-  (interactive)
-  (if (= 1 (length (window-list)))
-      (jump-to-register '_) 
-    (progn
-      (window-configuration-to-register '_)
-      (delete-other-windows))))
-
-(defun chris/kill-buffer-and-close-split ()
-  "Kill buffer and close split"
-  (interactive)
-  (kill-current-buffer)
-  (evil-window-delete))
-
+;; function to kill all dired buffers because the can clutter up
+;; the buffer list
 (defun chris/kill-dired-buffers ()
   "Kill all open dired buffers."
   (interactive)
@@ -520,7 +416,11 @@ When no VC root is available, use standard `switch-to-buffer'."
             (kill-buffer buffer)))
         (buffer-list)))
 
-;;; Generic setup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 64 Simple scratch buffer
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; get all pro-mode derivatives to be able to create custom scratch buffers
 (defun chris/simple--scratch-list-modes ()
   "List known major modes."
   (cl-loop for sym the symbols of obarray
@@ -528,6 +428,7 @@ When no VC root is available, use standard `switch-to-buffer'."
                      (provided-mode-derived-p sym 'prog-mode))
            collect sym))
 
+;; create custom scratch buffers
 (defun chris/simple--scratch-buffer-setup (region &optional mode)
   "Add contents to `scratch' buffer and name it accordingly.
 
@@ -547,6 +448,9 @@ MODE use that major mode instead."
         (comment-region (point-at-bol) (point-at-eol))))
     (switch-to-buffer buf)))
 
+;; create custom scratch buffers with current major mode as major mode
+;; if the current major mode is a prog-mode derivative or a prompt
+;; for a list to choose from
 (defun chris/simple-scratch-buffer (&optional arg)
   "Produce a bespoke scratch buffer matching current major mode.
 
@@ -570,115 +474,94 @@ buffer."
 	(setq m (intern (completing-read "Select major mode: " modes nil t)))
 	(chris/simple--scratch-buffer-setup region m)))))
 
-(defun chris/toggle-line-numbers ()
-  "Toggles the display of line numbers."
-  (interactive)
-  (if (bound-and-true-p display-line-numbers-mode)
-      (global-display-line-numbers-mode -1)
-    (global-display-line-numbers-mode)))
+;; keybinding to create custom scratch buffer
+(global-set-key (kbd "C-c s") 'chris/simple-scratch-buffer)
 
-(define-derived-mode chris/nmcli-wifi-preexist-mode tabulated-list-mode
-  "nmcli-wifi-preexist"
-  "nmcli preexisting WiFi Mode"
-  (let ((columns [("NAME" 20 t)
-                  ("UUID" 40 t)
-                  ("TYPE" 10 t)
-                  ("DEVICE" 10 t)])
-        (rows (chris/nmcli-wifi-preexist--shell-command)))
-    (setq tabulated-list-format columns)
-    (setq tabulated-list-entries rows)
-    (tabulated-list-init-header)
-    (tabulated-list-print)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 65 Get all buffers with same major mode as current buffer
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/nmcli-wifi-preexist-refresh ()
-  "Refresh wifi table."
-  (interactive)
-  (let ((rows (chris/nmcli-wifi-preexist--shell-command)))
-    (setq tabulated-list-entries rows)
-    (tabulated-list-print t t)))
+;; get all open buffers with current major-mode
+(defun chris/buffers-major-mode (&optional arg)
+  "Select buffers that match the current buffer's major mode.
+With \\[universal-argument] produce an `ibuffer' filtered
+accordingly.  Else use standard completion."
+  (interactive "P")
+  (let* ((major major-mode)
+	 (prompt "Buffers for ")
+	 (mode-string (format "%s" major))
+	 (mode-string-pretty (propertize mode-string 'face 'success)))
+    (if arg
+	(ibuffer t (concat "*" prompt mode-string "*")
+		 (list (cons 'used-mode major)))
+      (switch-to-buffer
+       (read-buffer
+	(concat prompt mode-string-pretty ": ") nil t
+	(lambda (pair) ; pair is (name-string . buffer-object)
+	  (with-current-buffer (cdr pair) (derived-mode-p major))))))))
 
-(defun chris/nmcli-wifi-preexist-sentinel (process event)
-  (cond ((string-match-p "finished" event)
-	 (chris/nmcli-wifi-preexist-refresh)
-	 (kill-buffer "*async nmcli*"))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 66 Get all buffers in project
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/nmcli-wifi-preexist--shell-command ()
-  "Shell command to check for preconfigured wifi connections"
-  (interactive)
-  (mapcar (lambda (x)
-	    `(,(car (cdr x))
-	      ,(vconcat [] x)))
-          (mapcar (lambda (x)
-		    x)
-		  (cdr (mapcar (lambda (x)
-				 (split-string x "  " t " "))
-			       (split-string (shell-command-to-string "nmcli connection") "\n" t))))))
+;; get all open buffers in project
+(defun chris/buffers-vc-root (&optional arg)
+  "Select buffers that match the present `vc-root-dir'.
+With \\[universal-argument] produce an `ibuffer' filtered
+accordingly.  Else use standard completion.
 
-(defun chris/nmcli-wifi-preexist ()
-  "Menu for (dis)connecting from preexisting wifi connections."
-  (interactive)
-  (switch-to-buffer "*nmcli-wifi-preexist*")
-  (chris/nmcli-wifi-preexist-mode))
+When no VC root is available, use standard `switch-to-buffer'."
+  (interactive "P")
+  (let* ((root (vc-root-dir))
+         (prompt "Buffers for VC ")
+         (vc-string (format "%s" root))
+         (vc-string-pretty (propertize vc-string 'face 'success)))
+    (if root
+        (if arg
+            (ibuffer t (concat "*" prompt vc-string "*")
+                     (list (cons 'filename (expand-file-name root))))
+          (switch-to-buffer
+           (read-buffer
+            (concat prompt vc-string-pretty ": ") nil t
+            (lambda (pair)
+              (with-current-buffer (cdr pair) (string= (vc-root-dir) root))))))
+      (call-interactively 'switch-to-buffer))))
 
-(defun chris/nmcli-wifi-preexist-connect ()
-  "Connect to wifi."
-  (interactive)
-  (let* ((ssid (aref (tabulated-list-get-entry) 1))
-	 (process (start-process-shell-command "nmcli" "*async nmcli*" (format "nmcli connection up \"%s\"" ssid))))
-    (set-process-sentinel process 'chris/nmcli-wifi-preexist-sentinel)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 66 Buffer keybindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/nmcli-wifi-preexist-disconnect ()
-  "Disconnect from wifi."
-  (interactive)
-  (let* ((ssid (aref (tabulated-list-get-entry) 1))
-	 (process (start-process-shell-command "nmcli" "*async nmcli*" (format "nmcli connection down \"%s\"" ssid))))
-    (set-process-sentinel process 'chris/nmcli-wifi-preexist-sentinel)))
+;; Keybindings to control buffers
 
-(general-define-key
- :states 'normal
- :keymaps 'chris/nmcli-wifi-preexist-mode-map
- "c" '(chris/nmcli-wifi-preexist-connect :wk "connect")
- "d" '(chris/nmcli-wifi-preexist-disconnect :wk "disconnect")
- "r" '(chris/nmcli-wifi-preexist-refresh :wk "refresh"))
+(let ((map global-map))
+  ;; switch buffers
+  (define-key map (kbd "C-x C-b") 'ivy-switch-buffer)
+  ;; ibuffer
+  (define-key map (kbd "C-x b") 'ibuffer)
+  ;; kill buffer and close split if it exists
+  (define-key map (kbd "C-x k") 'kill-buffer-and-window)
+  ;; prompt for buffer to kill (will preserver split/window configuration)
+  (define-key map (kbd "C-x K") 'kill-buffer)
+  ;; get all buffers in current project
+  (define-key map (kbd "M-s v") 'chris/buffers-vc-root)
+  ;; get all buffers with current major mode
+  (define-key map (kbd "M-s b") 'chris/buffers-major-mode))
 
-(add-to-list 'display-buffer-alist
-	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 70 Projectile
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/bluetooth-sentinel (process event)
-  (message (concat "bluetooth: " event)))
-
-(defun chris/bluetooth-connect-soundcore ()
-  "Connect to bluetooth in-ears."
-  (interactive)
-  (let* ((process (start-process-shell-command
-		  "bluetoothctl"
-		  nil
-		  "bluetoothctl power on && bluetoothctl connect E8:EE:CC:00:AD:24")))
-    (set-process-sentinel process 'chris/bluetooth-sentinel)))
-
-(defun chris/bluetooth-disconnect-soundcore ()
-  "Disconnect from bluetooth in-ears."
-  (interactive)
-  (let* ((process (start-process-shell-command
-		   "bluetoothctl"
-		   nil
-		   "bluetoothctl disconnect E8:EE:CC:00:AD:24 && bluetoothctl power off")))
-    (set-process-sentinel process 'chris/bluetooth-sentinel)))
-
-(chris/leader-keys
-  "a" '(:ignore t :wk "audio")
-  "ac" '(chris/bluetooth-connect-soundcore :wk "bluetooth connect")
-  "ad" '(chris/bluetooth-disconnect-soundcore :wk "bluetooth disconnect"))
-
+;; projectile to manage projects daaahhh
 (use-package projectile
-  :general
-  (chris/leader-keys "p" '(:keymap projectile-command-map :wk "projectile"))
-  :init
-  (projectile-mode +1)
+  :config
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (add-to-list 'projectile-globally-ignored-modes "org-mode"))
-(setq projectile-indexing-method 'hybrid)
+  (add-to-list 'projectile-globally-ignored-modes "org-mode")
+  (setq projectile-indexing-method 'hybrid)
+  :init
+  (projectile-mode +1))
 
+;; sort ibuffer according to projects
+;; keeps ibuffer organized
 (use-package ibuffer-projectile
   :config 
   (add-hook 'ibuffer-hook
@@ -687,13 +570,13 @@ buffer."
               (unless (eq ibuffer-sorting-mode 'alphabetic)
                 (ibuffer-do-sort-by-alphabetic)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 80 tab-bar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; make tab-bar more minimal
 (use-package tab-bar
   :straight (:type built-in)
-  :general
-  (chris/leader-keys
-    "i" '(:keymap tab-prefix-map :wk "tab")
-    "is" '(chris/tab-bar-select-tab-dwim :wk "tab-select")
-    "ic" '(tab-close :wk "tab-close"))
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-button-show nil)
@@ -708,6 +591,10 @@ buffer."
   (setq tab-bar-show nil)
   (tab-bar-history-mode 1))
 
+;; attempt to treat tabs as workspaces because they preserve window layouts
+;; and buffers
+;; if no other tab exists it will create a new tab and switch to it
+;; else use completion to choose from tab list
 (defun chris/tab-bar-select-tab-dwim ()
   "Do-What-I-Mean function for getting to a `tab-bar-mode' tab.
 If no other tab exists, create one and switch to it.  If there is
@@ -725,56 +612,39 @@ questions.  Else use completion to select the tab to switch to."
            (tab-bar-switch-to-tab
             (completing-read "Select tab: " tabs nil t))))))
 
-(use-package lsp-mode
-  :config
-  (setq read-process-output-max (* 1024 1024))
-  (setq lsp-idle-delay 0.500)
-  (setq lsp-log-io nil)
-  (setq lsp-enable-links nil)
-  (setq lsp-signature-render-documentation nil)
-  (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-ui-doc-enable nil)
-  (setq lsp-completion-enable-additional-text-edit nil)
-  (setq lsp-modeline-diagnostics-scope :workspace)
-  :init
-  (setq lsp-keep-workspace-alive nil)
-  (setq lsp-keymap-prefix "C-c l")
-  :hook
-  (lsp-mode . lsp-enable-which-key-integration)
-  (lsp-mode . flycheck-mode)
-  :commands
-  (lsp lsp-deferred))
+;; keybinding to manage tabs
+(global-set-key (kbd "C-x t s") 'chris/tab-bar-select-tab-dwim)
 
-(use-package flycheck
-  :general
-  (chris/leader-keys
-    "cd" '(list-flycheck-errors :wk "List flycheck errors")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 90 IDE Features
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun chris/toggle-code ()
-  "Toggle on line numbers and hl-line-mode for a better code experience"
-  (interactive)
-  (if (bound-and-true-p display-line-numbers-mode)
-      (display-line-numbers-mode -1)
-    (display-line-numbers-mode))
-  (if (bound-and-true-p hl-line-mode)
-      (hl-line-mode -1)
-    (hl-line-mode)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 91 Lsp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package yasnippet
-  :init
-  (yas-global-mode 1))
+;; eglot will be built into emacs 29 so no reason to use lsp-mode
+;; if speed is the target.
+;; lsp-mode has it's own features and possibilities like dap-mode
+;; this is subject to change when I need a debugger
+(use-package eglot)
 
-(use-package yasnippet-snippets
-  :after yasnippet)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 92 Treesitter
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; tree-sitter languages for treesitter support
 (use-package tree-sitter-langs)
 
+;; tree-sitter (syntax parsing sitting in a tree)
 (use-package tree-sitter
   :defer t
   :init
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+  ;; enable tree-sitter globally
   (global-tree-sitter-mode)
   :custom
+  ;; no italics (because italics are for maniacs
   (custom-set-faces
    '(italic ((t nil)))
    '(tree-sitter-hl-face:property ((t (:inherit font-lock-constant-face)))))
@@ -782,27 +652,101 @@ questions.  Else use completion to select the tab to switch to."
   (setq tree-sitter-debug-jump-buttons t
         tree-sitter-debug-highlight-jump-region t))
 
+;; define tree-sitter objects for evil mode
+;; instead of vap this allows it to use something like vaf so select around
+;; a function,...
 (use-package evil-textobj-tree-sitter
   :straight t
   :init
-  (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
-  (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
-  (define-key evil-outer-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "comment.outer"))
-  (define-key evil-outer-text-objects-map "C" (evil-textobj-tree-sitter-get-textobj "class.outer"))
-  (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
+  (define-key evil-outer-text-objects-map "f"
+    (evil-textobj-tree-sitter-get-textobj "function.outer"))
+  (define-key evil-inner-text-objects-map "f"
+    (evil-textobj-tree-sitter-get-textobj "function.inner"))
+  (define-key evil-outer-text-objects-map "c"
+    (evil-textobj-tree-sitter-get-textobj "comment.outer"))
+  (define-key evil-outer-text-objects-map "C"
+    (evil-textobj-tree-sitter-get-textobj "class.outer"))
+  (define-key evil-outer-text-objects-map "a"
+    (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer"))))
 
-(use-package async
-  :init
-  (dired-async-mode 1))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 93 Hl-todo (better comments)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package rg
-  :init
-  (rg-enable-default-bindings))
-
+;; highlight keywords in comments
 (use-package hl-todo
   :hook
   (prog-mode . hl-todo-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 100 Git
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; git integration
+(use-package magit
+  :config
+  (setq magit-push-always-verify nil)
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+  (setq magit-repository-directories
+        '(("~/.local/src"  . 2)
+          ("~/.config/" . 2)))
+  (setq git-commit-summary-max-length 50)
+  :bind
+  ("C-x g" . magit-status)
+  ("C-x C-g" . magit-list-repositories))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 110 Languages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 111 Org
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org mode configuration
+(use-package org
+  :straight (:type built-in)
+  :config
+  ;; org source code block language configuration
+  (with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (shell . t)))
+    (require 'org-tempo)
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python"))
+    (push '("conf-unix" . conf-unix) org-src-lang-modes))
+
+  (setq org-edit-src-content-indentation 0)
+  (setq org-directory "~/org")
+  (setq org-default-notes-file (concat org-directory "/notes.org")))
+
+;; org-agenda
+(setq org-agenda-files '("~/org/Agenda.org"))
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+(setq org-log-done 'time)
+
+;; denote (notes)
+;; simplified version of org-roam with a clever file naming scheme instead
+;; of using a database (allows to use notes with anything, not only emacs)
+(use-package denote
+  :config
+  (setq denote-directory (expand-file-name "~/notes/"))
+  (setq denote-known-keywords '("emacs" "programming" "administration" "linux"))
+  :hook
+  (dired-mode . denote-dired-mode)
+  (dired-mode . dired-hide-details-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 112 Haskell
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; haskell configuration
 (use-package haskell-mode
   :mode ("\\.hs\\'" . haskell-mode)
   :config
@@ -824,6 +768,11 @@ questions.  Else use completion to select the tab to switch to."
     "O" 'haskell-evil-open-above)
   )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 113 Lua
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; lua configuration
 (use-package lua-mode
   :mode ("\\.lua\\'". lua-mode)
   :interpreter ("lua" . lua-mode)
@@ -831,41 +780,28 @@ questions.  Else use completion to select the tab to switch to."
   (defun chris/open-lua-repl ()
     "open lua repl in horizontal split"
     (interactive)
-    ;; (split-window-horizontally)
     (lua-show-process-buffer))
   :init
   (setq lua-indent-level 4
-	lua-indent-string-contents t)
-  ;; :hook
-  ;; (lua-mode . lsp-deferred)
-  :general
-  (chris/leader-keys
-    "cl" '(chris/open-lua-repl :wk "run-lua"))
-  (chris/leader-keys
-    :keymaps 'lua-mode-map
-    "lr" 'lua-send-buffer))
+	lua-indent-string-contents t))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 114 Python
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; python configuration
 (use-package python-mode
   :straight (:type built-in)
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python3" . python-mode)
   :init
-  (setq python-indent 4)
-  :general
-  (chris/leader-keys
-    :keymaps 'python-mode-map
-    "cp" 'run-python)
-  (chris/leader-keys
-    "pr" 'python-shell-send-buffer))
+  (setq python-indent 4))
 
-(use-package lsp-pyright
-  :hook (python-mode . (lambda ()
-			 (require 'lsp-pyright)
-			 (lsp-deferred))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 115 racket
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package php-mode
-  :mode ("\\.php\\'" . php-mode))
-
+;; racket configuration
 (use-package racket-mode
   :interpreter ("racket" . racket-mode)
   :config
@@ -875,17 +811,15 @@ questions.  Else use completion to select the tab to switch to."
     (racket-run-and-switch-to-repl)
     (when (buffer-live-p (get-buffer racket-repl-buffer-name))
       (with-current-buffer racket-repl-buffer-name
-	(evil-insert-state))))
-  :general
-  (chris/leader-keys
-    "cr" '(racket-repl :wk "run racket and switch to repl"))
-  (chris/leader-keys
-    :keymaps 'racket-mode-map
-    "rs" '(racket-send-last-sexp :wk "racket send last sexp")
-    "rd" '(racket-send-definiton :wk "racket send definition")
-    "rr" '(chris/racket-run-and-switch-to-repl :wk "run racket and switch to repl")
-    ))
+	(evil-insert-state)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 116 matlab
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; matlab configuration
+;; the point of matlab is to not use it because it is a piece of trash,
+;; use octave if you can
 (straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
 (add-to-list
@@ -901,37 +835,31 @@ questions.  Else use completion to select the tab to switch to."
   (matlab-shell-run-command (concat "cd " default-directory))
   (matlab-shell-run-region (point-min) (point-max)))
 
-(chris/leader-keys
- :keymaps 'matlab-mode-map
- :states 'normal
- "mr" '(chris/matlab-shell-run-buffer :wk "Run matlab buffer"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 120 Terminal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(chris/leader-keys
-  "cm" '(matlab-shell :wk "Open matlab shell"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 121 Vterm
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package magit
-  :general
-  (chris/leader-keys
-    "g" '(:ignore t :wk "git")
-    "gg" '(magit-status :wk "status")
-    "gG" '(magit-list-repositories :wk "list repos"))
-  :config
-  (setq magit-push-always-verify nil)
-  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
-  (setq magit-repository-directories
-        '(("~/.local/src"  . 2)
-          ("~/.config/" . 2)))
-  (setq git-commit-summary-max-length 50)
-  :bind
-  ("C-x g" . magit-status)
-  ("C-x C-g" . magit-list-repositories))
-
+;; vterm
+;; will need configuration in the shell the be great
+;; best terminal emulation for emacs
 (use-package vterm
   :hook
   (vterm-mode . evil-emacs-state)
+  (vterm-mode . (lambda ()
+		  (setq-local global-hl-line-mode nil)))
   :init
   (setq vterm-timer-delay 0.01))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 122 eshell
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; eshell
+;; best shell for emacs
 (defun chris/configure-eshell ()
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
@@ -941,19 +869,25 @@ questions.  Else use completion to select the tab to switch to."
         eshell-scroll-to-bottom-on-input t)
   (setq tramp-default-method "ssh"))
 
+;; configure eshell
 (use-package eshell
   :straight (:type built-in)
   :hook
   (eshell-first-time-mode . chris/configure-eshell)
+  (eshell-mode . (lambda ()
+		   (setq-local global-hl-line-mode nil)))
   :config
   (with-eval-after-load 'esh-opt
     (setq eshell-destroy-buffer-when-process-dies t)
     (setq eshell-visual-commands '("ssh" "tail" "htop" "pulsemixer"))))
 
+;; git status
 (defun eshell/gst (&rest args)
+  "Git status in eshell"
   (magit-status (pop args) nil)
-  (eshell/echo))   ;; The echo command suppresses output
+  (eshell/echo))
 
+;; find wrapper for eshell 
 (defun eshell/f (filename &optional dir try-count)
   "Searches for files matching FILENAME in either DIR or the
 current directory."
@@ -977,6 +911,7 @@ current directory."
         (eshell/f (concat "*" filename) dir 2))
        (t "")))))
 
+;; find wrapper for eshell
 (defun eshell/ef (filename &optional dir)
   "Searches for the first matching filename and loads it into a
 file to edit."
@@ -984,17 +919,20 @@ file to edit."
          (file (car (s-split "\n" files))))
     (find-file file)))
 
+;; clear
 (defun eshell/clear ()
   "Clear `eshell' buffer."
   (let ((inhibit-read-only t))
     (erase-buffer)
     (eshell-send-input)))
 
+;; create directory and switch to it immediately
 (defun eshell/mkdir-and-cd (dir)
   "Create a directory then cd into it."
   (make-directory dir t)
   (eshell/cd dir))
 
+;; history completion with C-c h in eshell-mode
 (add-hook 'eshell-mode-hook
               (lambda ()
                 (local-set-key (kbd "C-c h")
@@ -1005,20 +943,15 @@ file to edit."
                                                        (delete-dups
                                                         (ring-elements eshell-history-ring))))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 130 Overflow
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; color in hex-codes and other color codes
 (use-package rainbow-mode)
 
-(use-package emms
-  :general
-  (chris/leader-keys
-    "m" '(:ignore t :wk "emms")
-    "mm" '(emms :wk "emms")
-    "mb" '(emms-smart-browse :wk "EMMS Smart Browse")
-    "mi" '(emms-show :wk "EMMS show current song")
-    "mn" '(emms-next :wk "EMMS next song")
-    "mp" '(emms-previous :wk "EMMS previous song")
-    "ml" '(emms-seek-forward :wk "EMMS go 10s forward")
-    "mt" '(emms-toggle-repeat-track :wk "EMMS toggle repeat")
-    "mh" '(emms-seek-backward :wk "EMMS go 10s backward")))
+;; emms (listen to music)
+(use-package emms)
 (require 'emms-setup)
 (emms-all)
 (emms-default-players)
