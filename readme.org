@@ -6,3 +6,11 @@
 Currently tailored for emacs 28.2
 
 See init.el for configuration.
+
+* Installation
+
+1. Install GNU Emacs.
+2. Clone the repository:
+   #+begin_src sh
+   git clone https://github.com/chriswifn/emacs-config ~/.emacs.d/
+   #+end_src
