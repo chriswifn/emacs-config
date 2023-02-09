@@ -187,8 +187,43 @@
 ;; Install Monoid font from their website to .local/share/fonts
 ;; or /usr/share/fonts
 ;; https://larsenwork.com/monoid/
-(add-to-list 'default-frame-alist '(font . "Monoid-9"))
-(set-face-attribute 'default t :font "Monoid-9")
+;; example on how to define fonts without fontaine:
+;; (add-to-list 'default-frame-alist '(font . "Monoid-9"))
+;; (set-face-attribute 'default t :font "Monoid-9")
+;; fontaine for better adjustment of fonts
+(use-package fontaine
+  :bind
+  ("C-c f" . fontaine-set-preset)
+  ("C-c F" . fontaine-set-face-font)
+  :config
+  (setq x-underline-at-descent-line t)
+  (setq-default text-scale-remap-header-line t)
+  (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+  :init
+  (setq fontaine-presets
+      '((regular
+         :default-height 90)
+        (medium
+         :default-weight semilight
+         :default-height 160)
+        (large
+         :default-weight semilight
+         :default-height 200 
+         :bold-weight extrabold)
+        (t
+         :default-family "Monoid"
+         :default-weight normal
+         :fixed-pitch-family nil
+         :fixed-pitch-weight nil
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "Monoid"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 32 Theme
