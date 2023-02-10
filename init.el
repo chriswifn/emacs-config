@@ -198,8 +198,6 @@
   :config
   (setq x-underline-at-descent-line t)
   (setq-default text-scale-remap-header-line t)
-  (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
-  :init
   (setq fontaine-presets
       '((regular
          :default-height 90)
@@ -224,6 +222,8 @@
          :italic-family nil
          :italic-slant italic
          :line-spacing nil))))
+
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 32 Theme
