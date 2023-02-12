@@ -311,29 +311,47 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; ivy and ivy-prescient to remember search candidates
-;; TODO: switch to consult and vertico
-(use-package ivy
-  :bind
-  ("C-s" . swiper)
-  :init
-  (ivy-mode))
+;; (use-package ivy
+;;   :bind
+;;   ("C-s" . swiper)
+;;   :init
+;;   (ivy-mode))
 
-(use-package ivy-prescient
-  :after
-  ivy
-  :init
-  (ivy-prescient-mode))
+;; (use-package ivy-prescient
+;;   :after
+;;   ivy
+;;   :init
+;;   (ivy-prescient-mode))
 
 ;; enhance ivy with counsel 
-(use-package counsel
-  :bind
-  ;; keybinding for recently edited files
-  ("C-x C-r" . counsel-recentf)
-  :config
-  ;; no preview of buffers in switch-buffer 
-  (setq counsel-switch-buffer-preview-virtual-buffers nil)
+;; (use-package counsel
+;;   :bind
+;;   ;; keybinding for recently edited files
+;;   ("C-x C-r" . counsel-recentf)
+;;   :config
+;;   ;; no preview of buffers in switch-buffer 
+;;   (setq counsel-switch-buffer-preview-virtual-buffers nil)
+;;   :init
+;;   (counsel-mode))
+(use-package vertico
   :init
-  (counsel-mode))
+  (vertico-mode))
+
+(use-package savehist
+  :straight (:type built-in)
+  :init
+  (savehist-mode))
+
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package consult
+  :bind
+  ("C-s" . consult-line))
+	    
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 50 File management
