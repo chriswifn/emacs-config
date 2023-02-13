@@ -899,7 +899,8 @@ questions.  Else use completion to select the tab to switch to."
 ;; best terminal emulation for emacs
 (use-package vterm
   :hook
-  (vterm-mode . evil-emacs-state)
+  (vterm-mode .(lambda ()
+		 (evil-local-mode -1)))
   (vterm-mode . (lambda ()
 		  (setq-local global-hl-line-mode nil)))
   :init
