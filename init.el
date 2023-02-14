@@ -586,7 +586,7 @@ When no VC root is available, use standard `switch-to-buffer'."
 
 (let ((map global-map))
   ;; switch buffers
-  (define-key map (kbd "C-x C-b") 'ivy-switch-buffer)
+  (define-key map (kbd "C-x C-b") 'consult-buffer)
   ;; ibuffer
   (define-key map (kbd "C-x b") 'ibuffer)
   ;; kill buffer and close split if it exists
