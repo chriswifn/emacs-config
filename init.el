@@ -590,9 +590,9 @@ When no VC root is available, use standard `switch-to-buffer'."
   ;; ibuffer
   (define-key map (kbd "C-x b") 'ibuffer)
   ;; kill buffer and close split if it exists
-  (define-key map (kbd "C-x k") 'kill-buffer-and-window)
+  (define-key map (kbd "C-x K") 'kill-buffer-and-window)
   ;; prompt for buffer to kill (will preserver split/window configuration)
-  (define-key map (kbd "C-x K") 'kill-buffer)
+  (define-key map (kbd "C-x k") 'kill-current-buffer)
   ;; get all buffers in current project
   (define-key map (kbd "M-s v") 'chris/buffers-vc-root)
   ;; get all buffers with current major mode
