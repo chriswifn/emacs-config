@@ -348,9 +348,15 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
+(use-package recentf
+  :straight (:type built-in)
+  :init
+  (recentf-mode 1))
+
 (use-package consult
   :bind
-  ("C-s" . consult-line))
+  ("C-s" . consult-line)
+  ("C-x C-r" . consult-recent-file))
 	    
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
