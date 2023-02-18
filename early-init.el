@@ -1,6 +1,5 @@
 ;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
 (setq gc-cons-threshold (* 100 1024 1024))
-(setq package-enable-at-startup nil)
 
 (defun chris/toggle-gui-elements (&optional on-off)
   "Toggle menu bar, tool bar, scroll bars, and tool tip modes. If

@@ -12,20 +12,21 @@
 ;; bootstrap straight.el
 ;; in favor of package.el for granular control over version numbers
 ;; if ever needed
-(setq straight-use-package-by-default t)
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
+(setq package-archives '(("melpa" . "http://melpa.org/packages/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+      gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+;; Ensure use-package is there
+(condition-case nil
+    (require 'use-package)
+  (file-error
+   (require 'package)
+   (package-initialize)
+   (package-refresh-contents)
+   (package-install 'use-package)
+   (setq use-package-always-ensure t)
+   (require 'use-package)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 02 Name
@@ -338,7 +339,7 @@
   (vertico-mode))
 
 (use-package savehist
-  :straight (:type built-in)
+  :ensure nil
   :init
   (savehist-mode))
 
@@ -349,7 +350,7 @@
         completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package recentf
-  :straight (:type built-in)
+  :ensure nil
   :init
   (recentf-mode 1))
 
@@ -382,7 +383,7 @@
 
 ;; dired and async to run processes async
 (use-package dired
-  :straight (:type built-in)
+  :ensure nil
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
@@ -424,7 +425,6 @@
 
 ;; handle pop-up buffers
 (use-package popper
-  :ensure t ; or :straight t
   ;; keybindings for popper
   :bind (("C-`"   . popper-toggle-latest)
 	 ("M-`"   . popper-cycle)
@@ -455,7 +455,7 @@
 
 ;; control window setup and previous states
 (use-package winner
-  :straight (:type built-in)
+  :ensure nil
   :init
   (winner-mode 1))
 
@@ -633,7 +633,7 @@ When no VC root is available, use standard `switch-to-buffer'."
 
 ;; make tab-bar more minimal
 (use-package tab-bar
-  :straight (:type built-in)
+  :ensure nil
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-button-show nil)
@@ -713,7 +713,7 @@ questions.  Else use completion to select the tab to switch to."
 ;; instead of vap this allows it to use something like vaf so select around
 ;; a function,...
 (use-package evil-textobj-tree-sitter
-  :straight t
+  :ensure t
   :init
   (define-key evil-outer-text-objects-map "f"
     (evil-textobj-tree-sitter-get-textobj "function.outer"))
@@ -762,7 +762,7 @@ questions.  Else use completion to select the tab to switch to."
 
 ;; org mode configuration
 (use-package org
-  :straight (:type built-in)
+  :ensure nil
   :config
   ;; org source code block language configuration
   (with-eval-after-load 'org
@@ -848,7 +848,7 @@ questions.  Else use completion to select the tab to switch to."
 
 ;; python configuration
 (use-package python-mode
-  :straight (:type built-in)
+  :ensure nil
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python3" . python-mode)
   :init
@@ -877,7 +877,6 @@ questions.  Else use completion to select the tab to switch to."
 ;; matlab configuration
 ;; the point of matlab is to not use it because it is a piece of trash,
 ;; use octave if you can
-(straight-use-package 'matlab-mode)
 (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
 (add-to-list
  'auto-mode-alist
@@ -904,6 +903,7 @@ questions.  Else use completion to select the tab to switch to."
 ;; will need configuration in the shell the be great
 ;; best terminal emulation for emacs
 (use-package vterm
+  :ensure t
   :hook
   (vterm-mode .(lambda ()
 		 (evil-local-mode -1)))
@@ -929,7 +929,7 @@ questions.  Else use completion to select the tab to switch to."
 
 ;; configure eshell
 (use-package eshell
-  :straight (:type built-in)
+  :ensure nil
   :hook
   (eshell-first-time-mode . chris/configure-eshell)
   (eshell-mode . (lambda ()
@@ -1006,10 +1006,12 @@ file to edit."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; color in hex-codes and other color codes
-(use-package rainbow-mode)
+(use-package rainbow-mode
+  :ensure t)
 
 ;; emms (listen to music)
-(use-package emms)
+(use-package emms
+  :ensure t)
 (require 'emms-setup)
 (emms-all)
 (emms-default-players)
