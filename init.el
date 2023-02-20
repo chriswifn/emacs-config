@@ -793,7 +793,7 @@ questions.  Else use completion to select the tab to switch to."
 ;; of using a database (allows to use notes with anything, not only emacs)
 (use-package denote
   :config
-  (setq denote-directory (expand-file-name "~/notes/"))
+  (setq denote-directory (expand-file-name "~/code/personal-linux-wiki/"))
   (setq denote-known-keywords '("emacs" "programming" "administration" "linux"))
   :hook
   (dired-mode . denote-dired-mode)
