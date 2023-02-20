@@ -251,7 +251,7 @@
 ;; load the theme based on the theme of the system
 (if (string-match
      "modus-vivendi"
-     (shell-command-to-string "cat ~/.config/bspwm/active-theme"))
+     (shell-command-to-string "cat ~/.config/sway/active-theme"))
     (modus-themes-load-theme 'modus-vivendi)
   (modus-themes-load-theme 'modus-operandi))
 
@@ -745,8 +745,8 @@ questions.  Else use completion to select the tab to switch to."
   (setq magit-push-always-verify nil)
   (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
   (setq magit-repository-directories
-        '(("~/.local/src"  . 2)
-          ("~/.config/" . 2)))
+        '(("~/code"  . 2)
+          ("~/" . 2)))
   (setq git-commit-summary-max-length 50)
   :bind
   ("C-x g" . magit-status)
