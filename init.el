@@ -770,6 +770,7 @@ questions.  Else use completion to select the tab to switch to."
      'org-babel-load-languages
      '((emacs-lisp . t)
        (python . t)
+       (latex . t)
        (shell . t)))
     (require 'org-tempo)
     (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
@@ -793,7 +794,7 @@ questions.  Else use completion to select the tab to switch to."
 ;; of using a database (allows to use notes with anything, not only emacs)
 (use-package denote
   :config
-  (setq denote-directory (expand-file-name "~/code/personal-linux-wiki/"))
+  (setq denote-directory (expand-file-name "~/code/personal-wiki/"))
   (setq denote-known-keywords '("emacs" "programming" "administration" "linux"))
   :hook
   (dired-mode . denote-dired-mode)
