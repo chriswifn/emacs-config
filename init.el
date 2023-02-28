@@ -357,8 +357,9 @@
 (use-package consult
   :bind
   ("C-s" . consult-line)
-  ("C-x C-r" . consult-recent-file))
-	    
+  ("C-x C-r" . consult-recent-file)
+  :init
+  (setq consult-preview-key (kbd "C-t")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 50 File management
