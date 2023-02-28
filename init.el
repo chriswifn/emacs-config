@@ -359,7 +359,7 @@
   ("C-s" . consult-line)
   ("C-x C-r" . consult-recent-file)
   :init
-  (setq consult-preview-key (kbd "C-t")))
+  (setq consult-preview-key nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 50 File management
