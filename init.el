@@ -264,8 +264,6 @@
 ;; the only reason to use this in favor of the built-in modeline isearch
 ;; that it shows the index of the tab when activating tab-bar.el
 (use-package doom-modeline
-  :config
-  (setq doom-modeline-height 28)
   :init
   (doom-modeline-mode 1))
 
