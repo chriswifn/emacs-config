@@ -779,6 +779,7 @@ questions.  Else use completion to select the tab to switch to."
 
   (setq org-edit-src-content-indentation 0)
   (setq org-directory "~/org")
+  (setq org-hide-emphasis-markers t)
   (setq org-default-notes-file (concat org-directory "/notes.org")))
 
 ;; org-agenda
