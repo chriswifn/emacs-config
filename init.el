@@ -1001,7 +1001,7 @@ file to edit."
 
 ;; clear
 (defun eshell/clear ()
-  "Clear `eshell' buffer."
+  "Clear the eshell buffer."
   (let ((inhibit-read-only t))
     (erase-buffer)
     (eshell-send-input)))
