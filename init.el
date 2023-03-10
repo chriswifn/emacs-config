@@ -1087,10 +1087,9 @@ file to edit."
 (add-to-list 'display-buffer-alist
 	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
-(evil-set-initial-state 'chris/nmcli-wifi-preexist-mode 'emacs)
-(define-key chris/nmcli-wifi-preexist-mode-map (kbd "c") 'chris/nmcli-wifi-preexist-connect)
-(define-key chris/nmcli-wifi-preexist-mode-map (kbd "d") 'chris/nmcli-wifi-preexist-disconnect)
-(define-key chris/nmcli-wifi-preexist-mode-map (kbd "r") 'chris/nmcli-wifi-preexist-refresh)
+(define-key chris/nmcli-wifi-preexist-mode-map (kbd "C-c c") 'chris/nmcli-wifi-preexist-connect)
+(define-key chris/nmcli-wifi-preexist-mode-map (kbd "C-c d") 'chris/nmcli-wifi-preexist-disconnect)
+(define-key chris/nmcli-wifi-preexist-mode-map (kbd "C-c r") 'chris/nmcli-wifi-preexist-refresh)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 140 Overflow
