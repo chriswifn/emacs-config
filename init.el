@@ -52,6 +52,8 @@
   (define-key map (kbd "C-c e") 'chris/config-visit)
   (define-key map (kbd "C-x K") 'kill-buffer-and-window)
   (define-key map (kbd "C-x b") 'ibuffer)
+  (define-key map (kbd "C-x C-p") 'previous-buffer)
+  (define-key map (kbd "C-x C-n") 'next-buffer)
   (define-key map (kbd "C-x k") 'kill-current-buffer))
 
 ;; evil is the superior way of editing text
