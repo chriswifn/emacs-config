@@ -280,9 +280,22 @@ Disable GUI elements.
 (use-package async
   :init
   (dired-async-mode 1))
+
+(defun chris/kill-dired-buffers ()
+  "Kill all open dired buffers."
+  (interactive)
+  (mapc (lambda (buffer)
+          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+            (kill-buffer buffer)))
+        (buffer-list)))
 #+end_src
 
 **** keybindings
+
+#+begin_src emacs-lisp
+(let ((map global-map))
+  (define-key map (kbd "C-c d") 'chris/kill-dired-buffers))
+#+end_src
 
 *** popper
 
@@ -332,6 +345,12 @@ Disable GUI elements.
 #+end_src
 
 **** keybindings
+
+#+begin_src emacs-lisp
+(let ((map global-map))
+  (define-key map (kbd "C-c h") 'winner-undo)
+  (define-key map (kbd "C-c l") 'winner-redo))
+#+end_src
 
 *** tab-bar
 
@@ -766,22 +785,6 @@ file to edit."
 #+end_src
 
 ** custom
-
-*** kill all dired buffers
-
-**** configuration
-
-#+begin_src emacs-lisp
-(defun chris/kill-dired-buffers ()
-  "Kill all open dired buffers."
-  (interactive)
-  (mapc (lambda (buffer)
-          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
-            (kill-buffer buffer)))
-        (buffer-list)))
-#+end_src
-
-**** keybindings
 
 *** scratch buffers
 

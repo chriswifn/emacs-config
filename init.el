@@ -192,6 +192,17 @@
   :init
   (dired-async-mode 1))
 
+(defun chris/kill-dired-buffers ()
+  "Kill all open dired buffers."
+  (interactive)
+  (mapc (lambda (buffer)
+          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+            (kill-buffer buffer)))
+        (buffer-list)))
+
+(let ((map global-map))
+  (define-key map (kbd "C-c d") 'chris/kill-dired-buffers))
+
 (use-package popper
   :config
   (setq popper-mode-line nil)
@@ -222,6 +233,10 @@
   :straight (:type built-in)
   :init
   (winner-mode 1))
+
+(let ((map global-map))
+  (define-key map (kbd "C-c h") 'winner-undo)
+  (define-key map (kbd "C-c l") 'winner-redo))
 
 ;; make tab-bar more minimal
 (use-package tab-bar
@@ -533,14 +548,6 @@ file to edit."
                                   (completing-read "Eshell history: "
                                                        (delete-dups
                                                         (ring-elements eshell-history-ring))))))))
-
-(defun chris/kill-dired-buffers ()
-  "Kill all open dired buffers."
-  (interactive)
-  (mapc (lambda (buffer)
-          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
-            (kill-buffer buffer)))
-        (buffer-list)))
 
 ;; get all pro-mode derivatives to be able to create custom scratch buffers
 (defun chris/simple--scratch-list-modes ()
