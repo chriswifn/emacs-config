@@ -44,7 +44,7 @@
 
 (defun chris/config-visit ()
   (interactive)
-  (find-file "~/.emacs.d/config.org"))
+  (find-file "~/.emacs.d/readme.org"))
 
 (let ((map global-map))
   (define-key map (kbd "<escape>") 'keyboard-escape-quit)

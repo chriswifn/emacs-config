@@ -101,7 +101,7 @@ Disable GUI elements.
 
 (defun chris/config-visit ()
   (interactive)
-  (find-file "~/.emacs.d/config.org"))
+  (find-file "~/.emacs.d/readme.org"))
 #+end_src
 
 *** keybindings
