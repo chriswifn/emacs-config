@@ -298,13 +298,13 @@ questions.  Else use completion to select the tab to switch to."
   :config
   (setq fontaine-presets
         '((tiny
-           :default-family "Iosevka Comfy Wide Fixed"
+           :default-family "Monoid"
            :default-height 70)
           (small
-           :default-family "Iosevka Comfy Fixed"
-           :default-height 90)
+           :default-family "Monoid"
+           :default-height 80)
           (regular
-           :default-height 110)
+           :default-height 90)
           (medium
            :default-height 120)
           (large
@@ -312,7 +312,7 @@ questions.  Else use completion to select the tab to switch to."
            :default-height 140
            :bold-weight extrabold)
           (t
-           :default-family "Iosevka Comfy Wide Fixed"
+           :default-family "Monoid"
            :default-weight regular
            :default-height 100
            :fixed-pitch-family nil
@@ -321,7 +321,7 @@ questions.  Else use completion to select the tab to switch to."
            :fixed-pitch-serif-family nil
            :fixed-pitch-serif-weight nil
            :fixed-pitch-serif-height 1.0
-           :variable-pitch-family "Iosevka Comfy Duo"
+           :variable-pitch-family "Monoid"
            :variable-pitch-weight nil
            :variable-pitch-height 1.0
            :bold-family nil
