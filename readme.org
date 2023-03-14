@@ -1048,6 +1048,16 @@ When no VC root is available, use standard `switch-to-buffer'."
     (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
 #+end_src
 
+*** simple-httpd
+
+**** configuration
+
+#+begin_src emacs-lisp
+(use-package simple-httpd)
+#+end_src
+
+**** keybindings
+
 ** git
 
 *** magit

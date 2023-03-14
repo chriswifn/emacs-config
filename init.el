@@ -733,6 +733,8 @@ When no VC root is available, use standard `switch-to-buffer'."
   (define-key evil-outer-text-objects-map "a"
     (evil-textobj-tree-sitter-get-textobj ("conditional.outer" "loop.outer")))
 
+(use-package simple-httpd)
+
 ;; git integration
 (use-package magit
   :config
