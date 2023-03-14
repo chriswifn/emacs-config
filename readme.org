@@ -3,6 +3,8 @@
 #+STARTUP: overview
 
 Currently tailored for =Emacs 28.2=.
+Every external/internal package has a configuration
+and a keybindings section for structure
 
 * Early init file 
 :PROPERTIES:
