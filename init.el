@@ -823,6 +823,9 @@ When no VC root is available, use standard `switch-to-buffer'."
   (define-key map (kbd "C-c d") 'chris/nmcli-wifi-preexist-disconnect)
   (define-key map (kbd "C-c r") 'chris/nmcli-wifi-preexist-refresh))
 
+(let ((map global-map))
+  (define-key map (kbd "C-c o n") 'chris/nmcli-wifi-preexist))
+
 ;; color in hex-codes and other color codes
 (use-package rainbow-mode)
 
