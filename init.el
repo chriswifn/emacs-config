@@ -467,6 +467,9 @@ questions.  Else use completion to select the tab to switch to."
   :init
   (setq vterm-timer-delay 0.01))
 
+(let ((map global-map))
+  (define-key map (kbd "C-c o v") 'vterm))
+
 (defun chris/configure-eshell ()
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
@@ -548,6 +551,9 @@ file to edit."
                                   (completing-read "Eshell history: "
                                                        (delete-dups
                                                         (ring-elements eshell-history-ring))))))))
+
+(let ((map global-map))
+  (define-key map (kbd "C-c o e") 'eshell))
 
 ;; get all pro-mode derivatives to be able to create custom scratch buffers
 (defun chris/simple--scratch-list-modes ()

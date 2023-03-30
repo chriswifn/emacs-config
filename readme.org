@@ -694,6 +694,11 @@ questions.  Else use completion to select the tab to switch to."
 
 **** keybindings
 
+#+begin_src emacs-lisp
+(let ((map global-map))
+  (define-key map (kbd "C-c o v") 'vterm))
+#+end_src
+
 *** eshell
 
 **** configuration
@@ -784,6 +789,9 @@ file to edit."
                                   (completing-read "Eshell history: "
                                                        (delete-dups
                                                         (ring-elements eshell-history-ring))))))))
+
+(let ((map global-map))
+  (define-key map (kbd "C-c o e") 'eshell))
 #+end_src
 
 ** custom
