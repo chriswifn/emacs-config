@@ -6,6 +6,9 @@
 ;; gc thrash 
 (setq gc-cons-threshold (* 100 1024 1024))
 
+;; increase the amount of data which emacs reads from the process
+(setq read-process-output-max (* 1024 1024))
+
 ;; disable some gui elements
 (menu-bar-mode -1)
 (tool-bar-mode -1)

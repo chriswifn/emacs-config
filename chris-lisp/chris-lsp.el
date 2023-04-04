@@ -11,11 +11,25 @@
   (setq lsp-enable-links nil)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-ui-doc-enable nil)
+  ;; (setq lsp-ui-doc-enable nil)
   (setq lsp-completion-enable-additional-text-edit nil)
   (setq web-mode-enable-current-element-highlight t)
   (lsp-enable-which-key-integration t)
-  :commands (lsp lsp-deferred))
+  :commands
+  (lsp lsp-deferred))
+
+;; lsp-ui: ui enhancements
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-doc-position 'bottom)
+  (setq lsp-ui-sideline-enable nil)
+  (setq lsp-ui-sideline-show-hover nil)
+  :hook
+  (lsp-mode . lsp-ui-mode))
+
+;; lsp-treemacs: nicer ui
+(use-package lsp-treemacs
+  :after lsp)
 
 ;; dap-mode:
 (use-package dap-mode)
