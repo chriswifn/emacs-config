@@ -51,8 +51,8 @@
 
 ;; custom configuration for more advanced packages
 (add-to-list 'load-path "~/.emacs.d/chris-lisp")
-(require 'chris-evil)
 (require 'chris-general)
+(require 'chris-evil)
 (require 'chris-buffers)
 (require 'chris-dired)
 (require 'chris-ui)

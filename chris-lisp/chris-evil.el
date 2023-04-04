@@ -2,6 +2,9 @@
 
 ;; evil-mode: superior editing expirience 
 (use-package evil
+  :general
+  (chris/leader-keys
+    "w" '(:keymap evil-window-map :wk "window"))
   :init
   (setq evil-search-module 'isearch)
   (setq evil-want-C-u-scroll t)
