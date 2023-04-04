@@ -5,6 +5,15 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
   :config
+  (setq lsp-completion-provider :capf)
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-log-io nil)
+  (setq lsp-enable-links nil)
+  (setq lsp-signature-render-documentation nil)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-completion-enable-additional-text-edit nil)
+  (setq web-mode-enable-current-element-highlight t)
   (lsp-enable-which-key-integration t)
   :commands (lsp lsp-deferred))
 
