@@ -1,0 +1,7 @@
+#!/bin/sh
+
+rm -rf ~/.emacs.d 2>/dev/null
+mkdir ~/.emacs.d 2>/dev/null
+ln -sf "$PWD/early-init.el" "$HOME/.emacs.d/"
+ln -sf "$PWD/init.el" "$HOME/.emacs.d/"
+ln -sf "$PWD/chris-lisp" "$HOME/.emacs.d/"
