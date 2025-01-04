@@ -1,0 +1,1012 @@
+#+title: GNU Emacs
+#+author: chriswifn
+#+language: en
+#+options: ':t toc:nil num:t author:t
+#+startup: content indent
+#+macro: latest-export-date (eval (format-time-string "%F %T %z"))
+
+*Last revised and exported on {{{latest-export-date}}}.*
+
+This is my literate configuration for GNU Emacs.
+
+This Org document serves as a single point of entry to my Emacs setup.
+In contrast to most literate configurations, this file is not loaded
+by calling ~org-babel-load-file~ to produce a generic =init.el=.
+By not loading Org before loading Emacs the startup time is much slower.
+The advantage to creating separate =.el= files manually is that this file
+serves as the =single-source-of-truth= that can be distributed to any
+personal machine.
+
+#+toc: headlines 8 insert TOC here, with eight headline levels
+
+* The early initialisation of Emacs (=early-init.el=)
+:PROPERTIES:
+:ID:       75cc7941-14d8-4cce-aa70-a17964586009
+:END:
+
+This is the first file emacs reads when starting up.
+
+** The =early-init.el= basic frame settings
+:PROPERTIES:
+:ID:       a37dca00-1ab3-48aa-99a0-1c851a24e987
+:END:
+
+Minimal setup with less distractions.
+For detailed description of what these variables do, consider
+looking at the documentation with ~C-h v name-of-variable~.
+
+#+begin_src emacs-lisp :tangle "early-init.el"
+  (setq frame-resize-pixelwise t
+        frame-inhibit-implied-resize t
+        frame-title-format '("%b")
+        ring-bell-function 'ignore
+        use-dialog-box nil
+        use-short-answers t
+        inhibit-splash-screen t
+        inhibit-startup-screen t
+        inhibit-startup-echo-area-message user-login-name
+        inhibit-startup-buffer-menu t)
+
+  ;; disable graphical elements by default
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (fringe-mode 0)
+#+end_src
+
+** The =early-init.el= option to tweak startup time
+:PROPERTIES:
+:ID:       5765d7a3-c20d-4d12-a64c-67fc8cbce955
+:END:
+
+Put emacs into the 21st century.
+Increase garbage collection threshold for increased performance.
+
+#+begin_src emacs-lisp :tangle "early-init.el"
+  (setq gc-cons-threshold most-positive-fixnum
+	gc-cons-percentage 0.5)
+
+  (add-hook 'emacs-startup-hook
+	    (lambda ()
+	      (setq gc-cons-threshold (* 1000 1000 8)
+		    gc-cons-percentage 0.1)))
+#+end_src
+
+** The =early-init.el= disables the package cache
+:PROPERTIES:
+:ID:       62f1575a-a04d-4f9b-9f32-b8374808215d
+:END:
+
+This configuration uses the =use-package= macro.
+=use-package= is great, because it allows for a "quick-and-dirty"
+installation of packages without having to look into hooks for the
+most part.
+Since Emacs 29 it is built-in.
+Therefor, the "old way" of installing packages can be disabled
+on early startup.
+
+#+begin_src emacs-lisp :tangle "early-init.el"
+  (setq package-enable-at-startup nil)
+#+end_src
+
+* The main initialisation of Emacs (=init.el=)
+:PROPERTIES:
+:ID:       1aa6d5af-495a-4a97-b636-9f0ab6eb78fc
+:END:
+
+** The =init.el= package system setup
+:PROPERTIES:
+:ID:       5089b9e7-c0ff-48b2-8c3e-ba4c4a45dc46
+:END:
+
+Emacs has a built in package manager =package.el= but it doesn't make it
+easy to automatically install packages on a new system the first time
+to configuration is loaded. This is why I use =use-package=.
+And since Emacs 29 it is also built in.
+
+#+begin_src emacs-lisp :tangle "init.el" :mkdirp yes
+  (require 'package)
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
+
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+  ;; Initialize use-package on non-Linux platforms
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+#+end_src
+
+** The =init.el= basic configurations to disable backups and lockfiles
+:PROPERTIES:
+:ID:       c3451e24-9d95-4a9e-8cba-1dbe9101bc99
+:END:
+
+By default, Emacs tries to lock down files so that they are not modified
+by other programs. It also keeps backups. These are features are are
+annoying for me, because in most cases I know what I am doing when I
+modify files externally and I don't want emacs backup files everywhere.
+
+#+begin_src emacs-lisp :tangle "init.el" :mkdirp yes
+  (setq make-backup-files nil)
+  (setq backup-inhibited nil)
+  (setq create-lockfiles nil)
+#+end_src
+
+** The =init.el= tweaks to make native compilation silent
+:PROPERTIES:
+:ID:       c4c99118-1e6f-4ea6-b3bd-82917259144f
+:END:
+
+Native compilation is new since Emacs 28.
+It for the most part works fine, but the eventual popup is annoying.
+So disabling it, gets rid of the popup buffers it generates.
+
+#+begin_src emacs-lisp :tangle "init.el" :mkdirp yes
+  (when (native-comp-available-p)
+    (setq native-comp-async-report-warning-errors 'silent) ;; Emacs 28
+    (setq native-compile-prune-cache t)) ;; Emacs 29
+#+end_src
+
+** The =init.el= setting to send custom-file into the void
+:PROPERTIES:
+:ID:       b6752d66-ad95-4856-9f7f-d48f163763e2
+:END:
+
+Emacs writing customizations into the main configuration file
+is a crime against humanity.
+The custom-file solves this issue by moving the automatically
+generated configurations to a separate file.
+However I don't need that, because I want everything managed
+by this Org document
+
+#+begin_src emacs-lisp :tangle "init.el" :mkdirp yes
+  (setq custom-file (make-temp-file "emacs-custom-"))
+#+end_src
+
+** The =init.el= setting to start emacs in fullscreen mode
+:PROPERTIES:
+:ID:       890816f0-ae99-4737-aa25-a11af5bc4640
+:END:
+
+Because I have a high resolution monitor, I set a big font size.
+Therefore Emacs looks weird when starting up with standard geometry.
+And nobody wants to leave Emacs when first starting it, so fullscreen
+is not an issue.
+
+#+begin_src emacs-lisp :tangle "init.el"
+  (add-hook 'window-setup-hook 'toggle-frame-maximized t)
+#+end_src
+
+** The =init.el= setting to kill buffers
+:PROPERTIES:
+:ID:       fc922ed4-fbad-4c61-abc0-63bc4264510b
+:END:
+
+Killing a buffer should close the split.
+There is a built-in function that does exactly that.
+The problem is, that that function is mapped to ~C-x 4 0~.
+
+#+begin_src emacs-lisp :tangle "init.el"
+  (bind-key "C-x k" 'kill-buffer-and-window)
+#+end_src
+
+** The =init.el= setting for ~exec-path~
+:PROPERTIES:
+:ID:       519291f6-b776-4ca6-9d2f-283994b4574b
+:END:
+
+When launching Emacs from non shell processes, it can happen, that
+the ~$PATH~ variable is not correctly set on startup.
+This is especially annoying for certain projects that depend on a
+specific directory or eglot (because I install language-servers manually).
+
+The function is there to quickly set the path when changed in the SHELL.
+
+#+begin_src emacs-lisp
+  (setq exec-path (append '("~/.local/bin") exec-path))
+
+  (defun set-exec-path-from-shell-PATH ()
+    "Set up Emacs' `exec-path' and PATH environment variable to match
+  that used by the user's shell.
+
+  This is particularly useful under Mac OS X and macOS, where GUI
+  apps are not started from a shell."
+    (interactive)
+    (let ((path-from-shell (replace-regexp-in-string
+                            "[ \t\n]*$" "" (shell-command-to-string
+                                            "$SHELL --login -c 'echo $PATH'"
+                                            ))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+#+end_src
+
+** The =init.el= arrangements for my own modules
+:PROPERTIES:
+:ID:       c137a31e-a1a7-4818-b2dd-5e4b0a2ef391
+:END:
+
+Add a few directories to the load-path in order to group
+certain configurations together and a place for private modules.
+
+#+begin_src emacs-lisp :tangle "init.el" :mkdirp yes
+  (mapc
+   (lambda (string)
+     (add-to-list 'load-path (locate-user-emacs-file string)))
+   '("chris-lisp" "chris-private"))
+
+  (require 'chris-emacs-ui)
+  (require 'chris-emacs-org)
+  (require 'chris-completion)
+  (require 'chris-evil)
+  (require 'chris-programming)
+  (require 'chris-denote)
+  (require'chris-misc)
+#+end_src
+
+* The modules of my Emacs configuration
+:PROPERTIES:
+:ID:       2bae306e-f13d-4900-a1d9-41cf6c65a0f4
+:END:
+
+The =init.el= specifies the ~load-path~ to some custom modules.
+These mostly consist of package installation/configuration.
+See [[*The =init.el= arrangements for my own modules][The =init.el= arrangements for my own modules]]
+
+** The =chris-emacs-ui.el= module
+:PROPERTIES:
+:ID:       c085750d-6ed1-4782-994e-99f40c72d077
+:END:
+
+A place to configure the Emacs UI.
+Note that some visual settings are already made in
+[[*The =early-init.el= basic frame settings][The =early-init.el= basic frame settings]]
+
+*** Lexical bindings
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  ;;; chris-emacs-ui.el -*- lexical-binding: t; -*-
+#+end_src
+*** Font configuration
+:PROPERTIES:
+:ID:       2faede72-1d1c-4736-b033-80e79b2d6972
+:END:
+
+The following should be minimally readable by any font:
+
+| Similarities | Regular                    |
+|--------------+----------------------------|
+| ()[]{}<>«»‹› | ABCDEFGHIJKLMNOPQRSTUVWXYZ |
+| 6bB8&        | abcdefghijklmnopqrstuvwxyz |
+| 0ODdoaoOQGC  | 0123456789                 |
+| I1tilIJL     | ~!@#$%^&*+                 |
+| !¡ij         | `'"‘’“”.,;:…               |
+| 5$§SsS5      | ()[]{}—-_=<>/\             |
+| 17ZzZ2       | ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ   |
+| 9gqpG6       | αβγδεζηθικλμνξοπρστυφχψω   |
+| hnmMN        |                            |
+| uvvwWuuwvy   |                            |
+| x×X          |                            |
+| .,·°%        |                            |
+| ¡!¿?         |                            |
+| :;           |                            |
+| `''"‘’“”     |                            |
+| —-~≈=≠+*_    |                            |
+| …⋯           |                            |
+| ...          |                            |
+
+Not having a specific font installed on a new system is a pain.
+Therefor I specify a list of fonts to go through which includes
+a fallback font that is most likely going to be installed on any
+system.
+
+*Specifying a fixed width font.*
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  (defvar chris-fixed-font
+    (when window-system
+      (or
+       (seq-first
+        (seq-filter (lambda (font) (when (x-list-fonts font) font))
+                    '("UbuntuMono"
+                      "Source Code Pro"
+                      "monospace")))
+       "monospaced"))
+    "My fixed width font based on what I have installed.")
+#+end_src
+
+*Specifying a variable pitch font.*
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  (defvar chris-variable-font
+    (when window-system
+      (or
+       (seq-first
+        (seq-filter (lambda (font) (when (x-list-fonts font) font))
+                    '("Iosevka Comfy Duo"
+                      "Sans Serif")))
+       (warn "Cannot find a Serif Font. Install one."))))
+#+end_src
+
+*Setting a font size.*
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  (defun chris-set-font-size (size)
+    "Set the default font size as well as equalize the fixed and
+  variable fonts."
+    (let ((fav-font (format "%s-%d" chris-fixed-font size)))
+      (set-face-attribute 'default nil :font fav-font)
+      (set-face-attribute 'fixed-pitch nil :family chris-fixed-font :inherit 'default :height 1.0)
+      (set-face-attribute 'variable-pitch nil :family chris-variable-font :inherit 'default :height 1.2)))
+#+end_src
+
+Define /interactive/ functions to quickly adjust the font size based on my
+computing scenario:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  (defun chris-home-lab ()
+    "Quickly set reset my font size when laptop is connected to home lab."
+    (interactive)
+    (chris-set-font-size 24))
+
+  (defun chris-external ()
+    "Quickly set reset my font size when laptop is used externally."
+    (interactive)
+    (chris-set-font-size 12))
+
+  (chris-home-lab)
+#+end_src
+
+*** Theme
+:PROPERTIES:
+:ID:       8e3f3c52-4395-4d83-a70a-1eebb487ebc8
+:END:
+
+I use a built-in Emacs theme at this point. I think Emacs has to be version
+28 or higher for this particular theme to be there by default.
+
+The only requirement I have is that the theme I use both has a light and a dark
+variant.
+
+The modus themes are very nice because they provide a default option for mixed fonts.
+This makes it so that I don't have to set it up manually or install a third party
+package to use variable fonts in org-mode mostly.
+This is very important for source code blocks and tables because they look off
+when not using a ~fixed-pitch-font~.
+
+The theme also provides a neat way of switching between light and dark by using
+=modus-themes-toggle=.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  ;; (setq modus-themes-mixed-fonts t)
+  ;; (load-theme 'modus-vivendi t)
+  ;; (use-package color-theme-sanityinc-tomorrow)
+
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic nil)
+    (load-theme 'doom-gruvbox t))
+#+end_src
+
+*** Spacious Padding
+:PROPERTIES:
+:ID:       1988f032-29fa-44ec-951d-53aadf230f08
+:END:
+
+Padding makes the editor look more modern.
+I use Protesilaos Stavrous' package =spacious-padding=.
+In effect it adds some padding where it is smart to have some padding
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  (use-package spacious-padding
+    :init
+    (spacious-padding-mode t))
+#+end_src
+
+*** Providing the module
+:PROPERTIES:
+:ID:       95554cb3-93b2-48e9-ac6f-d4d06bda6c49
+:END:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-ui.el" :mkdirp yes
+  (provide 'chris-emacs-ui)
+#+end_src
+
+** The =chris-emacs-org= module
+:PROPERTIES:
+:ID:       d96d6797-3678-4745-ac85-2f720846aff2
+:END:
+
+*** Lexical bindings
+
+Very basic ~org-mode~ setup.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-org.el" :mkdirp yes
+  ;;; chris-emacs-org.el -*- lexical-bindings: t; -*-
+  (require 'org)
+#+end_src
+
+*** Variable initialization
+:PROPERTIES:
+:ID:       7ed0f1a6-266d-4bd7-a2d8-4b01426e32ff
+:END:
+
+Begin by initializing some basic org variables.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-org.el" :mkdirp yes
+  (setq org-return-follows-link t
+        org-hide-emphasis-markers t
+        org-src-fontify-natively t
+        org-pretty-entities t
+        org-image-actual-width nil)
+
+  (plist-put org-format-latex-options :scale 2.0)
+
+  (setq org-agenda-files (list "~/media/org"))
+#+end_src
+
+*** Hooks
+:PROPERTIES:
+:ID:       678b485d-f9b6-4f09-a568-441c854bbf4a
+:END:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-org.el" :mkdirp yes
+  (add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'before-save-hook 'time-stamp nil)
+  ;;(add-hook 'org-mode-hook #'variable-pitch-mode)
+#+end_src
+
+*** Tasks
+:PROPERTIES:
+:ID:       ea838a78-6b29-4c5b-b409-ca9d427e9386
+:END:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-org.el" :mkdirp yes
+  (setq org-todo-keywords '((sequence "TODO(t)" "DOING(g)" "|" "DONE(d)")
+                            (sequence "BLOCKED(b)" "|" "CANCELLED(c)")))
+#+end_src
+
+*** Babel Blocks
+:PROPERTIES:
+:ID:       c9a92f06-7006-42aa-bf64-3a690d46d8b1
+:END:
+
+I use ~org-babel~ and don't need confirmation before evaluating a block.
+And the languages need to be set up.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-org.el" :mkdirp yes
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((shell .t)
+                                 (js . t)
+                                 (emacs-lisp .t)
+                                 (python . t)
+                                 (clojure . t)
+                                 (ruby . t)))
+#+end_src
+
+*** Providing the module
+:PROPERTIES:
+:ID:       3d70163b-89a1-47e9-92c0-a8b6ec84570a
+:END:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-emacs-org.el" :mkdirp yes
+  (provide 'chris-emacs-org)
+#+end_src
+
+** The =chris-completion= module
+:PROPERTIES:
+:ID:       d7d54bba-4cb4-49b9-9163-4b465d7fdbe0
+:END:
+
+Module that specifies the ~Completing Read User Interface~.
+The packages I use extend the original Emacs API unlike other
+Completing Read Interfaces that attempt to do everything by themselves
+by implementing backend-engines or complete replacements.
+
+*** Lexical bindings
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-completion.el" :mkdirp yes
+  ;;; chris-completion.el -*- lexical-binding: t; -*-
+#+end_src
+*** Some basic settings
+:PROPERTIES:
+:ID:       a189caf9-1c81-4510-abf0-cadf62944561
+:END:
+
+These are primarily for file completions.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-completion.el" :mkdirp yes
+  (savehist-mode)
+  (recentf-mode)
+#+end_src
+
+*** Vertico
+The vertico packge puts the completing read in a vertical format, and it extends
+Emacs' built-in functionality, instead of adding a new process. This means all these
+packages work together.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-completion.el" :mkdirp yes
+  (use-package vertico
+    :config
+    (vertico-mode))
+
+  (use-package vertico-directory
+    :after vertico
+    :ensure nil
+    :bind (:map vertico-map
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+#+end_src
+
+*** Orderless
+:PROPERTIES:
+:ID:       c51016f9-2a53-4fb4-abfc-996cbb91d4da
+:END:
+
+While the space can be used to separate words (acting a bit like a =.*= regular expression),
+the orderless project allows those words to be in any order.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-completion.el" :mkdirp yes
+  (use-package orderless
+    :commands (orderless-filter)
+    :custom
+    (completion-ignore-case t)
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles partial-completion))))
+    :init
+    (defvar orderless-skip-highlighting nil
+      "Not sure why this is being accessed.")
+
+    (push 'orderless completion-styles))
+#+end_src
+
+*** Consult
+:PROPERTIES:
+:ID:       3e32f34e-134d-4ca5-80c7-c911bb38a528
+:END:
+
+Doesn't really belong here, but I don't know where to put it.
+Consult provides basic functions to interact with all sorts of stuff.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-completion.el" :mkdirp yes
+  ;; Example configuration for Consult
+  (use-package consult
+    ;; Replace bindings. Lazily loaded due by `use-package'.
+    :bind (;; C-c bindings in `mode-specific-map'
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h" . consult-history)
+           ("C-c k" . consult-kmacro)
+           ("C-c m" . consult-man)
+           ("C-c i" . consult-info)
+           ([remap Info-search] . consult-info)
+           ;; C-x bindings in `ctl-x-map'
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("C-x C-r" . consult-recent-file)
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings in `goto-map'
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings in `search-map'
+           ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+           ("M-s c" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s l" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("C-s" . consult-line)
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    ;; The :init configuration is always executed (Not lazy)
+    :init
+
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
+
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
+
+    ;; Optionally configure preview. The default value
+    ;; is 'any, such that any key triggers the preview.
+    ;; (setq consult-preview-key 'any)
+    ;; (setq consult-preview-key "M-.")
+    ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key '(:debounce 0.4 any))
+
+    ;; Optionally configure the narrowing key.
+    ;; Both < and C-+ work reasonably well.
+    (setq consult-narrow-key "<") ;; "C-+"
+
+    ;; Optionally make narrowing help available in the minibuffer.
+    ;; You may want to use `embark-prefix-help-command' or which-key instead.
+    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+    ;; By default `consult-project-function' uses `project-root' from project.el.
+    ;; Optionally configure a different project root function.
+      ;;;; 1. project.el (the default)
+    ;; (setq consult-project-function #'consult--default-project--function)
+      ;;;; 2. vc.el (vc-root-dir)
+    ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+      ;;;; 3. locate-dominating-file
+    ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+      ;;;; 4. projectile.el (projectile-project-root)
+    ;; (autoload 'projectile-project-root "projectile")
+    ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+      ;;;; 5. No project support
+    ;; (setq consult-project-function nil)
+    )
+#+end_src
+
+*** Providing the module
+:PROPERTIES:
+:ID:       7daf03c3-0d5f-455a-a5e2-edae73cbdf05
+:END:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-completion.el" :mkdirp yes
+  (provide 'chris-completion)
+#+end_src
+
+** The =chris-evil= module
+:PROPERTIES:
+:ID:       4880fd18-cf29-4514-8da2-f3a891cfc995
+:END:
+
+The Emacs keybindings by themselves are fine.
+However, I often switch between systems that may no have Emacs installed.
+Therefore I choose to use evil-mode, because it is the best vim emulation
+for Emacs.
+Vi(m) is the default editor on most Unix systems.
+
+*** Lexical bindings
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-evil.el" :mkdirp yes
+  ;;; chris-evil.el -*- lexical-binding: t; -*-
+#+end_src
+
+*** Evil mode
+:PROPERTIES:
+:ID:       d8200a9c-1410-46bf-8ef1-c95bb64a6820
+:END:
+
+The Emacs Vi Layer.
+This is not the most efficient/fast keybinding scheme for Emacs.
+However as stated above, Vi(m) is the default.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-evil.el" :mkdirp yes
+  (use-package evil
+    :init
+    (setq evil-search-module 'isearch)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-d-scroll t)
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-split-window-below t)
+    (setq evil-vsplit-window-right nil)
+    (setq evil-want-C-i-jump nil)
+    (setq evil-undo-system 'undo-redo) ;; Emacs 28+
+    :config
+    (evil-mode t))
+#+end_src
+
+*** Evil collection
+:PROPERTIES:
+:ID:       3df9d860-80c3-4a78-b8c8-8bee3f43b333
+:END:
+
+Vim Keybindings for non text derived buffers.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-evil.el" :mkdirp yes
+  (use-package evil-collection
+    :after evil
+    :init
+    (setq evil-collection-outline-bind-tab-p t)
+    :config
+    (evil-collection-init))
+#+end_src
+
+*** Evil commentary
+:PROPERTIES:
+:ID:       e81f0761-00fc-42a0-bfd9-5f32d45a99de
+:END:
+
+Ease keybindings to comments based on major mode.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-evil.el" :mkdirp yes
+  (use-package evil-commentary
+    :after evil
+    :config
+    (evil-commentary-mode))
+#+end_src
+
+*** Better jumps
+:PROPERTIES:
+:ID:       f1f18e2b-bbc6-475f-bc26-dc6a1f6a17af
+:END:
+
+By default, the =C-d= and =C-u= jumps don't center the cursor position.
+This fixes that annoying behavior.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-evil.el" :mkdir yes
+  ;; C-d: center cursor after jump
+  (defun chris/scroll-down-and-center ()
+    "Scroll down and center the text to the screen"
+    (interactive)
+    (evil-scroll-down 0)
+    (evil-scroll-line-to-center (line-number-at-pos)))
+  (define-key evil-motion-state-map (kbd "\C-d") 'chris/scroll-down-and-center)
+
+  ;; C-u: center cursor after jump
+  (defun chris/scroll-up-and-center ()
+    "Scroll up and center the text to the screen"
+    (interactive)
+    (evil-scroll-up 0)
+    (evil-scroll-line-to-center (line-number-at-pos)))
+  (define-key evil-motion-state-map (kbd "\C-u") 'chris/scroll-up-and-center)
+#+end_src
+
+*** Providing the module
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-evil.el" :mkdirp yes
+  (provide 'chris-evil)
+#+end_src
+
+** The =chris-programming= module
+:PROPERTIES:
+:ID:       1488cb7b-7aac-43c4-8f4b-8f98e0ebc1cf
+:END:
+
+This section serves as a point of entry for all things related to programming
+buffers. This includes the setup of programming languages.
+
+*** Lexical bindings
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  ;;; chris-programming.el -*- lexical-binding: t; -*-
+#+end_src
+
+*** Direnv
+:PROPERTIES:
+:ID:       55f935cc-1d9e-46d1-89ae-8adaa1f8f1f9
+:END:
+
+Direnv is useful for setting up enviroments.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (use-package direnv
+    :init
+    (direnv-mode))
+#+end_src
+
+*** Treesitter
+:PROPERTIES:
+:ID:       47b70333-ee0c-4c9d-883d-22bd48a4751f
+:END:
+
+Since Emacs 29 Treesitter is built-in to the editor.
+It is fast and does the job for what it is supposed to do.
+A more convenient and feature full alternative is the
+~tree-sitter~ package.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (setq treesit-language-source-alist
+        '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+          (go "https://github.com/tree-sitter/tree-sitter-go")
+          (scala "https://github.com/tree-sitter/tree-sitter-scala")
+          (python "https://github.com/tree-sitter/tree-sitter-python")
+          (c "https://github.com/tree-sitter/tree-sitter-c")))
+
+  ;; run this line once or every time a grammar needs an update
+  ;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+
+  (setq major-mode-remap-alist
+        '((bash-mode . bash-ts-mode)
+          (go-mode . go-ts-mode)
+          ;;(scala-mode . scala-ts-mode)
+          (python-mode . python-ts-mode)
+          (c-mode . c-ts-mode)))
+
+  ;; maximum fontification
+  (setq treesit-font-lock-level 4)
+#+end_src
+
+*** Formatting
+:PROPERTIES:
+:ID:       ad6f2fc0-d606-426a-a0d2-f4ddec3c9742
+:END:
+
+Remove trailing whitespaces in every ~prog-mode~ derived major-mode.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (add-hook 'before-save-hook 'chris/prog-nuke-trailing-whitespace)
+
+  (defun chris/prog-nuke-trailing-whitespace ()
+    (when (derived-mode-p 'prog-mode)
+      (delete-trailing-whitespace)))
+#+end_src
+
+*** LSP
+:PROPERTIES:
+:ID:       a2f57bab-19fc-4d2f-89f2-7bbc2ab221c3
+:END:
+
+Eglot is fine as LSP client.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (defun chris/eglot-organize-imports ()
+    (interactive)
+    (eglot-code-actions nil nil "source.organizeImports" t))
+  (add-hook 'before-save-hook 'chris/eglot-organize-imports nil t)
+  (add-hook 'before-save-hook 'eglot-format-buffer)
+#+end_src
+
+*** Language configuration
+:PROPERTIES:
+:ID:       c7425a1b-f953-4984-b264-db4d1716fea2
+:END:
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (use-package scala-mode
+    :interpreter ("scala" . scala-mode))
+
+  (use-package pyvenv)
+#+end_src
+
+*** Completion
+:PROPERTIES:
+:ID:       415d0ece-34f1-4656-9a3d-80349668cbef
+:END:
+
+I am personally not a big fan of popup windows.
+Therefore I use the builtin ~completion-at-point~.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (use-package company
+    :custom
+    (company-minimum-prefix-length 3)
+    (company-idle-delay 0.5)
+    :config
+    (global-company-mode))
+#+end_src
+
+*** Providing the module
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-programming.el" :mkdirp yes
+  (provide 'chris-programming)
+#+end_src
+
+** The =chris-denote= module
+:PROPERTIES:
+:ID:       fe0c54ab-abfc-4214-a438-d53f40815c28
+:END:
+
+*** Lexical bindings
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-denote.el" :mkdirp yes
+  ;;; chris-denote.el -*- lexical-binding: t; -*-
+#+end_src
+
+*** Denote
+
+Denote is a relatively simple note taking system.
+It focuses on plain text files and an efficient naming scheme instead
+of relying on external databases or online storage.
+This makes it simple to write other clients because the system
+doesn't necessarily rely on Emacs.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-denote.el" :mkdirp yes
+  (setq chris-notes-directory "~/media/org/notes/")
+
+  (use-package denote
+    :init
+    (require 'denote-org-extras)
+    (denote-rename-buffer-mode 1)
+    :hook
+    (dired-mode . denote-dired-mode)
+    :custom-face
+    (denote-faces-link ((t (:slant italic)))))
+
+  (setq denote-directory (expand-file-name "~/media/org/notes"))
+#+end_src
+
+*** Providing the module
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-denote.el" :mkdirp yes
+  (provide 'chris-denote)
+#+end_src
+
+** The =chris-misc= module
+:PROPERTIES:
+:ID:       61293408-b964-47c3-ada5-e9cc37b14fa1
+:END:
+
+A collection of miscelaneous packages that make life easier.
+
+=which-key= is a minor mode for Emacs that displays the key bindings following
+the currently entered incomplete commands (a prefix) in a popup.
+Since Emacs keybindings are hard to remember, this is a must have.
+
+=emms= is a music player for Emacs. Nothing special here.
+
+#+begin_src emacs-lisp :tangle "chris-lisp/chris-misc.el" :mkdirp yes
+  ;;; chris-misc.el -*- lexical-binding :t; -*-
+  (use-package which-key
+    :init
+    (which-key-mode))
+
+  (use-package emms
+    :config
+    (require 'emms-setup)
+    (require 'emms-player-mpd)
+    (emms-all)
+    (setq emms-player-list '(emms-player-mpd))
+    (add-to-list 'emms-info-functions 'emms-info-mpd)
+    (add-to-list 'emms-player-list 'emms-player-mpd)
+    (setq emms-player-mpd-server-name "localhost")
+    (setq emms-player-mpd-server-port "6600")
+    (setq emms-player-mpd-music-directory "~/media/music"))
+
+  (use-package pdf-tools
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page))
+
+  (provide 'chris-misc)
+#+end_src
